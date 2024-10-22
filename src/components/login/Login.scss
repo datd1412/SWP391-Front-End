@@ -1,0 +1,135 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+  }
+ 
+  .login{
+    height: 100vh;
+  }
+  
+  .left-sider{
+        display: flex;
+        background: linear-gradient(to left, white, #bbf8e5, #a8f0d2, rgb(121, 245, 214));
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 400px;
+    
+
+    h1{
+        margin-bottom: 30px;
+        font-family: "Inter", sans-serif;
+        text-align: left;
+        font-size: 40px;
+        padding-left: 95px;
+        font-weight: 700;
+    }
+    .input-field input{
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        font-size: 14px;
+        background-color: #E4E4E4;
+    }
+    .input-field input::placeholder{
+ 
+        color: #333;
+      }
+      .input-field input:focus {
+        color: #333; 
+        background-color: #fff; 
+        
+      }
+    .login-button{
+        width: 100%;
+        height: 4vh;
+        padding-top: 5px;
+        background-color: #f4b860;
+        color: white;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 18px;
+        margin-bottom: 25px;
+        margin-top: 10px;
+    }
+    .divider {
+        margin-bottom: 40px;
+        display: flex;
+        padding-left: 14px;
+      }
+      
+      .divider span {
+        color: #0c0c0cfd;
+        font-size: 14px;
+      }
+    .forgot-password{
+        color: #4096FF;
+    }
+    .forgot-password:hover{
+        text-decoration: underline;
+        color: #f4b860;
+    }
+      
+   .btn-gmail{
+        width: 360px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        padding: 20px;
+        margin: 5px 0 20px 0;
+        cursor: pointer;
+        font-size: 18px;
+    }
+    .signup-text {
+        font-size: 14px;
+        margin-top: 5px;
+        color: black;
+        padding-left: 68px;
+      }
+    .link-register{
+        font-size: 14px;
+        padding-left: 5px;
+    }
+    .link-register:hover{
+        color: #f4b860;
+        text-decoration: underline;
+    }
+   
+          
+    
+  }
+  .right-sider{
+
+    .theme-container {
+      border-radius: 250px 0px 00px 200px;
+      color: #fff;
+      height: 100%;
+      background-image: url('src/image/Copy of wallpaper.jpg');
+      /* Encoding spaces */
+      background-size: cover;
+      /* Make sure the image covers the entire div */
+      background-position: center;
+      /* Centers the image */
+      background-repeat: no-repeat;
+      /* Ensures the image doesn't repeat */
+    }
+  
+    .theme-panel {
+      width: 50%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      font-size: large;
+      margin-left: 150px;
+    }
+  }

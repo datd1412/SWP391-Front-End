@@ -1,0 +1,93 @@
+/* Style chính cho FarmCard */
+.farm-card {
+    width: 1242px; /* Đặt chiều rộng của card */
+    height: 386px; /* Đặt chiều cao của card */
+    border-radius: 12px; /* Bo góc */
+    display: flex;
+    padding: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm viền bóng mờ */
+  }
+  
+  .farm-card-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Phần bên trái hiển thị hình ảnh */
+  .farm-image {
+    width: 542px; /* Đặt chiều rộng của ảnh */
+    height: 336px; /* Đặt chiều cao của ảnh */
+    object-fit: cover; /* Đảm bảo ảnh không bị méo */
+    border-radius: 12px 0 0 12px; /* Bo góc chỉ phần bên trái */
+    margin: 25px 0; /* Tạo khoảng cách trên và dưới */
+  }
+  
+  /* Phần bên phải chứa thông tin */
+  .farm-info {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .farm-title {
+    font-family: "Inter-SemiBold", Helvetica, sans-serif;
+    font-size: 37px;
+    font-weight: 600;
+    color: #000000;
+  }
+  
+  .farm-description {
+    font-family: "Inter-ExtraLight", Helvetica, sans-serif;
+    font-size: 20px;
+    font-weight: 200;
+    color: #000000;
+  }
+  
+  /* Các nút hành động */
+  .farm-actions {
+    display: flex;
+    gap: 15px; /* Khoảng cách giữa các nút */
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  
+  .farm-btn {
+    width: 107px;
+    height: 45px;
+    border-radius: 25px;
+    font-weight: 600;
+  }
+  
+  .nut-xanh {
+    border-color: #4784ff; /* Màu viền xanh */
+    color:#000000; /* Màu chữ xanh */
+    
+    &:hover {
+      background-color: #4784ff;
+      color: #ffffff;
+    }
+  }
+  
+  /* Nút với viền màu đỏ */
+  .nut-do {
+    border-color: #ff4747; /* Màu viền đỏ */
+    color:#000000; /* Màu chữ đỏ */
+    
+    &:hover {
+      background-color: #ff4747;
+      color: #ffffff;
+    }
+  }
+  
+  /* Nút với viền màu vàng */
+  .nut-vang {
+    border-color: #ffe647; /* Màu viền vàng */
+    color: #000000; /* Màu chữ vàng */
+    
+    &:hover {
+      background-color: #ffe647;
+      color: #ffffff;
+    }
+  }

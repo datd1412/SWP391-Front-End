@@ -1,0 +1,26 @@
+.navbar {
+  display: flex;
+  justify-content: center; // Căn các phần tử: logo, menu, auth buttons cách đều
+  align-items: center; // Căn giữa theo chiều dọc
+  padding: 0 20px; // Tùy chỉnh khoảng cách hai bên
+  background-color: #CA803D;
+
+  .ant-menu {
+    flex-grow: 1; // Cho menu chiếm hết không gian còn lại
+    display: flex;
+    justify-content: flex-start; // Menu sẽ ở giữa
+    background-color: #CA803D;
+    font-size: 17px;
+
+  }
+
+  .auth-buttons {
+    button {
+      font-size: 15px;
+    }
+    display: flex;
+    gap: 10px; // Khoảng cách giữa hai nút;
+    height: 100%;
+    background-color: #CA803D;
+  }
+}

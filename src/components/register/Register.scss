@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.left-side {
+
+
+  .theme-container {
+    border-radius: 0 250px 200px 0;
+    color: #fff;
+    height: 100%;
+    background-image: url('src/image/register%20background.jpg');
+    /* Encoding spaces */
+    background-size: cover;
+    /* Make sure the image covers the entire div */
+    background-position: center;
+    /* Centers the image */
+    background-repeat: no-repeat;
+    /* Ensures the image doesn't repeat */
+  }
+
+  .theme-panel {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    font-size: large;
+    margin-left: 150px;
+  }
+}
+
+.right-side {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+
+  .ant-form-item {
+    margin-bottom: 24px;
+    position: relative;
+  
+    .ant-form-item-label {
+      position: absolute;
+      top: -15px;
+      left: 10px;
+      z-index: 10;
+      font-size: 16px;
+      padding: 0 4px;
+      background-color: white;
+    }
+  
+    .ant-form-item-label label::after {
+      content: none; /* This removes the space or content added after the label */
+    }
+  
+    .ant-input {
+      padding: 10px 6px; /* Tạo khoảng trống cho label */
+      font-size: 14px;
+      line-height: 1.5715;
+      outline: none;
+      &:focus,
+      &:active {
+        border-color: #40a9ff;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+      } 
+    }
+
+    .ant-input-password {
+      padding: 0; /* Tạo khoảng trống cho label */
+      font-size: 14px;
+      line-height: 1.5715;
+      outline: none;
+      &:focus,
+      &:active {
+        border-color: #40a9ff;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+      } 
+    }
+
+  }
+
+  .form-register {
+    width: 500px;
+  }
+
+  .btn-container {
+    background-color: #F5C273;
+    color: #eee;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin-top: 5px;
+  }
+
+  h1 {
+    margin-bottom: 50px;
+    font-family: "Inter", sans-serif;
+    font-size: 50px;
+    text-align: left;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    background-clip: text;
+    color: transparent;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    letter-spacing: 2px;
+  }
+
+  .login-option {
+    button {
+      background-color: #fff;
+      border: 1px solid #B2B2B2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      column-gap: 5px;
+      font-size: 15px;
+      border-radius: 8px;
+      padding: 0px 50px;
+      margin-top: 50px;
+    }
+  }
+
+}

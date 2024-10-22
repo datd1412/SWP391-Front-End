@@ -1,0 +1,53 @@
+.carousel-container {
+  width: 90%;
+  margin: auto;
+
+  .slick-slider {
+    position: relative;
+
+    .slick-prev {
+      position: absolute;
+      background-color: black;
+      z-index: 1;
+      left: 60px;
+    }
+
+    .slick-next {
+      position: absolute;
+      background-color: #000000;
+      z-index: 1;
+      right: 60px;
+    }
+  }
+
+}
+.carousel-item-first {
+  transform: scale(2);
+  /* Tăng kích thước item đầu tiên */
+  z-index: 1;
+  /* Đặt item đầu tiên ở lớp trên cùng để không bị che */
+}
+
+.tour-label {
+  .text-wrapper-title {
+    color: #000000;
+    font-family: "Inter-SemiBold", Helvetica;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: normal;
+    top: -1px;
+    white-space: nowrap;
+  }
+
+  .text-wrapper-describe {
+    color: #9e9e9e;
+    font-family: "Inter-Regular", Helvetica;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: normal;
+    top: 41px;
+    white-space: nowrap;
+  }
+}

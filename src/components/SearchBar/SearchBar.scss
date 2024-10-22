@@ -1,0 +1,81 @@
+.search-bar {
+    .ant-space.ant-space-horizontal {
+        gap: 0px;
+    }
+
+    .search-container {
+        display: grid;
+        grid-template-columns: 1.5fr 1.5fr 1fr 1fr 0.5fr;
+
+        .ant-input-prefix {
+            margin: 0;
+            padding-right: 10px;
+            color: #BFBFBF;
+        }
+
+        .destination {
+            background-color: #ffffff;
+            border: 3px solid;
+            border-color: #5454ac;
+            border-radius: 0px 0px 0px 25px;
+            height: 67px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* width: 319px; */
+        }
+
+        .Date_picker {
+            background-color: #ffffff;
+            border: 3px solid;
+            border-color: #5454ac;
+            height: 67px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* width: 335px; */
+            border-radius: 0px;
+            border-left-width: 0px;
+        }
+
+        .Price {
+            background-color: #ffffff;
+            border: 3px solid;
+            border-color: #5454ac;
+            height: 67px;
+            left: 0;
+            top: 0;
+            /* width: 243px; */
+            border-radius: 0px;
+            border-left-width: 0px;
+            width: 100%;
+        }
+
+        .fish {
+            background-color: #ffffff;
+            border: 3px solid;
+            border-color: #5454ac;
+            height: 67px;
+            left: 0;
+            top: 0;
+            /* width: 259px; */
+            border-radius: 0px;
+            border-left-width: 0px;
+            border-right-width: 0px;
+            width: 100%;
+        }
+
+        .button_search {
+            background-color: #feb95e;
+            border: 5px solid;
+            border-color: #5454ac;
+            border-radius: 0px 0px 25px 0px;
+            height: 67px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* width: 117px; */
+        }
+    }
+
+}
