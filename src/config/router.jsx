@@ -12,6 +12,10 @@ import Layout from "../components/layout/layout"
 import ManageKoi from "../page/manager/manage-koi/managekoi";
 import ManageTour from "../page/manager/manage-tour/managetour";
 import BookingApproval from "../page/manager/manage-booking/managebooking";
+import TourPage from "../page/tour/TourPage";
+import TourDetailPage from "../page/tourdetail/TourDetailPage";
+import KoiFarmPage from "../page/koifarm/KoiFarmPage";
+import KoiFishPage from "../page/koifish/KoiFishPage";
 // import ManageTour from "../page/manager/manage-tour/managetour"
 // const ProtectedRouteAuth = ({ children }) => {
 //   const user = useSelector(selectUser);
@@ -58,6 +62,22 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path: "/tour",
+        element: <TourPage />,
+      },
+      {
+        path: "/tourdetail/:id",
+        element: <TourDetailPage />,
+      },
+      {
+        path: "/koifarm",
+        element: <KoiFarmPage />,
+      },
+      {
+        path: "/koifish",
+        element: <KoiFishPage />,
       },
     ]
   },

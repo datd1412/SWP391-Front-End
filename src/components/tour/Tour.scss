@@ -1,0 +1,115 @@
+.tour-page {
+    padding: 20px;
+  
+    
+    .tour-banner {
+      background: url('https://link-to-banner-image.jpg') no-repeat center center;
+      background-size: cover;
+      padding: 80px 20px; 
+      text-align: center;
+      color: black; 
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+  
+      h1 {
+        font-size: 40px; // Tăng kích thước tiêu đề
+        margin-bottom: 15px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); // Thêm bóng chữ
+      }
+  
+      p {
+        font-size: 20px; // Tăng kích thước mô tả
+        margin-bottom: 20px;
+      }
+  
+      .ant-btn-primary {
+        background-color: #ff7f50;
+        border-color: #ff7f50;
+        &:hover {
+          background-color: #ff4500;
+          border-color: #ff4500;
+        }
+        a {
+          color: #fff;
+          font-weight: bold;
+          text-decoration: none;
+        }
+      }
+    }
+  
+    // Tour List Section
+    .tour-list {
+      h2 {
+        font-size: 30px; // Tăng kích thước tiêu đề danh sách tour
+        margin-bottom: 20px;
+        text-align: center;
+        color: #333;
+      }
+  
+      .ant-row {
+        display: flex;
+        justify-content: center;
+      }
+  
+      .ant-col {
+        margin-bottom: 20px;
+      }
+  
+      .ant-card {
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease; // Thêm hiệu ứng bóng
+        background-color: #f9f9f9; // Thêm nền cho card tour
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // Bóng nhẹ cho card
+  
+        &:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); // Tăng bóng khi hover
+        }
+  
+        .ant-card-cover img {
+          height: 200px;
+          object-fit: cover;
+        }
+  
+        .ant-card-body {
+          padding: 16px;
+          text-align: center;
+  
+          .ant-card-meta-title {
+            font-size: 22px; // Tăng kích thước tiêu đề card
+            font-weight: 700; // Đậm hơn một chút
+            color: #333;
+          }
+  
+          .ant-card-meta-description {
+            font-size: 16px; // Tăng kích thước mô tả
+            color: #555;
+            margin-top: 5px;
+            line-height: 1.5; // Tăng chiều cao dòng để dễ đọc hơn
+          }
+        }
+  
+        .ant-card-actions {
+          display: flex;
+          justify-content: center;
+  
+          .ant-btn-primary {
+            background-color: #ff7f50;
+            border-color: #ff7f50;
+            &:hover {
+              background-color: #ff4500;
+              border-color: #ff4500;
+            }
+  
+            a {
+              color: #fff;
+              text-decoration: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  

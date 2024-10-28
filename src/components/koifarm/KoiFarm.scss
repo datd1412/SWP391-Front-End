@@ -1,0 +1,177 @@
+// Color and styling variables
+$primary-color: #ff8c00; // Vibrant orange
+$secondary-color: #fff8e1; // Light background
+$text-color: #333; // Dark text color
+$modal-background-color: #fff; // White for modal background
+$modal-header-background: $primary-color; // Primary color for modal header
+$modal-footer-background: #f7f7f7; // Light gray for modal footer
+$modal-text-color: 333; // Text color for modal content
+$border-radius: 10px; // Border radius for rounded corners
+$modal-border-radius: 12px; // More rounded corners for modal
+$modal-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); // Soft shadow for modal
+$hover-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); // Hover shadow for cards
+
+.koi-farm-page {
+  font-family: 'Arial', sans-serif; // Clean, modern font
+  background-color: $secondary-color; // Light background
+  padding: 20px;
+
+  .header-banner {
+    text-align: center;
+    padding: 50px;
+    background-color: darken($primary-color, 10%); // Darken primary color for header
+    color: white;
+    border-radius: $border-radius;
+    box-shadow: $modal-shadow; // Add shadow to header
+
+    h1 {
+      font-size: 3rem; // Larger font size for headers
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 1.4rem; // Slightly larger for better readability
+      max-width: 700px; // Wider paragraph width
+      margin: 0 auto; // Center align
+    }
+  }
+
+  .farm-highlights {
+    margin-top: 30px;
+
+    h2 {
+      font-size: 2.5rem; // Larger size for subheadings
+      text-align: center;
+      margin-bottom: 20px;
+      color: $primary-color; // Title color
+    }
+
+    .ant-card {
+      border: none;
+      border-radius: $border-radius; // Rounded corners
+      box-shadow: $hover-shadow; // Card shadow
+      transition: transform 0.3s, box-shadow 0.3s; // Smooth transitions
+      cursor: pointer;
+
+      &:hover {
+        transform: translateY(-5px); // Lift effect on hover
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); // Stronger shadow on hover
+      }
+
+      img {
+        border-radius: $border-radius; // Image corners
+        height: 200px; // Fixed height for uniformity
+        object-fit: cover; // Maintain aspect ratio
+        width: 100%; // Make image responsive
+      }
+
+      .ant-card-body {
+        padding: 15px; // Internal padding
+        text-align: center; // Center text
+
+        h3 {
+          font-size: 1.5rem; // Farm name size
+          margin: 10px 0; // Spacing for title
+          color: $primary-color; // Title color
+        }
+
+        p {
+          color: $text-color; // Description color
+          margin: 5px 0; // Spacing for description
+        }
+      }
+    }
+  }
+
+  // Modal styles
+  .ant-modal {
+    background-color: $modal-background-color; // Modal background
+    border-radius: $modal-border-radius; // Rounded modal corners
+    box-shadow: $modal-shadow; // Shadow for modal
+
+    .ant-modal-header {
+      background-color: $modal-header-background; // Header background
+      color: white; // Header text color
+      border-top-left-radius: $modal-border-radius; // Rounded corners
+      border-top-right-radius: $modal-border-radius;
+
+      h4 {
+        margin: 0; // Remove default margin
+        font-weight: bold; // Bold font
+      }
+    }
+
+    .ant-modal-body {
+      color: $modal-text-color; // Body text color
+      padding: 25px; // Increased padding for body
+
+      h3 {
+        color: $primary-color; // Section header color
+        margin-bottom: 15px; // Spacing below headers
+        font-size: 1.8rem; // Font size for tour availability
+      }
+
+      p {
+        line-height: 1.6; // Better readability
+        margin-bottom: 10px; // Space between paragraphs
+      }
+
+      .tour-list {
+        margin-top: 10px; // Spacing for tour list
+        display: flex;
+        flex-direction: column;
+        gap: 15px; // Space between tours
+
+        .tour-item {
+          border: 1px solid #e0e0e0; // Light border for tours
+          border-radius: $border-radius; // Rounded corners
+          padding: 15px; // Padding for tours
+          transition: box-shadow 0.3s; // Transition for hover effect
+
+          &:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); // Shadow on hover
+          }
+
+          h4 {
+            color: $primary-color; // Tour name color
+            margin: 0; // Remove default margin
+            font-size: 1.5rem; // Font size for tour name
+          }
+
+          p {
+            margin: 5px 0; // Spacing for tour details
+            font-size: 1rem; // Font size for descriptions
+          }
+
+          .ant-btn {
+            margin-top: 10px; // Space between details button and tour info
+            width: 100%; // Full width for button
+            background-color: $primary-color; // Button background color
+            border: none; // Remove border
+            color: white; // Button text color
+
+            &:hover {
+              background-color: darken($primary-color, 10%); // Darken on hover
+            }
+          }
+        }
+      }
+    }
+
+    .ant-modal-footer {
+      background-color: $modal-footer-background; // Footer background
+      border-top: none; // Remove border for seamless look
+      text-align: right; // Align buttons to the right
+
+      .ant-btn-primary {
+        background-color: $primary-color; // Primary button color
+        border-color: $primary-color;
+
+        &:hover {
+          background-color: darken($primary-color, 5%); // Darken on hover
+          border-color: darken($primary-color, 5%);
+        }
+      }
+    }
+  }
+}

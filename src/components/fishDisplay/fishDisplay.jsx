@@ -1,58 +1,83 @@
-import React, { useEffect, useState } from 'react';
-import { Carousel } from 'antd';
-import './fishDisplay.scss';
-import FishCard from '../fishCard/fishCard';
-import api from '../../config/axios';
+import React, { useEffect, useState } from "react";
+import { Carousel, Modal } from "antd";
+import "./FishDisplay.scss"; // Đảm bảo bạn tạo file SCSS này
+import FishCard1 from "../fishcard1/FishCard1"; // Giả sử FishCard1 đã tồn tại
+import api from "../../config/axios"; // Giả sử api đã được cấu hình
 
 const FishDisplay = () => {
+  const [fishData, setFishData] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedFish, setSelectedFish] = useState(null);
 
-  const [koiFishs, setKoiFishs] = useState([]);
-
-  const fetchKoiFishs = async () => {
+  const fetchFishData = async () => {
     try {
-      const response = await api.get("/admin/koifish/all");
-      console.log(response.data);
+      const response = await api.get("/koifish");
+      setFishData(response.data.slice(0, 3)); // Lấy chỉ 3 con cá
     } catch (error) {
       console.log(error.toString());
     }
-  }
+  };
 
   useEffect(() => {
-    fetchKoiFishs();
-  }, [])
+    fetchFishData();
+  }, []);
+
+  const showModal = (fish) => {
+    setSelectedFish(fish);
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   return (
-    <div className="carousel-container">
-      <div className="fish-label">
-        <div className="text-wrapper-title">Con ca</div>
-        <div className="text-wrapper-describe">mieu ta gi do</div>
+    <div className="fish-display">
+      <div className="carousel-container">
+        <div className="fish-label">
+          <div className="text-wrapper-title">Fish Type</div>
+        </div>
+        <div className="Carousel-bar">
+          <Carousel
+            arrows={true}
+            infinite={false}
+            slidesToShow={3}
+            slidesToScroll={1}
+            dotPosition="bottom"
+            draggable={true}
+          >
+            {fishData.map((fish, index) => (
+              <div className="carousel-item" key={index}>
+                <FishCard1 fish={fish} onViewDetail={() => showModal(fish)} />
+              </div>
+            ))}
+          </Carousel>
+        </div>
       </div>
-      <div className="Carousel-bar">
-        <Carousel
-          arrows={true} // Hiển thị nút mũi tên điều hướng
-          infinite={false} // Không cuộn lại từ đầu
-          slidesToShow={3} // Số lượng mục hiển thị trên một màn hình
-          slidesToScroll={3} // Số lượng mục cuộn mỗi lần
-          dotPosition="bottom" // Vị trí của dot indicator
-          draggable={true} // Kéo để cuộn
-        >
-          <div className="carousel-item">
-            <FishCard />
+
+      <Modal visible={isModalVisible} onCancel={handleCancel} footer={null}>
+        {selectedFish && (
+          <div>
+            <img
+              alt={selectedFish.koiName}
+              src={selectedFish.image || "https://via.placeholder.com/500"}
+              style={{ width: "100%", marginBottom: "40px" }}
+            />
+            <p>
+              <strong>Tên loại cá:</strong> {selectedFish.koiName}
+            </p>
+            <p>
+              <strong>Trại:</strong> {selectedFish.farmKoiList[0]?.farmId}
+            </p>
+            <p>
+              <strong>Giá:</strong> {selectedFish.price} VND
+            </p>
+            <p>
+              <strong>Mô tả:</strong> {selectedFish.detail}
+            </p>
           </div>
-          <div className="carousel-item">
-            <FishCard />
-          </div>
-          <div className="carousel-item">
-            <FishCard />
-          </div>
-          <div className="carousel-item">
-            <FishCard />
-          </div>
-          <div className="carousel-item">
-            <FishCard />
-          </div>
-        </Carousel>
-      </div>
+        )}
+      </Modal>
     </div>
   );
 };

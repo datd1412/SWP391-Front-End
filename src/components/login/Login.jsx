@@ -13,15 +13,14 @@ function Login() {
   const onFinish = async (values) => {
     try {
       const response = await api.post("/login", values);
-      localStorage.setItem("token",response.data.data.token);
+      localStorage.setItem("token", response.data.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));
       navigate("/");
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
-      alert("Invalid username or password!")
+      alert("Invalid username or password!");
     }
-  }
+  };
 
   function handleLoginGoogle() {
     const auth = getAuth();
@@ -48,7 +47,6 @@ function Login() {
         // ...
       });
   }
- 
 
   return (
     <Row className="login">
@@ -98,7 +96,9 @@ function Login() {
                 <Form.Item name="remember" valuePropName="checked" noStyle>
                   <Checkbox>Remember me</Checkbox>
                 </Form.Item>
-                <a className="forgot-password" href="">Forgot password</a>
+                <a className="forgot-password" href="">
+                  Forgot password
+                </a>
               </Flex>
             </Form.Item>
 
@@ -116,8 +116,7 @@ function Login() {
         </div>
         <div className="divider">
           <span>
-         ---------------------- Or login with
-         ----------------------
+            ---------------------- Or login with ----------------------
           </span>
         </div>
         <div>
@@ -131,7 +130,9 @@ function Login() {
           </Button>
           <p className="signup-text">
             Don't have an account?
-            <Link to={"/register"} className="link-register">Register</Link>
+            <Link to={"/register"} className="link-register">
+              Register
+            </Link>
           </p>
         </div>
       </Col>
