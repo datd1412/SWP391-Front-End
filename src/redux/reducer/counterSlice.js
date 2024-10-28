@@ -6,8 +6,7 @@ export const counterSlice = createSlice({
   reducers: {
     // nhận vào stay hien tai va update bang payload
     login: (state, actions) => {
-      state = actions.payload;
-      return state;
+      return  actions.payload;
     },
     logout: () => {
       return null;
