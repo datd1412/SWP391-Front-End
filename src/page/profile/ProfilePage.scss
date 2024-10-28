@@ -1,0 +1,170 @@
+.profile-header {
+    .ant-typography {
+        margin: 10px 10px 0px 20px;
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(90deg, #ff7e5f, #feb47b);
+        background-clip: text;
+        color: transparent;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        letter-spacing: 1px;
+    }
+}
+
+.profile-edit-container {
+    .ant-layout-content {
+        display: flex;
+
+        .left-edit-form {
+            .profile-edit-form {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                width: 80%;
+                height: fit-content;
+                border: 1px solid gray;
+                border-radius: 8px;
+                padding: 10px;
+                margin-top: 15px;
+            }
+
+            .ant-input {
+                font-size: 17px;
+            }
+
+            .ant-form-item {
+                margin-bottom: 10px;
+                width: 100%;
+            }
+
+            .ant-form-item-label {
+                padding: 0;
+            }
+
+        }
+
+        .right-edit-form {
+            position: relative;
+
+            .password-edit-form {
+                border: 1px solid gray;
+                border-radius: 8px;
+                padding: 10px;
+                margin-top: 15px;
+            }
+
+            .ant-form {
+                .ant-space-item {
+                    width: 100%;
+
+                    .ant-input {
+                        font-size: 17px;
+                    }
+
+                    .ant-form-item {
+                        margin-bottom: 10px;
+                    }
+
+                    .ant-form-item-label {
+                        padding: 0;
+                    }
+                }
+            }
+
+            .submit-edit-btn {
+                .ant-btn {
+                    display: flex;
+                    align-items: center;
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+
+                    span {
+                        font-size: 17px;
+                        padding: 10px 25px;
+                    }
+                }
+            }
+
+
+        }
+    }
+
+}
+
+.profile-edit-container {
+    .notifi-container {
+        margin-top: 20px;
+
+        .notifi-item {
+            position: relative;
+            font-size: 15px;
+            border: 1px solid gray;
+            border-radius: 5px;
+            width: 30%;
+            padding: 10px 20px;
+
+            .ant-switch {
+                position: absolute;
+                margin-right: 20px;
+                right: 0;
+            }
+        }
+    }
+}
+
+.profile-edit-container {
+    .my-bookings-list {
+        padding: 10px;
+
+        .booking-page-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .my-booking-card {
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+
+
+            .ant-card-body {
+                padding: 8px;
+
+                .ant-row {
+                    display: grid;
+                    grid-template-columns: 0.25fr 2fr 1.25fr 0.75fr;
+                }
+            }
+        }
+
+        .my-booking-name {
+            font-size: 25px;
+            margin-bottom: 0px;
+        }
+
+        .my-booking-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+
+            svg {
+                font-size: 20px;
+            }
+            
+            .my-booking-availibility-date {
+                font-size: 17px;
+                font-weight: 500;
+                margin-left: 8px;
+            }
+        }
+
+        .complete-payment-button {
+            color: #ff4d4f;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    }
+
+}

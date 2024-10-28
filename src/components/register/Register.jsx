@@ -36,7 +36,7 @@ function Register() {
   const handleFinish = async (values) => {
     try {
       const reponse = await api.post("/register", values);
-      console.log(reponse.data);
+      console.log(values);
       navigate("/login");
     }
     catch (e) {
@@ -70,7 +70,6 @@ function Register() {
               </Form.Item>
               {/* Email */}
               <Form.Item label="Email" name="email" rules={[
-
                 {
                   required: true,
                   message: "Email cannot be blank",
@@ -84,7 +83,6 @@ function Register() {
               </Form.Item>
               {/* Phone number */}
               <Form.Item label="Phone number" name="phone" rules={[
-
                 {
                   required: "true",
                   message: "Phone number cannot be blank",
@@ -102,7 +100,6 @@ function Register() {
               </Form.Item>
               {/* Password */}
               <Form.Item label="Password" name="password" rules={[
-
                 {
                   required: "true",
                   message: "Password cannot be blank",
@@ -111,7 +108,6 @@ function Register() {
                 <Input.Password placeholder=" " />
               </Form.Item>
               <Form.Item label="Confirm password" name="retype_password" rules={[
-
                 {
                   required: "true",
                   message: "Please confirm your password",
@@ -128,7 +124,6 @@ function Register() {
                 }),
               ]}>
                 <Input.Password placeholder=" " />
-                <label className="ant-form-item-label">Enter password again</label>
               </Form.Item>
               <Button className='btn-container' htmlType='submit'>
                 Sign Up
