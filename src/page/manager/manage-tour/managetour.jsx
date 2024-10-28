@@ -152,7 +152,7 @@ function ManageTour() {
             key: 'id',
             render: (id, tour) => (
                 <>
-                    <Button type="primary" onClick={() => {
+                    <Button type="primary"  style={{ marginLeft: 8 }}  onClick={() => {
                         setShowModal(true);
                         form.setFieldsValue({
                             ...tour,
@@ -166,7 +166,7 @@ function ManageTour() {
                     </Button>
 
                     <Popconfirm title="Delete" onConfirm={() => handleDelete(id)}>
-                        <Button type="primary" danger>Delete</Button>
+                        <Button type="primary" danger style={{ marginLeft: 8 }}  >Delete</Button>
                     </Popconfirm>
                 </>
             ),

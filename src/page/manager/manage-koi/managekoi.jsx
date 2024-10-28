@@ -167,7 +167,7 @@ function ManageKoi() {
             key: "id",
             render: (id, koi) => (
                 <>
-                    <Button type="primary" onClick={() => {
+                    <Button type="primary"  style={{ marginLeft: 8 }}  onClick={() => {
                         setShowModal(true);
                         form.setFieldsValue({
                             ...koi,
@@ -185,7 +185,7 @@ function ManageKoi() {
                         description="Do you want to delete this koi fish?"
                         onConfirm={() => handleDelete(id)}
                     >
-                        <Button type="primary" danger>
+                        <Button type="primary" danger  style={{ marginLeft: 8 }} >
                             Delete
                         </Button>
                     </Popconfirm>

@@ -12,6 +12,9 @@ import Layout from "../components/layout/layout"
 import ManageKoi from "../page/manager/manage-koi/managekoi";
 import ManageTour from "../page/manager/manage-tour/managetour";
 import BookingApproval from "../page/manager/manage-booking/managebooking";
+import BookingProcess from "../page/manager/manage-booking/bookingProcess";
+import Dashboard from "../page/manager/Dashboard/dashboard";
+import BookingManagement from "../page/manager/manage-booking/BookingManagement";
 // import ManageTour from "../page/manager/manage-tour/managetour"
 // const ProtectedRouteAuth = ({ children }) => {
 //   const user = useSelector(selectUser);
@@ -70,10 +73,6 @@ export const router = createBrowserRouter([
     element: <LoginPage/>,
   },
   {
-    path:"/login",
-    element: <LoginPage/>,
-  },
-  {
     path: "/manager",
     element: <ManagerPage />, // ManagerPage sẽ render các trang con
     children: [
@@ -91,7 +90,20 @@ export const router = createBrowserRouter([
       },
       {
         path:"ManageBooking",
-        element: <BookingApproval />
+        element:<BookingApproval />
+     },
+     {
+      path:"BookingProcess",
+      element:<BookingProcess />
+     },
+     
+     {
+       path:"Dashboard",
+       element: <Dashboard/> 
+     },
+     {
+       path:"BookingManagement",
+       element: <BookingManagement/>
      },
       {
         path: "", // Route con mặc định
