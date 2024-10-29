@@ -80,8 +80,10 @@ const KoiFish = () => {
               src={selectedFish.image || "https://via.placeholder.com/500"}
               style={{ width: "100%", marginBottom: "40px" }}
             />
-            <p><strong>Tên loại cá:</strong> {selectedFish.koiName}</p>
+            <p><strong>Loại cá:</strong> {selectedFish.koiType}</p>
+            <p><strong>Tên cá:</strong> {selectedFish.koiName}</p>
             <p><strong>Trại:</strong> {selectedFish.farmKoiList[0]?.farmId}</p>
+            <p><strong>Số lượng:</strong> {selectedFish.farmKoiList[0]?.quantity}</p>
             <p><strong>Giá:</strong> {selectedFish.price.toLocaleString()} VND</p>
             <p><strong>Mô tả:</strong> {selectedFish.detail}</p>
           </div>

@@ -1,57 +1,56 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom'; // Import useParams để lấy ID từ URL
+import { useParams } from 'react-router-dom';
+import { Card, Button, Typography, List, Spin, message } from 'antd'; // Import antd components
 import Slider from 'react-slick';
-import './TourDetail.scss';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import api from '../../../config/axios'; // Import axios config
+import api from '../../../config/axios';
+import './TourDetail.scss';
+
+const { Title, Paragraph } = Typography;
 
 function TourPage() {
-  const { id } = useParams(); // Lấy ID tour từ URL
+  const { id } = useParams();
   const mainSlider = useRef(null);
   const thumbSlider = useRef(null);
   const [nav1, setNav1] = useState(null);
   const [nav2, setNav2] = useState(null);
-  const [tour, setTour] = useState(null); 
-  const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải
-  const [error, setError] = useState(null); // State để theo dõi lỗi nếu có
+  const [tour, setTour] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Hàm fetch thông tin chi tiết tour
   const fetchTourDetail = async () => {
     try {
-      const response = await api.get(`/tour/${id}`); // Fetch dữ liệu tour theo ID
-      setTour(response.data); // Cập nhật state với dữ liệu tour
+      const response = await api.get(`/tour/${id}`);
+      setTour(response.data);
     } catch (error) {
       console.error(error.toString());
-      setError('Không thể tải dữ liệu tour.'); // Thiết lập thông báo lỗi
+      setError('Không thể tải dữ liệu tour.');
+      message.error('Không thể tải dữ liệu tour.'); // Use antd message for error feedback
     } finally {
-      setLoading(false); // Đặt trạng thái tải về false sau khi hoàn thành
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTourDetail(); // Gọi hàm fetch khi component mount
-  }, [id]); // Chạy lại khi ID thay đổi
+    fetchTourDetail();
+  }, [id]);
 
-  // Nếu đang tải, hiển thị thông báo
   if (loading) {
-    return <div>Đang tải...</div>;
+    return <Spin tip="Đang tải..." />;
   }
 
-  // Nếu có lỗi, hiển thị thông báo lỗi
   if (error) {
     return <div>{error}</div>;
   }
 
-  // Nếu không tìm thấy tour
   if (!tour) {
     return <div>Tour không tồn tại.</div>;
   }
 
-  // Chuyển đổi danh sách hình ảnh thành mảng
   const mainImages = [
-    tour.image, // Sử dụng hình ảnh từ tour
-    ...tour.listFarmTour.map(farmTour => farmTour.image) // Nếu có hình ảnh trong listFarmTour
+    tour.image,
+    ...tour.listFarmTour.map(farmTour => farmTour.image),
   ];
 
   const mainSettings = {
@@ -75,17 +74,17 @@ function TourPage() {
     <div className="tour-detail">
       <div className="container">
         <header className="tour-header">
-          <h1>{tour.tourName}</h1>
-          <p className="tour-subtitle">{tour.decription}</p>
-          <p className="tour-description">
+          <Title>{tour.tourName}</Title>
+          <Paragraph className="tour-subtitle">{tour.description}</Paragraph>
+          <Paragraph className="tour-description">
             {tour.recipients} người tham gia
-          </p>
+          </Paragraph>
         </header>
 
         <div className="tour-content">
           <div className="tour-image">
-            <button onClick={() => mainSlider.current.slickPrev()} className="prev-button">◀</button>
-            <button onClick={() => mainSlider.current.slickNext()} className="next-button">▶</button>
+            <Button onClick={() => mainSlider.current.slickPrev()} className="prev-button">◀</Button>
+            <Button onClick={() => mainSlider.current.slickNext()} className="next-button">▶</Button>
 
             <Slider {...mainSettings} ref={mainSlider} className="main-slider">
               {mainImages.map((image, index) => (
@@ -95,7 +94,6 @@ function TourPage() {
               ))}
             </Slider>
 
-            {/* Slider hình thu nhỏ */}
             <Slider {...thumbSettings} ref={thumbSlider} className="thumbnail-slider">
               {mainImages.map((image, index) => (
                 <div key={index}>
@@ -105,33 +103,38 @@ function TourPage() {
             </Slider>
           </div>
 
-          <div className="tour-details">
-            <ul>
-              <li><strong>Thời gian:</strong> {tour.tourStart} - {tour.tourEnd}</li>
-              <li><strong>Phương tiện:</strong> Máy bay</li>
-              <li><strong>Nơi khởi hành:</strong> Hồ Chí Minh</li>
-            </ul>
-            <p className="price">
+          <Card className="tour-details">
+            <List>
+              <List.Item>
+                <strong>Thời gian:</strong> {tour.tourStart} - {tour.tourEnd}
+              </List.Item>
+              <List.Item>
+                <strong>Phương tiện:</strong> Máy bay
+              </List.Item>
+              <List.Item>
+                <strong>Nơi khởi hành:</strong> Hồ Chí Minh
+              </List.Item>
+            </List>
+            <Paragraph className="price">
               <span className="old-price">{tour.priceAdult.toLocaleString()} đ</span>
               <span className="new-price">{tour.priceChild.toLocaleString()} đ</span>
-            </p>
-            <button className="btn-book">Đặt Tour</button>
-          </div>
+            </Paragraph>
+            <Button className="btn-book" type="primary">Đặt Tour</Button>
+          </Card>
         </div>
 
         <section className="tour-schedule">
-          <h2>Chương trình tour chi tiết</h2>
-          {/* Hiển thị lịch trình tour nếu có */}
+          <Title level={2}>Chương trình tour chi tiết</Title>
           {tour.listFarmTour.map((farmTour, index) => (
             <div key={index} className="tour-day">
-              <h3>{farmTour.title}</h3>
-              <p>{farmTour.description}</p>
+              <Title level={3}>{farmTour.title}</Title>
+              <Paragraph>{farmTour.description}</Paragraph>
             </div>
           ))}
         </section>
 
         <footer className="tour-footer">
-          <p>&copy; 2024 Koi Farm. Bảo lưu mọi quyền.</p>
+          <Paragraph>&copy; 2024 Koi Farm. Bảo lưu mọi quyền.</Paragraph>
         </footer>
       </div>
     </div>

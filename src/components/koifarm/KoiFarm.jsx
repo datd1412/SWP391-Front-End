@@ -39,13 +39,13 @@ const KoiFarm = () => {
     <div className="koi-farm-page">
       {/* Header Banner */}
       <div className="header-banner">
-        <h1>Welcome to Dainichi Koi Farm</h1>
+        <h1>Welcome to Koi Farm</h1>
         <p>Discover the best Koi fish raised with care and dedication.</p>
       </div>
 
       {/* Farm Highlights Section */}
       <section className="farm-highlights">
-        <h2>Farm </h2>
+        <h2>Farm</h2>
         <Row gutter={16}>
           {farmData.map((farm) => (
             <Col key={farm.id} span={8}>
@@ -87,6 +87,15 @@ const KoiFarm = () => {
                   <Button type="primary" style={{ marginTop: 8 }}>
                     <Link to={`/tourdetail/${tour.tourId}`}>View Details</Link>
                   </Button>
+                </div>
+              ))}
+            </div>
+            <h3>Koi Available:</h3>
+            <div className="koi-list">
+              {selectedFarm.listFarmKoi.map((koi) => (
+                <div key={koi.koiId} className="koi-item">
+                  <p>Koi ID: {koi.koiId}</p>
+                  <p>Quantity: {koi.quantity}</p>
                 </div>
               ))}
             </div>
