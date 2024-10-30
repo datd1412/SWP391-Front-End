@@ -109,6 +109,10 @@
 
                             .booking-guests {
                                 min-width: 250px;
+
+                                .ant-space:where {
+                                    display: flex !important;
+                                }
                             }
 
                             .ant-form-item {
@@ -181,112 +185,129 @@
             }
         }
 
-        .bk-guest-board {
-            display: flex;
-            align-items: flex-start;
-            flex-direction: column;
-
-        }
-
         .booking-payment {
-            display: flex;
-            align-items: center;
-            flex-direction: column;
+            background-image: url('src/image/payment_bg.jpeg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            height: 95vh;
+            color: #fff;
 
-            .booking-method-board {
-                background-color: #FFFFFF;
-                width: 30%;
+            .payment-method-board {
                 display: flex;
-                justify-content: center;
+                align-items: center;
                 flex-direction: column;
-                border-radius: 10px;
-                padding: 30px 50px;
-                margin: 50px 0;
+                height: 100vh;
+                position: relative;
+                z-index: 1;
 
-                h2 {
+                .payment-loader {
+                    width: 80px;
+                    aspect-ratio: 4;
+                    --_g: no-repeat radial-gradient(circle closest-side, #fff 90%, #00000000);
+                    background:
+                        var(--_g) 0% 50%,
+                        var(--_g) 50% 50%,
+                        var(--_g) 100% 50%;
+                    background-size: calc(100%/3) 100%;
+                    animation: l7 1s infinite linear;
+                    margin-top: 100px;
+                    margin-bottom: 20px;
+                }
+
+                @keyframes l7 {
+                    33% {
+                        background-size: calc(100%/3) 0%, calc(100%/3) 100%, calc(100%/3) 100%
+                    }
+
+                    50% {
+                        background-size: calc(100%/3) 100%, calc(100%/3) 0%, calc(100%/3) 100%
+                    }
+
+                    66% {
+                        background-size: calc(100%/3) 100%, calc(100%/3) 100%, calc(100%/3) 0%
+                    }
+                }
+
+                .payment-loading-row {
+                    display: flex;
+                    align-items: center;
+                    flex-direction: column;
+                    color: #fff;
                     text-align: center;
-                    margin-bottom: 40px;
-                    color: #062444;
-                }
 
-                .booking-payment-logo {
-                    display: flex;
-                    justify-content: center;
+                    .ant-typography {
+                        color: #fff;
+                    }
 
-                    .booking-payment-logo-item {
-                        background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/4142132-removebg-preview.png?alt=media&token=59e4afec-6f71-4fd3-87a0-0d21189621a4');
-                        background-size: cover;
-                        display: flex;
-                        width: 100px;
-                        height: 100px;
+                    .payment-return-btn {
+                        background: transparent;
+                        border: 1px solid #fff;
+                        border-radius: 5px;
+                        color: #fff;
+                        font-size: 16px;
+                        font-weight: bold;
+                        padding: 25px 45px;
+                        transition: all 0.4s ease;
+                        margin-top: 20px;
+                    }
+
+                    .payment-return-btn:hover {
+                        background-color: #fff;
+                        color: #ca9e2d;
                     }
                 }
 
-                .ant-list-item {
-                    cursor: pointer;
-                    display: flex;
-                    padding: 20px;
+                .payment-gateway-row {
+                    margin-top: 80px;
 
-                    .ant-avatar {
-                        width: 50px;
-                        height: 50px;
+                    .payment-gateway-left {
                         display: flex;
-                        justify-content: center;
-                        align-items: center;
+                        justify-content: flex-end;
 
-                        svg {
-                            font-size: 30px;
-                            color: #a4f3cd;
+                        .ant-avatar {
+                            margin-right: 25px;
                         }
                     }
 
-                    .ant-list-item-meta-avatar {
-                        margin-right: 35px;
-                        padding-left: 10px;
-                    }
+                    .payment-gateway-right {
+                        padding-top: 10px;
 
-                    .ant-list-item-meta-content {
-                        margin: auto;
+                        .ant-typography {
+                            color: #fff;
+                            font-size: 50px;
+                        }
 
-                        h4 {
-                            font-size: 18px;
-                            color: #062444;
+                        .payment-method-btn {
+                            background: transparent;
+                            border: 1px solid #fff;
+                            border-radius: 5px;
+                            color: #fff;
+                            font-size: 16px;
+                            font-weight: bold;
+                            padding: 25px 45px;
+                            transition: all 0.4s ease;
+                        }
+
+                        .payment-method-btn:hover {
+                            background-color: #fff;
+                            color: #ca9e2d;
                         }
                     }
-                }
-
-                .next-arrow {
-                    font-size: 20px;
-                    color: #a4f3cd;
-                    padding-right: 10px;
-                }
-
-                .ant-list-item:hover {
-                    background-color: #f0f0f0;
-                    border-radius: 8px;
-                }
-            }
-
-            .btn-payment {
-                display: flex;
-                justify-content: center;
-
-                .btn-booking {
-                    min-width: 120px;
-                    color: #062444;
-                    padding: 5px 0;
-                    margin-top: 70px;
-                }
-
-                .prev {
-                    margin-right: 70px;
-                }
-
-                .next {
-                    margin-left: 70px;
                 }
             }
         }
+
+        .booking-payment::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(112, 100, 77, 0.5);
+        }
+
     }
 
 }

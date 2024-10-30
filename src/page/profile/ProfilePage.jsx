@@ -11,7 +11,7 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import { Avatar, Button, Card, Col, Divider, Form, Input, Layout, List, Menu, Modal, Radio, Row, Space, Switch, Tag, theme, Typography } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../config/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCalendar, faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
@@ -32,6 +32,8 @@ function ProfilePage() {
   const [myOrder, setmyOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState(null);
+
+  const navigate = useNavigate();
 
   const [passwordForm] = Form.useForm();
   const [profileForm] = Form.useForm();
@@ -74,12 +76,13 @@ function ProfilePage() {
         { date: tourInfo.data.tourStart, isCheckin: true },
         { date: tourInfo.data.tourEnd, isCheckin: false },
       ],
+      isPaid: bookingInfo.data.paymentStatus,
       status: bookingInfo.data.status,
       location: "Ben Tre",
       avatar: "src/image/dong_thap.png",
     };
     setmyBookings((prevmyBookings) => [...prevmyBookings, row]);
-    console.log(myBookings);
+    console.log(bookingInfo.data);
   };
 
   useEffect(() => {
@@ -272,14 +275,13 @@ function ProfilePage() {
             style={{
               margin: '24px 16px',
               padding: '16px 32px',
-              height: 700,
+              height: 'fit-content',
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
           >
             <Col span={24}>
               <h2>My Booking</h2>
-
               {
                 myBookings.length == 0 ? (
                   <div>
@@ -321,9 +323,17 @@ function ProfilePage() {
                               ))}
                             </Col>
                             <Col>
-                              <Button type="link" className="complete-payment-button" onClick={() => makingPayment(booking.invoiceNo)}>
-                                Complete Payment
-                              </Button>
+                              {
+                                booking.isPaid === "PAID" ? (
+                                  <div className='bk-payment-result'>
+                                    <img width="120px" src='src/image/paid_stamp.png' />
+                                  </div>
+                                ) : (
+                                  <Button type="link" className="complete-payment-button" onClick={() => makingPayment(booking.invoiceNo)}>
+                                    Complete Payment
+                                  </Button>
+                                )
+                              }
                               <Modal
                                 title={`Invoice no ${booking.invoiceNo}`}
                                 visible={isModalVisible}
@@ -400,16 +410,16 @@ function ProfilePage() {
                                   value={selectedMethod}
                                   style={{ width: '100%' }}
                                 >
-                                  <Radio.Button value="credit" style={{ width: '100%', padding: '10px', marginBottom: '15px' }}>
-                                    <Row align="middle">
+                                  <Radio.Button value="vnpay" style={{ width: '100%', padding: '3px', marginTop: '5px', marginBottom: '15px', borderRadius: '0px' }}>
+                                    <Row>
                                       <Col style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                                         <CreditCardOutlined style={{ fontSize: 20, color: '#1890ff' }} />
                                         <Text style={{ marginLeft: 8, fontSize: 16 }}>VN PAY</Text>
                                       </Col>
                                     </Row>
                                   </Radio.Button>
-                                  <Radio.Button value="cash" style={{ width: '100%', padding: '10px' }}>
-                                    <Row align="middle">
+                                  <Radio.Button value="cash" style={{ width: '100%', padding: '3px', marginBottom: '12px', borderRadius: '0px' }}>
+                                    <Row>
                                       <Col style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                                         <BankOutlined style={{ fontSize: 20, color: '#1890ff' }} />
                                         <Text style={{ marginLeft: 8, fontSize: 16 }}>Pay with cash</Text>

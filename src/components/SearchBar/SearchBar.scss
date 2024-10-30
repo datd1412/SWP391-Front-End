@@ -5,7 +5,7 @@
 
     .search-container {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 0.5fr;
+        grid-template-columns: 1fr 0.75fr 1fr 0.75fr 0.5fr;
 
         .ant-input-suffix {
             margin: 0;
@@ -29,7 +29,7 @@
             height: 67px;
         }
 
-        /* .Date_picker {
+        .Date_picker {
             background-color: #ffffff;
             border: 3px solid;
             border-color: #5454ac;
@@ -48,11 +48,15 @@
                 width: 100%;
             }
 
+            .ant-picker-input {
+                margin: 0 5px;
+            }
+
             .ant-picker-focused {
                 box-shadow: none !important;
                 outline: none;
             }
-        } */
+        }
 
         .Price {
             background-color: #ffffff;
@@ -80,7 +84,7 @@
             }
         }
 
-        .fish, .location {
+        .fish {
             background-color: #ffffff;
             border: 3px solid;
             border-color: #5454ac;
@@ -88,7 +92,6 @@
             border-radius: 0px;
             border-left-width: 0px;
             width: 100%;
-            max-width: 392px;
 
             .ant-select-selection-item {
                 padding-right: 10px;
@@ -100,13 +103,14 @@
                 border: none;
 
                 .ant-select-selection-placeholder {
+                    margin: 0 15px;
                     padding: 0;
                     text-align: left;
                 }
             }
 
             .ant-select-arrow {
-                padding-right: 10px;
+                padding-right: 5px;
                 font-size: 13px;
             }
         }

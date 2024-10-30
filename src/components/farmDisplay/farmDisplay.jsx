@@ -1,62 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Carousel } from 'antd';
-import './FarmDisplay.scss';
-import FarmCard from '../farmCard/FarmCard'; // Đảm bảo bạn đã tạo FarmCard component
+import './farmDisplay.scss';
+import FarmCard from '../farmCard/FarmCard'; 
 import api from '../../config/axios';
 
 const farmDisplay = () => {
 
 
-  /* const farms = [
-    {
-      "id": 0,
-      "farmName": "string",
-      "location": "string",
-      description: "string",
-      "startTime": "2024-10-09T09:40:59.345Z",
-      "endTime": "2024-10-09T09:40:59.346Z",
-      "farmTourEntities": [
-        {
-          "id": 0,
-          "description": "string",
-          "farm": "string",
-          "tour": {
-            "id": 0,
-            "tourName": "string",
-            "tourStart": "2024-10-09T09:40:59.346Z",
-            "tourEnd": "2024-10-09T09:40:59.346Z",
-            "decription": "string",
-            "tourPrice": 0,
-            "farmTourEntities": [
-              "string"
-            ]
-          }
-        }
-      ],
-      "farmKoisEntities": [
-        {
-          "id": 0,
-          "koiFish": {
-            "id": 0,
-            "koiName": "string",
-            "detail": "string",
-            "price": 0,
-            "farmKoisEntities": [
-              "string"
-            ]
-          },
-          "farmKoi": "string",
-          "quantity": 0
-        }
-      ]
-    }
-  ]; */
-
+ 
   const [farms, setFarms] = useState([]);
 
   const fetchFarms = async () => {
     try {
-      const response = await api.get("/admin/farm/all");
+      const response = await api.get("/farm");
       setFarms(response.data);
     } catch (error) {
       console.log(error.toString());
