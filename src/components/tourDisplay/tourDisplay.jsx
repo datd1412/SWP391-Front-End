@@ -38,7 +38,7 @@ const TourDisplay = () => {
           {limitedTours.map((tour) => (
             <Col span={8} key={tour.id}>
               <Card
-                cover={<img alt={tour.tourName} src={tour.image} />}
+                cover={<img alt={tour.tourName} src={tour.image} style={{width:576, height:400}} />}
                 actions={[
                   <Button type="primary">
                     <Link to={`/tourdetail/${tour.id}`}>Xem Chi Tiết</Link>

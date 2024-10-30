@@ -1,28 +1,27 @@
-// TourDisplay.scss
-
 .tour-display-container {
-  padding: 20px; // Tạo khoảng cách cho trang
   background-color: #f9f9f9; // Nền sáng
+  color: #333; // Màu chữ tối
+  padding: 20px;
 
   .tour-label {
-    text-align: center; // Căn giữa văn bản
-    margin-bottom: 20px; // Khoảng cách dưới
+    text-align: center; // Căn giữa tiêu đề
+    margin-bottom: 20px;
 
     .text-wrapper-title {
-      font-size: 28px; // Kích thước tiêu đề lớn hơn
-      font-weight: bold; // Đậm
-      color: #333; // Màu chữ
+      font-size: 24px; // Kích thước tiêu đề lớn
+      font-weight: bold;
+      color: #ff7f50; // Màu cam cho tiêu đề
     }
 
     .text-wrapper-describe {
       font-size: 16px; // Kích thước mô tả
-      color: #666; // Màu nhạt hơn
+      color: #666; // Màu chữ nhạt hơn
     }
   }
 
   .tour-list {
     .ant-card {
-      border-radius: 10px; // Bo góc cho thẻ
+      border-radius: 8px; // Bo góc cho thẻ
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); // Đổ bóng cho thẻ
       transition: transform 0.3s; // Hiệu ứng khi hover
 
@@ -30,11 +29,19 @@
         transform: scale(1.05); // Phóng to khi hover
       }
 
-      img {
-        border-radius: 10px 10px 0 0; // Bo góc cho ảnh
-        object-fit: cover; // Đảm bảo ảnh đầy đủ
-        height: 200px; // Chiều cao cố định cho ảnh
-        width: 100%; // Chiều rộng đầy đủ
+      .ant-btn-primary {
+        background-color: #ff7f50;
+        border-color: #ff7f50;
+        &:hover {
+          background-color: #ff4500;
+          border-color: #ff4500;
+          color: #f9f9f9;
+        }
+        a {
+          color: #fff;
+          
+          
+        }
       }
     }
   }

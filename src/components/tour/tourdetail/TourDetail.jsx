@@ -1,21 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Card, Button, Typography, List, Spin, message } from 'antd'; // Import antd components
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import api from '../../../config/axios';
-import './TourDetail.scss';
+import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Card, Button, Typography, List, Spin, message } from "antd";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import api from "../../../config/axios";
+import "./TourDetail.scss";
 
 const { Title, Paragraph } = Typography;
 
 function TourPage() {
   const { id } = useParams();
   const mainSlider = useRef(null);
-  const thumbSlider = useRef(null);
-  const [nav1, setNav1] = useState(null);
-  const [nav2, setNav2] = useState(null);
   const [tour, setTour] = useState(null);
+  const [farmImages, setFarmImages] = useState([]); // State for multiple farm images and names
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -23,10 +21,26 @@ function TourPage() {
     try {
       const response = await api.get(`/tour/${id}`);
       setTour(response.data);
+
+      // Fetch details for each farm in the list
+      const farmIds = response.data.listFarmTour.map(
+        (farmTour) => farmTour.farmId
+      );
+      const farmDataPromises = farmIds.map((farmId) =>
+        api.get(`/farm/${farmId}`)
+      );
+      const farmsData = await Promise.all(farmDataPromises);
+
+      // Extract farm names and images
+      const farms = farmsData.map((farm) => ({
+        name: farm.data.farmName,
+        location: farm.data.location,
+      }));
+      setFarmImages(farms);
     } catch (error) {
       console.error(error.toString());
-      setError('Không thể tải dữ liệu tour.');
-      message.error('Không thể tải dữ liệu tour.'); // Use antd message for error feedback
+      setError("Không thể tải dữ liệu tour.");
+      message.error("Không thể tải dữ liệu tour.");
     } finally {
       setLoading(false);
     }
@@ -48,26 +62,11 @@ function TourPage() {
     return <div>Tour không tồn tại.</div>;
   }
 
-  const mainImages = [
-    tour.image,
-    ...tour.listFarmTour.map(farmTour => farmTour.image),
-  ];
-
   const mainSettings = {
     slidesToShow: 1,
     slidesToScroll: 1,
-    asNavFor: nav2,
     arrows: true,
     fade: true,
-  };
-
-  const thumbSettings = {
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    asNavFor: nav1,
-    focusOnSelect: true,
-    arrows: false,
-    centerMode: true,
   };
 
   return (
@@ -83,24 +82,11 @@ function TourPage() {
 
         <div className="tour-content">
           <div className="tour-image">
-            <Button onClick={() => mainSlider.current.slickPrev()} className="prev-button">◀</Button>
-            <Button onClick={() => mainSlider.current.slickNext()} className="next-button">▶</Button>
-
-            <Slider {...mainSettings} ref={mainSlider} className="main-slider">
-              {mainImages.map((image, index) => (
-                <div key={index}>
-                  <img src={image} alt={`Slide ${index + 1}`} loading="lazy" />
-                </div>
-              ))}
-            </Slider>
-
-            <Slider {...thumbSettings} ref={thumbSlider} className="thumbnail-slider">
-              {mainImages.map((image, index) => (
-                <div key={index}>
-                  <img src={image} alt={`Thumbnail ${index + 1}`} loading="lazy" />
-                </div>
-              ))}
-            </Slider>
+            
+              <div>
+                <img src={tour.image} alt="Tour main" loading="lazy" />
+              </div>
+            
           </div>
 
           <Card className="tour-details">
@@ -109,17 +95,28 @@ function TourPage() {
                 <strong>Thời gian:</strong> {tour.tourStart} - {tour.tourEnd}
               </List.Item>
               <List.Item>
-                <strong>Phương tiện:</strong> Máy bay
-              </List.Item>
-              <List.Item>
-                <strong>Nơi khởi hành:</strong> Hồ Chí Minh
+                <strong>Địa điểm đến:</strong>
+                <ul>
+                  {farmImages.map((farm, index) => (
+                    <li key={index}>
+                      {farm.name} - {farm.location}
+                    </li>
+                  ))}
+                </ul>
               </List.Item>
             </List>
             <Paragraph className="price">
-              <span className="old-price">{tour.priceAdult.toLocaleString()} đ</span>
-              <span className="new-price">{tour.priceChild.toLocaleString()} đ</span>
+              <span className="price-label">Giá:</span>
+              <span className="old-price">
+                {tour.priceAdult.toLocaleString()} đ
+              </span>
+              <span className="new-price">
+                {tour.priceChild.toLocaleString()} đ
+              </span>
             </Paragraph>
-            <Button className="btn-book" type="primary">Đặt Tour</Button>
+            <Button className="btn-book" type="primary">
+              Đặt Tour
+            </Button>
           </Card>
         </div>
 
@@ -129,13 +126,16 @@ function TourPage() {
             <div key={index} className="tour-day">
               <Title level={3}>{farmTour.title}</Title>
               <Paragraph>{farmTour.description}</Paragraph>
+              {farmImages[index] && (
+                <img
+                  src={farmImages[index].image}
+                  alt="Farm"
+                  className="farm-image"
+                />
+              )}
             </div>
           ))}
         </section>
-
-        <footer className="tour-footer">
-          <Paragraph>&copy; 2024 Koi Farm. Bảo lưu mọi quyền.</Paragraph>
-        </footer>
       </div>
     </div>
   );

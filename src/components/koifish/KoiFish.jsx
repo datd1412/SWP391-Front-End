@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "antd"; 
+import { Button, Modal } from "antd"; 
 import "./KoiFish.scss";
 import api from "../../config/axios";
 
@@ -8,6 +8,7 @@ const KoiFish = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedFish, setSelectedFish] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // State cho thanh tìm kiếm
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   const fetchKoiFishs = async () => {
     try {
@@ -40,6 +41,9 @@ const KoiFish = () => {
   const filteredKoiFishs = koiFishs.filter(fish => 
     fish.koiName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const toggleDescription = () => {
+    setIsDescriptionExpanded(!isDescriptionExpanded); // Đảo ngược trạng thái mô tả
+  };
 
   return (
     <div className="koifish">
@@ -85,7 +89,12 @@ const KoiFish = () => {
             <p><strong>Trại:</strong> {selectedFish.farmKoiList[0]?.farmId}</p>
             <p><strong>Số lượng:</strong> {selectedFish.farmKoiList[0]?.quantity}</p>
             <p><strong>Giá:</strong> {selectedFish.price.toLocaleString()} VND</p>
-            <p><strong>Mô tả:</strong> {selectedFish.detail}</p>
+            <p>
+              <strong>Mô tả:</strong> {isDescriptionExpanded ? selectedFish.detail : `${selectedFish.detail.slice(0, 100)}...`}
+            </p>
+            <Button type="link" onClick={toggleDescription}>
+              {isDescriptionExpanded ? "Thu gọn" : "Xem thêm"}
+            </Button>
           </div>
         )}
       </Modal>
