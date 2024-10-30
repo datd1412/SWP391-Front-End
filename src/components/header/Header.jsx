@@ -15,6 +15,10 @@ const { Text } = Typography; // Destructure Text from Typography
 function Header({ user, setUser }) {
   const navigate = useNavigate();
 
+  const handleSwitchAdmin = () => {
+    navigate("/manager");
+
+  }
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -23,7 +27,7 @@ function Header({ user, setUser }) {
 
   const menu = (
     <Menu>
-      <Menu.Item onClick={() => navigate("/profile", {state: { user }})} key="profile" icon={<UserOutlined />}>
+      <Menu.Item onClick={() => navigate("/profile", { state: { user } })} key="profile" icon={<UserOutlined />}>
         Profile
       </Menu.Item>
       <Menu.Item key="notifications" icon={<BellOutlined />}>
@@ -53,6 +57,20 @@ function Header({ user, setUser }) {
           Koi Fish
         </Menu.Item>
       </Menu>
+      
+      {
+        user?.data.role === "ADMIN" && (
+          <Switch
+            unCheckedChildren="Switch Staff"
+            defaultChecked={false}
+            style={{
+              
+            }}
+            onChange={handleSwitchAdmin}
+          />
+        )
+      }
+
       <div className="auth-buttons">
         {user ? (
           <Dropdown overlay={menu} trigger={["click"]}>

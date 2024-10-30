@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, DatePicker, Form, Input, InputNumber, List, Menu, Popover, Result, Row, Space, Steps } from 'antd'
+import { Avatar, Button, Col, DatePicker, Divider, Form, Input, InputNumber, List, Menu, Popover, Result, Row, Space, Steps, Typography } from 'antd'
 import React, { useState } from 'react'
 import './BookingPage.scss'
 import { BankOutlined, DollarOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
@@ -7,11 +7,14 @@ import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addBooking } from '../../redux/action/bookingActions';
 
+const { Text, Title } = Typography;
+
 function BookingPage() {
     const description = 'This is a description.';
     const location = useLocation();
     const dispatch = useDispatch();
     const tour = location.state?.tour;
+    console.log("ID: ", tour);
     const [steps, setSteps] = useState(0);
 
     const [adults, setAdults] = useState(1);
@@ -109,13 +112,6 @@ function BookingPage() {
 
     return (
         <div className='booking-container'>
-            <div className='tracking-bar'>
-                <Steps current={steps}>
-                    {items.map((step, index) => (
-                        <Steps key={index} title={step.title} />
-                    ))}
-                </Steps>
-            </div>
 
             <div className='steps-content'>
                 {steps == 0 && (
@@ -177,78 +173,37 @@ function BookingPage() {
 
                 {steps == 1 && (
                     <div className='booking-payment'>
-                        <div className='booking-method-board'>
-                            <div className='booking-payment-logo'>
-                                <div className='booking-payment-logo-item'></div>
+                        <div className='payment-method-board'>
+                            <div className='payment-loader'></div>
+                            <div className='payment-loading-row'>
+                                <Title>Your booking is being reviewed.</Title>
+                                <Text style={{fontSize: '20px'}}>
+                                    Approval may take 5-10 minutes—Please check back to complete payment.
+                                </Text>
+                                <Button className='payment-return-btn'>Home</Button>
                             </div>
-                            <h2>How do you want to pay?</h2>
+                            <Divider />
+                            <Row className='payment-gateway-row'>
+                                <Col span={12} className='payment-gateway-left'>
+                                    <Avatar shape='square' size={200} src="src/image/vnpay_logo.png" />
+                                </Col>
+                                <Col span={12}>
+                                    <div className='payment-gateway-right'>
+                                        <Title>A better way to <strong>Pay Money</strong></Title>
+                                        <Button className='payment-method-btn'>See How it Works</Button>
+                                    </div>
+                                </Col>
+                            </Row>
 
-                            <List
-                                itemLayout="horizontal"
-                                dataSource={paymentMethods}
-                                renderItem={item => (
-                                    <List.Item
-                                        onClick={() => setSelectedMethod(item.title)}
-                                        style={{
-                                            backgroundColor: selectedMethod === item.title ? '#c3fdd7' : 'white',
-                                            cursor: 'pointer',
-                                            borderRadius: selectedMethod === item.title ? '8px' : '0px',
-                                        }}
-                                    >
-                                        <List.Item.Meta
-                                            avatar={<Avatar icon={item.icon} />}
-                                            title={item.title}
-                                        />
-                                        <div className='next-arrow'>{'>'}</div>
-                                    </List.Item>
-                                )}
-                            />
 
-                            <div className='btn-payment'>
-                                <Button
-                                    className='btn-booking prev'
-                                    onClick={() => setSteps((steps) => steps - 1)}
-                                >
-                                    Previous
-                                </Button>
-                                <Button
-                                    className='btn-booking next'
-                                    onClick={handlePayment}
-                                    disabled={!selectedMethod}
-                                >
-                                    Next
-                                </Button>
-                            </div>
+
+
+
 
                         </div>
                     </div>
                 )}
 
-                {steps == items.length - 1 && (
-                    <div>
-                        <div className='success-container' style={{
-                            height: '605px',
-                        }}>
-                            <Result
-                                status="success"
-                                title={`Successfully booking for ${tour.tourName}`}
-                                subTitle="It takes 1-5 minutes for your order to be approved, please wait."
-                                extra={[
-                                    <Button type="primary" key="console">
-                                        Return Home
-                                    </Button>,
-                                    <Button key="buy">Track My Order</Button>,
-                                ]}
-                            />
-                        </div>
-                        <Button
-                            className='btn-booking-prev'
-                            onClick={() => setSteps((steps) => steps - 1)}
-                        >
-                            Previous
-                        </Button>
-                    </div>
-                )}
             </div>
         </div>
     )

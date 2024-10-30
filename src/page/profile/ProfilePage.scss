@@ -113,57 +113,69 @@
 }
 
 .profile-edit-container {
-    .my-bookings-list {
-        padding: 10px;
 
-        .booking-page-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+    .ant-layout-content {
+        .my-bookings-list {
+            padding: 10px;
 
-        .my-booking-card {
-            margin-bottom: 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 8px;
+            .booking-page-title {
+                font-size: 1.5em;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
 
-
-            .ant-card-body {
+            .my-booking-card {
+                margin-bottom: 15px;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
                 padding: 8px;
 
-                .ant-row {
-                    display: grid;
-                    grid-template-columns: 0.25fr 2fr 1.25fr 0.75fr;
+
+                .ant-card-body {
+                    padding: 8px;
+
+                    .ant-row {
+                        display: grid;
+                        grid-template-columns: 0.25fr 2fr 1.25fr 0.75fr;
+                    }
+
+                    .bk-payment-result {
+                        display: flex;
+                        align-items: center;
+                        flex-direction: column;
+                        text-align: center;
+                        margin-top: 10px;
+                        rotate: 16deg;
+                    }
                 }
             }
-        }
 
-        .my-booking-name {
-            font-size: 25px;
-            margin-bottom: 0px;
-        }
+            .my-booking-name {
+                font-size: 25px;
+                margin-bottom: 0px;
+            }
 
-        .my-booking-status {
-            display: flex;
-            align-items: center;
-            margin-bottom: 4px;
+            .my-booking-status {
+                display: flex;
+                align-items: center;
+                margin-bottom: 4px;
 
-            svg {
+                svg {
+                    font-size: 20px;
+                }
+
+                .my-booking-availibility-date {
+                    font-size: 17px;
+                    font-weight: 500;
+                    margin-left: 8px;
+                }
+            }
+
+            .complete-payment-button {
+                color: #ff4d4f;
                 font-size: 20px;
+                font-weight: bold;
             }
-            
-            .my-booking-availibility-date {
-                font-size: 17px;
-                font-weight: 500;
-                margin-left: 8px;
-            }
-        }
-
-        .complete-payment-button {
-            color: #ff4d4f;
-            font-size: 20px;
-            font-weight: bold;
         }
     }
 
