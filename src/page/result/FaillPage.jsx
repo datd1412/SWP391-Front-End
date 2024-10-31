@@ -1,20 +1,25 @@
-import { PlayCircleOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
-import React from 'react'
-import './FailPage.scss'
+import { Button, Popconfirm, message } from 'antd';
 
-function FaillPage() {
+const FailPage = ({ onDelete }) => {
+  const confirmDelete = () => {
+    // Call the delete function or API
+    onDelete();
+    message.success('User deleted successfully');
+  };
+
   return (
-    <div className='idk-xd'>
-      <Button
-        type="default"
-        icon={<PlayCircleOutlined />}
-        className="hover-button"
-      >
-        See How it Works
+    <Popconfirm
+      title="Are you sure you want to delete this user?"
+      onConfirm={confirmDelete}
+      onCancel={() => message.info('Deletion cancelled')}
+      okText="Yes"
+      cancelText="No"
+    >
+      <Button type="primary" danger>
+        Delete User
       </Button>
-    </div>
-  )
-}
+    </Popconfirm>
+  );
+};
 
-export default FaillPage
+export default FailPage;

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import './BookingPage.scss'
 import { BankOutlined, DollarOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import api from '../../config/axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addBooking } from '../../redux/action/bookingActions';
 
@@ -13,6 +13,7 @@ function BookingPage() {
     const description = 'This is a description.';
     const location = useLocation();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const tour = location.state?.tour;
     console.log("ID: ", tour);
     const [steps, setSteps] = useState(0);
@@ -157,7 +158,7 @@ function BookingPage() {
                                         </Form.Item>
 
                                         <Button type="primary" size="large" htmlType="submit" className="btn-booking-next">
-                                            Next
+                                            Confirm
                                         </Button>
                                     </Form>
                                 </div>
@@ -180,7 +181,7 @@ function BookingPage() {
                                 <Text style={{fontSize: '20px'}}>
                                     Approval may take 5-10 minutes—Please check back to complete payment.
                                 </Text>
-                                <Button className='payment-return-btn'>Home</Button>
+                                <Button className='payment-return-btn' onClick={() => navigate("/profile")}>View My Booking</Button>
                             </div>
                             <Divider />
                             <Row className='payment-gateway-row'>
