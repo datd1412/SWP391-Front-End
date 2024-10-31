@@ -136,23 +136,21 @@
 
                     .ant-row {
                         display: grid;
-                        grid-template-columns: 0.25fr 2fr 1.25fr 0.75fr;
-                    }
-
-                    .bk-payment-result {
-                        display: flex;
-                        align-items: center;
-                        flex-direction: column;
-                        text-align: center;
-                        margin-top: 10px;
-                        rotate: 16deg;
+                        grid-template-columns: 0.25fr 1.75fr 1.25fr 0.75fr;
                     }
                 }
             }
 
             .my-booking-name {
+                position: relative;
                 font-size: 25px;
                 margin-bottom: 0px;
+                
+                .bk-payment-result {
+                    position: absolute;
+                    rotate: 16deg;
+                    margin-left: 10px;
+                }
             }
 
             .my-booking-status {
@@ -176,6 +174,9 @@
                 font-size: 20px;
                 font-weight: bold;
             }
+        }
+
+        .my-booking-invoice {
         }
     }
 
