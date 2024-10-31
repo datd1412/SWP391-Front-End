@@ -35,6 +35,7 @@ function TourPage() {
       const farms = farmsData.map((farm) => ({
         name: farm.data.farmName,
         location: farm.data.location,
+        image: farm.data.image,
       }));
       setFarmImages(farms);
     } catch (error) {
