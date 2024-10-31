@@ -1,46 +1,89 @@
-.tour-display-container {
-  background-color: #f9f9f9; // Nền sáng
-  color: #333; // Màu chữ tối
-  padding: 20px;
+// Color and styling variables
+$primary-color: #ff7f50; // Vibrant orange color
+$secondary-color: #f9f9f9; // Light background
+$text-color: #333; // Dark text color for readability
+$shadow-color: rgba(0, 0, 0, 0.1); // Shadow color for cards
+$border-radius: 8px; // Border radius for rounded corners
 
+.tour-display-container {
+  background-color: $secondary-color;
+  color: $text-color;
+  padding: 20px;
+  
+
+  // Header label styling
   .tour-label {
-    text-align: center; // Căn giữa tiêu đề
+    text-align: center;
     margin-bottom: 20px;
 
     .text-wrapper-title {
-      font-size: 24px; // Kích thước tiêu đề lớn
+      font-size: 2rem;
       font-weight: bold;
-      color: #ff7f50; // Màu cam cho tiêu đề
+      color: $primary-color;
+      margin-bottom: 5px;
     }
 
     .text-wrapper-describe {
-      font-size: 16px; // Kích thước mô tả
-      color: #666; // Màu chữ nhạt hơn
+      font-size: 1.2rem;
+      color: darken($text-color, 20%);
     }
   }
 
+  // Card styling for each tour
   .tour-list {
     .ant-card {
-      border-radius: 8px; // Bo góc cho thẻ
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); // Đổ bóng cho thẻ
-      transition: transform 0.3s; // Hiệu ứng khi hover
+      border-radius: $border-radius;
+      box-shadow: 0 4px 15px $shadow-color;
+      transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
 
+      // Hover effect for cards
       &:hover {
-        transform: scale(1.05); // Phóng to khi hover
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px darken($shadow-color, 10%);
       }
 
-      .ant-btn-primary {
-        background-color: #ff7f50;
-        border-color: #ff7f50;
-        &:hover {
-          background-color: #ff4500;
-          border-color: #ff4500;
-          color: #f9f9f9;
+      // Card image styling
+      .ant-card-cover img {
+        height: 300px;
+        object-fit: cover;
+        border-radius: $border-radius $border-radius 0 0;
+      }
+
+      // Card content and button styling
+      .ant-card-body {
+        text-align: center;
+
+        .ant-card-meta-title {
+          font-size: 1.5rem;
+          color: $primary-color;
+          font-weight: bold;
         }
+
+        p {
+          color: $text-color;
+          margin: 5px 0;
+          font-size: 1rem;
+        }
+      }
+
+      // Button styling within the card
+      .ant-btn-primary {
+        background-color: $primary-color;
+        border-color: $primary-color;
+        width: 40%;
+        margin-top: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+
+        &:hover {
+          background-color: darken($primary-color, 10%);
+          border-color: darken($primary-color, 10%);
+          color: $secondary-color;
+        }
+
         a {
-          color: #fff;
-          
-          
+          color: $secondary-color;
         }
       }
     }
