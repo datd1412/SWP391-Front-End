@@ -136,7 +136,7 @@
 
                     .ant-row {
                         display: grid;
-                        grid-template-columns: 0.25fr 1.75fr 1.25fr 0.75fr;
+                        grid-template-columns: 0.25fr 1.75fr 1.25fr 0.75fr 0.75fr;
                     }
                 }
             }
@@ -169,10 +169,36 @@
                 }
             }
 
-            .complete-payment-button {
-                color: #ff4d4f;
+            .view-bk-detail-btn {
+                color: #0F9ACF;
+                border: 1px solid #0F9ACF;
+                font-size: 20px;
+                font-weight: 500;
+                width: 200px;
+            }
+
+            .feedback-bk-btn {
+                color: #F2D5A6;
+                border: 1px solid #F2D5A6;
                 font-size: 20px;
                 font-weight: bold;
+                width: 200px;
+            }
+
+            .cancel-booking-btn {
+                color: #ff4d4f;
+                border: 1px solid #ff4d4f;
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            .cancel-booking-confirm {
+                .ant-modal-title {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                }
             }
         }
 

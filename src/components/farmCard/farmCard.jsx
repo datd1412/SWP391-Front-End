@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, Button, Modal } from "antd";
 import { Link } from "react-router-dom";
-import "./farmCard.scss"; // File CSS chứa các class đã định nghĩa
+import "./farmCard.scss";
 
 function FarmCard({ farm }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -14,18 +14,18 @@ function FarmCard({ farm }) {
     setIsModalVisible(false);
   };
 
+  // Chỉ lấy 3 tour đầu tiên
+  const limitedTours = farm?.listFarmTour?.slice(0, 3) || [];
+
   return (
     <>
       <Card className="farm-card" onClick={showModal}>
         <div className="farm-card-content">
-          {/* Bên trái hiển thị hình ảnh farm */}
           <img 
             src="https://koitrips.com/wp-content/uploads/2016/09/DSC_0006-1.jpg" 
             alt="Farm Image" 
             className="farm-image" 
           />
-
-          {/* Bên phải hiển thị thông tin */}
           <div className="farm-info">
             <h2 className="farm-title">{farm?.farmName}</h2>
             <h4>{farm?.startTime} - {farm?.endTime}</h4>
@@ -39,7 +39,6 @@ function FarmCard({ farm }) {
         </div>
       </Card>
 
-      {/* Modal for Farm Details */}
       <Modal
         title={farm?.farmName}
         visible={isModalVisible}
@@ -53,7 +52,7 @@ function FarmCard({ farm }) {
         <p>{farm?.description}</p>
         <h3>Available Tours:</h3>
         <div className="tour-list">
-          {farm?.listFarmTour.map(tour => (
+          {limitedTours.map((tour) => (
             <div key={tour.tourId} className="tour-item">
               <h4>Tour for {farm.farmName}</h4>
               <p>{tour.description}</p>

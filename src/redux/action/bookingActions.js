@@ -7,3 +7,8 @@ export const setBookings = (bookings) => ({
     type: 'SET_BOOKINGS',
     payload: bookings,
 });
+
+export const cancelBooking = (bookingId) => ({
+    type: 'CANCEL_BOOKING',
+    payload: bookingId,
+});

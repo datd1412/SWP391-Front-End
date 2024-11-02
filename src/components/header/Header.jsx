@@ -57,14 +57,14 @@ function Header({ user, setUser }) {
           Koi Fish
         </Menu.Item>
       </Menu>
-      
+
       {
         user?.data.role === "ADMIN" && (
           <Switch
             unCheckedChildren="Switch Staff"
             defaultChecked={false}
             style={{
-              
+
             }}
             onChange={handleSwitchAdmin}
           />

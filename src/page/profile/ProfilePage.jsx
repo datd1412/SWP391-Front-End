@@ -10,13 +10,14 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Card, Col, Divider, Form, Input, Layout, List, Menu, Modal, Radio, Row, Space, Switch, Tag, theme, Typography } from 'antd';
+import { Avatar, Button, Card, Col, Divider, Form, Input, Layout, List, Menu, Modal, Radio, Row, Space, Steps, Switch, Table, Tag, theme, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../config/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCalendar, faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { setUser } from '../../redux/action/userAction';
+import { cancelBooking } from '../../redux/action/bookingActions';
 
 const { Header, Sider, Content } = Layout;
 const { Text, Title } = Typography;
@@ -26,11 +27,13 @@ function ProfilePage() {
   const [isClicked, setIsClicked] = useState(false);
   const [selectedKey, setSelectedKey] = useState('1');
   const user = useSelector((state) => state.user);
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const bookingList = useSelector((state) => state.bookings.bookings);
   const [myBookings, setmyBookings] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(null);
+  const [myOrder, setmyOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [steps, setSteps] = useState(0);
 
   const navigate = useNavigate();
 
@@ -51,28 +54,79 @@ function ProfilePage() {
         ...response.data,
         adults: booking.adults,
         children: booking.children,
+        listOfKois: booking.koiList,
+        processing: booking.processing,
       };
-      setIsModalVisible(anOrder);
+      setmyOrder(anOrder);
       console.log(anOrder);
     } catch (error) {
       console.log(error.toString());
     }
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(null);
+  const showCancelModal = () => {
+    setIsModalOpen(true);
   };
 
-  const handleDeleteBooking = async (booking) => {
-    console.log(booking.status);
-    if (booking.status==="PENDING" || booking.status==="PROCESSING") {
-      const response = await api.delete(`/booking/${booking.invoiceNo}`);
-      console.log(response);
-    }else {
-      console.log("You cannot delete!");
+
+  const handleCancel = () => {
+    setmyOrder(null);
+    setIsModalOpen(false);
+  };
+
+  const handleCancelBooking = (booking) => {
+    try {
+      const response = api.delete(`/booking/${booking.invoiceNo}`);
+      dispatch(cancelBooking(booking.invoiceNo));
+      console.log("Cai nay de xoa: ", response);
+    } catch (error) {
+      console.log(error.toString());
     }
   };
 
+
+  const columns = [
+    {
+      title: 'Koi Name',
+      dataIndex: 'koiFishId',
+      key: 'koiFishId',
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Price',
+      key: 'price',
+      dataIndex: 'price',
+    },
+  ];
+
+  const process = [
+    {
+      description: 'Consultation and Order Confirmation',
+    },
+    {
+      description: 'Buying KoiFish and Delivery Scheduling',
+    },
+    {
+      description: 'Pre-Delivery Confirmation',
+    },
+    {
+      description: 'Delivery and Final Payment Completion',
+    },
+  ];
+
+  const trackingDeliveryStatus = (processing) => {
+    const index = processing.findIndex((process) => process.status === 0);
+    if (index === -1) {
+      return process.length - 1;
+    } else {
+      return index;
+    }
+  }
 
   const fetchBookings = async (tourId, bookingId) => {
     const tourInfo = await api.get(`/tour/${tourId}`);
@@ -86,8 +140,10 @@ function ProfilePage() {
       ],
       adults: bookingInfo.data.numberOfAdult,
       children: bookingInfo.data.numberOfChild,
+      koiList: bookingInfo.data.bookingKoifish,
       isPaid: bookingInfo.data.paymentStatus,
       status: bookingInfo.data.status,
+      processing: bookingInfo.data.processing,
       location: "Ben Tre",
       avatar: "src/image/logo.png",
     };
@@ -124,7 +180,7 @@ function ProfilePage() {
       };
       const response = api.put("/user", updateInfo);
       const { confirmPassword, ...infoUpdate } = updateInfo;
-      dispath(setUser(infoUpdate));
+      dispatch(setUser(infoUpdate));
     } catch (error) {
       console.log(error.toString());
     }
@@ -307,7 +363,6 @@ function ProfilePage() {
                         <Card
                           className="my-booking-card"
                           hoverable
-                          onClick={() => viewBookingDetails(booking)}
                         >
                           <Row gutter={16} align="middle">
                             <Col>
@@ -352,15 +407,95 @@ function ProfilePage() {
                                 </div>
                               ))}
                             </Col>
-                            <Col>
-                              <Button
-                                type="link"
-                                className="complete-payment-button"
-                                onClick={handleDeleteBooking(booking)}
-                              >
-                                Cancel Booking
-                              </Button>
-                            </Col>
+                            {
+                              (booking.status === "PROCESSING" || booking.status === "PENDING") ? (
+                                <>
+                                  <Col>
+                                    <Button
+                                      className='view-bk-detail-btn'
+                                      onClick={() => viewBookingDetails(booking)}
+                                    >
+                                      View Detail
+                                    </Button>
+                                  </Col>
+                                  <Col>
+                                    <Button
+                                      className="cancel-booking-btn"
+                                      onClick={(e) => {
+                                        showCancelModal();
+                                        e.stopPropagation();
+                                      }}
+                                    >
+                                      Cancel Booking
+                                    </Button>
+                                    <Modal
+                                      className='cancel-booking-confirm'
+                                      open={isModalOpen}
+                                      onCancel={() => setIsModalOpen(false)}
+                                      footer={null}
+                                    >
+                                      <Typography.Title
+                                        level={3}
+                                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                                      >
+                                        Are you sure?
+                                      </Typography.Title>
+                                      <p style={{ textAlign: 'center', fontSize: '15px' }}>
+                                        Are you sure to delete this booking? This action cannot be undone once the booking is APPROVED.
+                                      </p>
+                                      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
+                                        <Button onClick={handleCancel} style={{ borderRadius: '8px', padding: '20px 30px' }}>
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          type="primary"
+                                          onClick={() => handleCancelBooking(booking)}
+                                          danger
+                                          style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', borderRadius: '8px', padding: '20px 30px' }}
+                                        >
+                                          Delete
+                                        </Button>
+                                      </div>
+                                    </Modal>
+                                  </Col>
+                                </>
+                              ) : (
+                                <>
+                                  {trackingDeliveryStatus(booking.processing) !== -1 ? (
+                                    <>
+                                      <Col>
+                                        <Button
+                                          className='view-bk-detail-btn'
+                                          onClick={() => viewBookingDetails(booking)}
+                                        >
+                                          View Detail
+                                        </Button>
+                                      </Col>
+                                      <Col>
+                                        <Button
+                                          className='feedback-bk-btn'
+                                        >
+                                          Feedback
+                                        </Button>
+                                      </Col>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Col></Col>
+                                      <Col>
+                                        <Button
+                                          className='view-bk-detail-btn'
+                                          onClick={() => viewBookingDetails(booking)}
+                                        >
+                                          View Detail
+                                        </Button>
+                                      </Col>
+                                    </>
+                                  )}
+                                </>
+                              )
+                            }
+
                           </Row>
                         </Card>
                       )}
@@ -369,11 +504,11 @@ function ProfilePage() {
                 )
               }
               {
-                isModalVisible && (
+                myOrder && (
                   <Modal
                     className='my-booking-invoice'
-                    title={<span style={{ fontSize: '24px', fontWeight: 'bold' }}>Invoice no. {isModalVisible.id}</span>}
-                    visible={!!isModalVisible}
+                    title={<span style={{ fontSize: '24px', fontWeight: 'bold' }}>Invoice no. {myOrder.id}</span>}
+                    open={myOrder}
                     onCancel={handleCancel}
                     footer={[
                       <Button key="cancel" onClick={handleCancel}>
@@ -388,10 +523,15 @@ function ProfilePage() {
                         Ok
                       </Button>,
                     ]}
-                    width={800}
+                    width={950}
                   >
                     <Row>
-                      <small>WE WILL SENT AN EMAIL FOR YOUR PAYMENT</small>
+                      <Col span={9}>
+                        <small>WE WILL SENT AN EMAIL FOR YOUR PAYMENT</small>
+                      </Col>
+                      <Col span={15}>
+                        <Text style={{ textAlign: 'center', fontSize: '16px', marginLeft: '15px' }}><strong>Your Booking Koi Fishs</strong></Text>
+                      </Col>
                     </Row>
 
                     <Row
@@ -400,16 +540,16 @@ function ProfilePage() {
                         marginTop: '10px',
                       }}
                     >
-                      <Col span={8}>
+                      <Col span={8} style={{ marginRight: '10px' }}>
                         <Row>
                           <Col span={12}>
                             <Text><strong>Passengers:</strong></Text>
                           </Col>
                           <Col span={12} style={{ textAlign: 'right' }}>
                             <Text>
-                              {isModalVisible.adults > 0 && `${isModalVisible.adults} adult(s)`}
-                              {isModalVisible.adults > 0 && isModalVisible.children > 0 && ', '}
-                              {isModalVisible.children > 0 && `${isModalVisible.children} child(s)`}
+                              {myOrder.adults > 0 && `${myOrder.adults} adult(s)`}
+                              {myOrder.adults > 0 && myOrder.children > 0 && ', '}
+                              {myOrder.children > 0 && `${myOrder.children} child(s)`}
                             </Text>
                           </Col>
                         </Row>
@@ -418,7 +558,7 @@ function ProfilePage() {
                             <Text>Food Fee:</Text>
                           </Col>
                           <Col span={12} style={{ textAlign: 'right' }}>
-                            <Text>{isModalVisible?.foodFee} VND</Text>
+                            <Text>{myOrder?.foodFee} VND</Text>
                           </Col>
                         </Row>
                         <Row>
@@ -426,7 +566,7 @@ function ProfilePage() {
                             <Text>Travel Fee:</Text>
                           </Col>
                           <Col span={12} style={{ textAlign: 'right' }}>
-                            <Text>{isModalVisible?.travelFee} VND</Text>
+                            <Text>{myOrder?.travelFee} VND</Text>
                           </Col>
                         </Row>
                         <Row>
@@ -434,7 +574,7 @@ function ProfilePage() {
                             <Text>Stay Fee:</Text>
                           </Col>
                           <Col span={12} style={{ textAlign: 'right' }}>
-                            <Text>{isModalVisible?.stayFee} VND</Text>
+                            <Text>{myOrder?.stayFee} VND</Text>
                           </Col>
                         </Row>
                         <Divider />
@@ -460,7 +600,7 @@ function ProfilePage() {
                             <Title level={4}>Total</Title>
                           </Col>
                           <Col span={12} style={{ textAlign: 'right' }}>
-                            <Title level={4}>{isModalVisible?.total}</Title>
+                            <Title level={4}>{myOrder?.total}</Title>
                           </Col>
                         </Row>
 
@@ -470,106 +610,31 @@ function ProfilePage() {
                             display: 'flex',
                             justifyContent: 'center',
                             cursor: 'pointer',
-                            color: '#1890ff'
+                            color: '#1890ff',
+                            marginTop: '10px',
                           }}
                         >
                           Terms and Conditions
                         </Text>
                       </Col>
 
-                      <Divider type="vertical" />
-                      <Col span={15}>
+                      <Col span={1}></Col>
+                      <Col span={14} style={{ marginLeft: '10px' }} className='invoice-right-side'>
                         <Row>
-                          <Text>Your Booking Koi Fishs</Text>
-                        </Row>
-                      </Col>
-                    </Row>
-                    {/* <Row>
-                      <Col span={12}>
-                        <Text>Food Fee:</Text>
-                      </Col>
-                      <Col span={12} style={{ textAlign: 'right' }}>
-                        <Text>{isModalVisible?.foodFee} VND</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={12}>
-                        <Text>Travel Fee:</Text>
-                      </Col>
-                      <Col span={12} style={{ textAlign: 'right' }}>
-                        <Text>{isModalVisible?.travelFee} VND</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={12}>
-                        <Text>Stay Fee:</Text>
-                      </Col>
-                      <Col span={12} style={{ textAlign: 'right' }}>
-                        <Text>{isModalVisible?.stayFee} VND</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={12}>
-                        <Text>Subtotal</Text>
-                      </Col>
-                      <Col span={12} style={{ textAlign: 'right' }}>
-                        <Text>80 EUR</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={12}>
-                        <Text>VAT (10%)</Text>
-                      </Col>
-                      <Col span={12} style={{ textAlign: 'right' }}>
-                        <Text>20 EUR</Text>
-                      </Col>
-                    </Row>
-                    <Divider />
-                    <Row>
-                      <Col span={12}>
-                        <Title level={4}>Total</Title>
-                      </Col>
-                      <Col span={12} style={{ textAlign: 'right' }}>
-                        <Title level={4}>{isModalVisible?.total}</Title>
-                      </Col>
-                    </Row>
-
-                    <Divider />
-
-                    <Title level={5}>Choose your payment method:</Title>
-                    <Radio.Group
-                      onChange={(e) => setSelectedMethod(e.target.value)}
-                      value={selectedMethod}
-                      style={{ width: '100%' }}
-                    >
-                      <Radio.Button value="vnpay" style={{ width: '100%', padding: '3px', marginTop: '5px', marginBottom: '15px', borderRadius: '0px' }}>
-                        <Row>
-                          <Col style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                            <CreditCardOutlined style={{ fontSize: 20, color: '#1890ff' }} />
-                            <Text style={{ marginLeft: 8, fontSize: 16 }}>VN PAY</Text>
+                          <Col span={24}>
+                            <Steps progressDot current={trackingDeliveryStatus(myOrder.processing)} style={{ paddingRight: '20px' }}>
+                              {process.map((pcs, index) => (
+                                <Steps key={index} title={<span style={{ fontSize: '12px' }}>{pcs.description}</span>} />
+                              ))}
+                            </Steps>
                           </Col>
-                        </Row>
-                      </Radio.Button>
-                      <Radio.Button value="cash" style={{ width: '100%', padding: '3px', marginBottom: '12px', borderRadius: '0px' }}>
-                        <Row>
-                          <Col style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                            <BankOutlined style={{ fontSize: 20, color: '#1890ff' }} />
-                            <Text style={{ marginLeft: 8, fontSize: 16 }}>Pay with cash</Text>
+                          <Col span={24}>
+                            <Table width='500px' columns={columns} dataSource={myOrder.listOfKois} />
                           </Col>
+
                         </Row>
-                      </Radio.Button>
-                    </Radio.Group>
-                    <Text
-                      underline
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        color: '#1890ff'
-                      }}
-                    >
-                      Terms and Conditions
-                    </Text> */}
+                      </Col>
+                    </Row>
                   </Modal>
                 )
               }

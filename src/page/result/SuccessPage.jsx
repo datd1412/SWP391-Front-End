@@ -43,7 +43,7 @@ function SuccessPage() {
                     <Button type="primary" key="console">
                         Go Home
                     </Button>,
-                    <Button key="buy">View my booking</Button>,
+                    <Button key="buy" onClick={() => navigate("/profile")}>View my booking</Button>,
                 ]}
             />
         </div>

@@ -6,7 +6,7 @@
   .carousel-container {
     max-width: 90%; // Chiều rộng tối đa cho carousel
     margin: auto; // Căn giữa
-    background-color: #fff; // Màu nền trắng
+    background-color:  #F5E0B3; // Màu nền trắng
     border-radius: 10px; // Bo tròn góc
     padding: 20px; // Khoảng cách bên trong
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); // Đổ bóng
@@ -21,7 +21,7 @@
       .text-wrapper-title {
         font-size: 36px; // Kích thước chữ tiêu đề
         font-weight: bold; // Đậm
-        color: #333; // Màu chữ
+        color: #ff7f53; // Màu chữ
       }
     }
 
@@ -37,7 +37,7 @@
 
         .ant-card {
           transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; // Hiệu ứng hover
-          width: 300px; // Chiều rộng cố định cho card
+          width: 200px; // Chiều rộng cố định cho card
           display: flex; // Sử dụng flexbox cho card
           flex-direction: column; // Đặt chiều dọc
 

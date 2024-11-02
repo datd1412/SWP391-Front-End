@@ -1,53 +1,91 @@
-.carousel-container {
-  width: 90%;
-  margin: auto;
+// Color and styling variables
+$primary-color: #ff7f50; // Vibrant orange color
+$secondary-color: #f9f9f9; // Light background
+$text-color: #333; // Dark text color for readability
+$shadow-color: rgba(0, 0, 0, 0.1); // Shadow color for cards
+$border-radius: 8px; // Border radius for rounded corners
 
-  .slick-slider {
-    position: relative;
+.tour-display-container {
+  background-color: $secondary-color;
+  color: $text-color;
+  padding: 20px;
+  
 
-    .slick-prev {
-      position: absolute;
-      background-color: black;
-      z-index: 1;
-      left: 60px;
+  // Header label styling
+  .tour-label {
+    text-align: center;
+    margin-bottom: 20px;
+
+    .text-wrapper-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: $primary-color;
+      margin-bottom: 5px;
     }
 
-    .slick-next {
-      position: absolute;
-      background-color: #000000;
-      z-index: 1;
-      right: 60px;
+    .text-wrapper-describe {
+      font-size: 1.2rem;
+      color: darken($text-color, 20%);
     }
   }
 
-}
-.carousel-item-first {
-  transform: scale(2);
-  /* Tăng kích thước item đầu tiên */
-  z-index: 1;
-  /* Đặt item đầu tiên ở lớp trên cùng để không bị che */
-}
+  // Card styling for each tour
+  .tour-list {
+    .ant-card {
+      border-radius: $border-radius;
+      box-shadow: 0 4px 15px $shadow-color;
+      transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
 
-.tour-label {
-  .text-wrapper-title {
-    color: #000000;
-    font-family: "Inter-SemiBold", Helvetica;
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: 0;
-    line-height: normal;
-    top: -1px;
-    white-space: nowrap;
-  }
+      // Hover effect for cards
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px darken($shadow-color, 10%);
+      }
 
-  .text-wrapper-describe {
-    color: #9e9e9e;
-    font-family: "Inter-Regular", Helvetica;
-    font-size: 20px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
-    top: 41px;
-    white-space: nowrap;
+      // Card image styling
+      .ant-card-cover img {
+        height: 300px;
+        object-fit: cover;
+        border-radius: $border-radius $border-radius 0 0;
+      }
+
+      // Card content and button styling
+      .ant-card-body {
+        text-align: center;
+
+        .ant-card-meta-title {
+          font-size: 1.5rem;
+          color: $primary-color;
+          font-weight: bold;
+        }
+
+        p {
+          color: $text-color;
+          margin: 5px 0;
+          font-size: 1rem;
+        }
+      }
+
+      // Button styling within the card
+      .ant-btn-primary {
+        background-color: $primary-color;
+        border-color: $primary-color;
+        width: 40%;
+        margin-top: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+
+        &:hover {
+          background-color: darken($primary-color, 10%);
+          border-color: darken($primary-color, 10%);
+          color: $secondary-color;
+        }
+
+        a {
+          color: $secondary-color;
+        }
+      }
+    }
   }
 }
