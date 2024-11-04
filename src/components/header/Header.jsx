@@ -64,7 +64,7 @@ function Header({ user, setUser }) {
             unCheckedChildren="Switch Staff"
             defaultChecked={false}
             style={{
-
+              marginRight: '30px'
             }}
             onChange={handleSwitchAdmin}
           />

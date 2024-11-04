@@ -31,9 +31,9 @@ const SearchBar = () => {
         price: 1000000,
         koiType: "Kohaku",
       }
-      const response = await api.get("/tour/search", obj);
+      const response = await api.get("/tour/search", searchFields);
       /* navigate("/tour", { state: { response } }); */
-      console.log(response.data);
+      console.log("Danh sach tour: ", response.data);
       console.log(searchFields);
     } catch (error) {
       console.log(error.toString());

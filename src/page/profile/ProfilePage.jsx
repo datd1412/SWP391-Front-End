@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './ProfilePage.scss'
 import {
-  BankOutlined,
-  CloseCircleTwoTone,
-  CreditCardOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Card, Col, Divider, Form, Input, Layout, List, Menu, Modal, Radio, Row, Space, Steps, Switch, Table, Tag, theme, Typography } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Avatar, Button, Card, Col, Divider, Form, Input, Layout, List, Menu, Modal, Rate, Row, Space, Steps, Switch, Table, Tag, theme, Typography } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../config/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCalendar, faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { setUser } from '../../redux/action/userAction';
 import { cancelBooking } from '../../redux/action/bookingActions';
+import { useForm } from 'antd/es/form/Form';
 
 const { Header, Sider, Content } = Layout;
 const { Text, Title } = Typography;
@@ -27,13 +25,14 @@ function ProfilePage() {
   const [isClicked, setIsClicked] = useState(false);
   const [selectedKey, setSelectedKey] = useState('1');
   const user = useSelector((state) => state.user);
+  const [feedbackForm] = Form.useForm();
   const dispatch = useDispatch();
   const bookingList = useSelector((state) => state.bookings.bookings);
   const [myBookings, setmyBookings] = useState([]);
   const [myOrder, setmyOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState(null);
-  const [steps, setSteps] = useState(0);
+  const [openFeedback, setopenFeedback] = useState(false);
+  const [koiImages, setkoiImages] = useState([]);
 
   const navigate = useNavigate();
 
@@ -47,6 +46,16 @@ function ProfilePage() {
     PROCESSING: 'default',
   };
 
+  const fetchKoiImage = async (id) => {
+    try {
+      const response = await api.get(`/koifish/${id}`);
+      setkoiImages((prevImages) => [...prevImages, response.data.image]);
+    } catch (error) {
+      console.log(error.toString());
+    }
+
+  }
+
   const viewBookingDetails = async (booking) => {
     try {
       const response = await api.get(`/order/${booking.invoiceNo}`);
@@ -58,6 +67,11 @@ function ProfilePage() {
         processing: booking.processing,
       };
       setmyOrder(anOrder);
+      anOrder.listOfKois.forEach((koi) => {
+        if (!koiImages[koi.koiFishId]) {
+          fetchKoiImage(koi.koiFishId);
+        }
+      })
       console.log(anOrder);
     } catch (error) {
       console.log(error.toString());
@@ -68,10 +82,15 @@ function ProfilePage() {
     setIsModalOpen(true);
   };
 
+  const handleFeedback = (values) => {
+    console.log(values);
+  }
 
   const handleCancel = () => {
     setmyOrder(null);
     setIsModalOpen(false);
+    setopenFeedback(false);
+    console.log("hine ne ni: ", koiImages);
   };
 
   const handleCancelBooking = (booking) => {
@@ -90,7 +109,9 @@ function ProfilePage() {
       title: 'Koi Name',
       dataIndex: 'koiFishId',
       key: 'koiFishId',
-      render: (text) => <a>{text}</a>,
+      render: (koiFishId) => (
+        <Avatar size={50} src={koiImages[koiFishId]} />
+      ),
     },
     {
       title: 'Quantity',
@@ -124,7 +145,7 @@ function ProfilePage() {
     if (index === -1) {
       return process.length - 1;
     } else {
-      return index;
+      return index - 1;
     }
   }
 
@@ -145,10 +166,9 @@ function ProfilePage() {
       status: bookingInfo.data.status,
       processing: bookingInfo.data.processing,
       location: "Ben Tre",
-      avatar: "src/image/logo.png",
+      avatar: tourInfo.data.image,
     };
     setmyBookings((prevmyBookings) => [...prevmyBookings, row]);
-    console.log(bookingInfo.data);
   };
 
   useEffect(() => {
@@ -461,7 +481,7 @@ function ProfilePage() {
                                 </>
                               ) : (
                                 <>
-                                  {trackingDeliveryStatus(booking.processing) !== -1 ? (
+                                  {trackingDeliveryStatus(booking.processing) == process.length - 1 ? (
                                     <>
                                       <Col>
                                         <Button
@@ -474,10 +494,36 @@ function ProfilePage() {
                                       <Col>
                                         <Button
                                           className='feedback-bk-btn'
+                                          onClick={() => setopenFeedback(true)}
                                         >
                                           Feedback
                                         </Button>
                                       </Col>
+                                      <Modal
+                                        open={openFeedback}
+                                        onOk={() => feedbackForm.submit()}
+                                        onCancel={handleCancel}
+                                        width={400}
+                                      >
+                                        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                                          <Typography.Title level={2} style={{ marginBottom: '5px' }}>Feedback</Typography.Title>
+                                          <Text type='secondary' style={{ fontSize: '15px', marginBottom: '5px' }}>Please rate your experience below</Text>
+                                        </div>
+                                        <Form
+                                          form={feedbackForm}
+                                          labelCol={{
+                                            span: 24,
+                                          }}
+                                          onFinish={handleFeedback}
+                                        >
+                                          <Form.Item name="rating">
+                                            <Rate style={{ display: 'flex', justifyContent: 'center' }} />
+                                          </Form.Item>
+                                          <Form.Item label="Additional feedback" name="comment">
+                                            <Input.TextArea placeholder='My Feedback!' />
+                                          </Form.Item>
+                                        </Form>
+                                      </Modal>
                                     </>
                                   ) : (
                                     <>
@@ -518,7 +564,6 @@ function ProfilePage() {
                         key="continue"
                         type="primary"
                         onClick={handleCancel}
-                        disabled={!selectedMethod}
                       >
                         Ok
                       </Button>,
@@ -629,7 +674,13 @@ function ProfilePage() {
                             </Steps>
                           </Col>
                           <Col span={24}>
-                            <Table width='500px' columns={columns} dataSource={myOrder.listOfKois} />
+                            <Table
+                            style={{ marginTop: '10px' }}
+                              width='500px' 
+                              columns={columns}
+                              dataSource={myOrder.listOfKois}
+                              pagination={{ pageSize: 2 }}
+                            />
                           </Col>
 
                         </Row>
@@ -709,7 +760,7 @@ function ProfilePage() {
           <Typography.Title
             level={2}
           >
-            Welcome back, {user.data?.username}
+            Welcome back, {user.fullName}
           </Typography.Title>
         </Header>
         {
