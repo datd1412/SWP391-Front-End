@@ -6,22 +6,33 @@ import { Link, useNavigate } from "react-router-dom";
 import { provider } from "../../config/firebase";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import api from "../../config/axios";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/action/userAction";
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onFinish = async (values) => {
     try {
       const response = await api.post("/login", values);
+      /*       const { token } = response.data; */
       localStorage.setItem("token",response.data.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));
+      const user = {
+        fullName: response.data.data.fullName,
+        username: response.data.data.username,
+        email: response.data.data.email,
+        address: response.data.data.address,
+        role: response.data.data.role,
+      }
+      dispatch(setUser(user));
       navigate("/");
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
-      alert("Invalid username or password!")
+      alert("Invalid username or password!");
     }
-  }
+  };
 
   function handleLoginGoogle() {
     const auth = getAuth();
@@ -48,7 +59,6 @@ function Login() {
         // ...
       });
   }
- 
 
   return (
     <Row className="login">
@@ -98,7 +108,9 @@ function Login() {
                 <Form.Item name="remember" valuePropName="checked" noStyle>
                   <Checkbox>Remember me</Checkbox>
                 </Form.Item>
-                <a className="forgot-password" href="">Forgot password</a>
+                <a className="forgot-password" href="">
+                  Forgot password
+                </a>
               </Flex>
             </Form.Item>
 
@@ -116,8 +128,7 @@ function Login() {
         </div>
         <div className="divider">
           <span>
-         ---------------------- Or login with
-         ----------------------
+            ---------------------- Or login with ----------------------
           </span>
         </div>
         <div>
@@ -131,7 +142,9 @@ function Login() {
           </Button>
           <p className="signup-text">
             Don't have an account?
-            <Link to={"/register"} className="link-register">Register</Link>
+            <Link to={"/register"} className="link-register">
+              Register
+            </Link>
           </p>
         </div>
       </Col>

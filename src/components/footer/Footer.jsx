@@ -15,7 +15,7 @@ function Footer() {
           <div className='row'>
             <div className='footer-col'>
               <div>
-                <img src='src\image\koi logo - remove bg.png' alt='' width={'200px'} />
+                <img src='https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/koi%20logo%20-%20remove%20bg.png?alt=media&token=e721ab61-93b9-45d8-92bd-eb4177902ed7' alt='' width={'200px'} />
                 <h3>Koi tour service</h3>
               </div>
             </div>

@@ -1,0 +1,31 @@
+.fish-card {
+  background-color: #fff; // Nền trắng cho mỗi thẻ cá
+  border: 2px solid #ff7f50; // Viền màu cam
+  border-radius: 12px; // Bo tròn các góc
+  padding: 15px; // Khoảng cách bên trong
+  text-align: center; // Căn giữa nội dung
+  transition: transform 0.3s, box-shadow 0.3s; // Hiệu ứng chuyển tiếp
+
+  &:hover {
+    transform: translateY(-5px); // Hiệu ứng nâng lên khi hover
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); // Hiệu ứng đổ bóng khi hover
+  }
+
+  .fish-image {
+    width: 150px; // Đặt kích thước hình ảnh
+    height: auto; // Tự động điều chỉnh chiều cao
+    border-radius: 4px; // Bo tròn các góc
+    margin-bottom: 10px; // Khoảng cách dưới hình ảnh
+  }
+
+  h3 {
+    font-size: 1.2em; // Kích thước chữ tiêu đề
+    color: #ff7f50; // Màu chữ tiêu đề
+    margin: 10px 0; // Khoảng cách trên và dưới tiêu đề
+  }
+
+  p {
+    font-size: 1em; // Kích thước chữ cho giá
+    color: #333; // Màu chữ cho giá
+  }
+}

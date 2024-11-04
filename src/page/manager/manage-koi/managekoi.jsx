@@ -23,7 +23,7 @@ function ManageKoi() {
             const response = await api.get("farm");
             setFarmList(response.data);
         } catch (err) {
-            toast.error(err.response?.data || "Lỗi khi tải danh sách trang trại");
+            toast.error(err.response?.data || "L?i khi t?i danh sách trang tr?i");
         }
     };
 
@@ -123,6 +123,7 @@ function ManageKoi() {
             key: "id",
             render: (id, koi) => (
                 <Space>
+<<<<<<< HEAD
                     <Button onClick={() => { 
                         setShowModal(true); 
                         form.setFieldsValue({ ...koi }); 
@@ -130,6 +131,29 @@ function ManageKoi() {
                     }}>Edit</Button>
                     <Popconfirm title="Do you want to delete this fish?" onConfirm={() => handleDelete(id)}>
                         <Button danger>Delete</Button>
+=======
+                    <Button type="primary"  style={{ marginLeft: 8 }}  onClick={() => {
+                        setShowModal(true);
+                        form.setFieldsValue({
+                            ...koi,
+                            farmKoiList: koi.farmKoiList.map(farmKoi => ({
+                                farmId: farmKoi.farmId,
+                                quantity: farmKoi.quantity,
+                            })),
+                        });
+                    }}>
+                        Edit
+                    </Button>
+
+                    <Popconfirm
+                        title="Delete"
+                        description="Do you want to delete this koi fish?"
+                        onConfirm={() => handleDelete(id)}
+                    >
+                        <Button type="primary" danger  style={{ marginLeft: 8 }} >
+                            Delete
+                        </Button>
+>>>>>>> af33c4a6778d3171f8be99e790f5c7c4ca430230
                     </Popconfirm>
                 </Space>
             ),
@@ -240,4 +264,8 @@ function ManageKoi() {
     );
 }
 
+<<<<<<< HEAD
 export default ManageKoi;
+=======
+export default ManageKoi; 
+>>>>>>> af33c4a6778d3171f8be99e790f5c7c4ca430230

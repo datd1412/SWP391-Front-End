@@ -1,0 +1,313 @@
+.booking-container {
+
+    .tracking-bar {
+        background-color: #FFFFFF;
+        border: 2px solid #EEEEEE;
+        padding: 20px 50px;
+    }
+
+    .steps-content {
+        background-color: #f0f0f0;
+
+        .booking-info-container {
+            position: relative;
+
+            .hotel-first {
+                display: flex;
+                justify-content: center;
+                height: 100vh;
+
+                .hotel-container {
+                    min-width: 1120px;
+                    max-height: 650px;
+                    margin: 70px 0;
+
+                    .hotel-header {
+                        h1 {
+                            width: 80%;
+                            font-size: 60px;
+                            margin-top: 60px;
+                        }
+
+                        p {
+                            width: 90%;
+                            font-size: 16px;
+                            line-height: 25px;
+                            margin-top: 20px;
+                        }
+                    }
+
+                    .actions {
+                        margin-top: 30px;
+
+                        .discover-now {
+                            display: flex;
+                            align-items: center;
+                            background-color: #ffe498;
+                            color: #e27637;
+                            border-radius: 7px;
+                            border: none;
+                            padding: 20px;
+                            font-size: 15px;
+                            font-weight: bold;
+                            letter-spacing: 0.25px;
+                            transition: background-color 0.3s ease, color 0.3s ease;
+                        }
+
+                        .discover-now:hover {
+                            background-color: #e27637;
+                            color: white;
+                        }
+                    }
+
+                    .right-booking {
+                        background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/koi_book_img.jpg?alt=media&token=dc163234-6059-422c-9743-a44bbd9f1425');
+                        border-radius: 10px;
+                        background-size: cover;
+                        background-position: center;
+                    }
+                }
+            }
+
+            .hotel-second {
+                display: flex;
+                justify-content: center;
+                position: absolute;
+                left: 390px;
+                bottom: 220px;
+
+                .hotel-form-container {
+                    display: flex;
+                    justify-content: center;
+                    flex-direction: column;
+                    min-width: 1120px;
+
+                    h2 {
+                        margin-bottom: 15px;
+                    }
+
+                    .hotel-wrapper {
+                        background-color: #fff;
+                        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+                        border-radius: 16px;
+                        max-width: 970px;
+
+                        .hotel-form {
+                            display: flex;
+                            gap: 50px;
+                            padding: 15px;
+
+                            .ant-form-item-label {
+                                label {
+                                    font-size: 17px;
+                                }
+                            }
+
+                            .booking-email {
+                                min-width: 350px;
+                            }
+
+                            .booking-guests {
+                                min-width: 250px;
+
+                                .ant-space:where {
+                                    display: flex !important;
+                                }
+                            }
+
+                            .ant-form-item {
+                                margin: 0;
+
+                                .ant-form-item-control-input-content {
+
+                                    .ant-input {
+                                        font-size: 20px;
+                                    }
+
+                                    .ant-btn {
+                                        padding: 4px 20px;
+                                        height: 100%;
+
+                                        span {
+                                            font-size: 20px;
+                                        }
+                                    }
+                                }
+                            }
+
+                            .btn-booking-next {
+                                background-color: #fad46c;
+                                color: #eee;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                border-radius: 6px;
+                                font-weight: 700;
+                                font-size: 17px;
+                                letter-spacing: 3px;
+                                margin-top: 41px;
+                                margin-left: 20px;
+
+                                span {
+                                    padding: 20px;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            .floating-images {
+                .floating-image-1 {
+                    background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/floating_3.jpg?alt=media&token=f4fe623a-eeeb-4801-92b2-b79fad445ad1');
+                    background-size: cover;
+                    border: 2px solid #6cc538;
+                    border-radius: 50%;
+                    width: 60px;
+                    height: 60px;
+                    position: absolute;
+                    left: 925px;
+                    top: 100px;
+                }
+
+                .floating-image-2 {
+                    background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/floating_2.jpg?alt=media&token=9ff17c7c-b57d-4bd0-988c-d69b30699a47');
+                    background-size: cover;
+                    border: 2px solid #6cc538;
+                    border-radius: 50%;
+                    width: 80px;
+                    height: 80px;
+                    position: absolute;
+                    left: 915px;
+                    top: 200px;
+                }
+            }
+        }
+
+        .booking-payment {
+            background-image: url('src/image/payment_bg.jpeg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            height: 95vh;
+            color: #fff;
+
+            .payment-method-board {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                height: 100vh;
+                position: relative;
+                z-index: 1;
+
+                .payment-loader {
+                    width: 80px;
+                    aspect-ratio: 4;
+                    --_g: no-repeat radial-gradient(circle closest-side, #fff 90%, #00000000);
+                    background:
+                        var(--_g) 0% 50%,
+                        var(--_g) 50% 50%,
+                        var(--_g) 100% 50%;
+                    background-size: calc(100%/3) 100%;
+                    animation: l7 1s infinite linear;
+                    margin-top: 100px;
+                    margin-bottom: 20px;
+                }
+
+                @keyframes l7 {
+                    33% {
+                        background-size: calc(100%/3) 0%, calc(100%/3) 100%, calc(100%/3) 100%
+                    }
+
+                    50% {
+                        background-size: calc(100%/3) 100%, calc(100%/3) 0%, calc(100%/3) 100%
+                    }
+
+                    66% {
+                        background-size: calc(100%/3) 100%, calc(100%/3) 100%, calc(100%/3) 0%
+                    }
+                }
+
+                .payment-loading-row {
+                    display: flex;
+                    align-items: center;
+                    flex-direction: column;
+                    color: #fff;
+                    text-align: center;
+
+                    .ant-typography {
+                        color: #fff;
+                    }
+
+                    .payment-return-btn {
+                        background: transparent;
+                        border: 1px solid #fff;
+                        border-radius: 5px;
+                        color: #fff;
+                        font-size: 16px;
+                        font-weight: bold;
+                        padding: 25px 45px;
+                        transition: all 0.4s ease;
+                        margin-top: 20px;
+                    }
+
+                    .payment-return-btn:hover {
+                        background-color: #fff;
+                        color: #ca9e2d;
+                    }
+                }
+
+                .payment-gateway-row {
+                    margin-top: 80px;
+
+                    .payment-gateway-left {
+                        display: flex;
+                        justify-content: flex-end;
+
+                        .ant-avatar {
+                            margin-right: 25px;
+                        }
+                    }
+
+                    .payment-gateway-right {
+                        padding-top: 10px;
+
+                        .ant-typography {
+                            color: #fff;
+                            font-size: 50px;
+                        }
+
+                        .payment-method-btn {
+                            background: transparent;
+                            border: 1px solid #fff;
+                            border-radius: 5px;
+                            color: #fff;
+                            font-size: 16px;
+                            font-weight: bold;
+                            padding: 25px 45px;
+                            transition: all 0.4s ease;
+                        }
+
+                        .payment-method-btn:hover {
+                            background-color: #fff;
+                            color: #ca9e2d;
+                        }
+                    }
+                }
+            }
+        }
+
+        .booking-payment::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(112, 100, 77, 0.5);
+        }
+
+    }
+
+}

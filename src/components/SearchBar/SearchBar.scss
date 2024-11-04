@@ -5,24 +5,28 @@
 
     .search-container {
         display: grid;
-        grid-template-columns: 1.5fr 1.5fr 1fr 1fr 0.5fr;
+        grid-template-columns: 1fr 0.75fr 1fr 0.75fr 0.5fr;
 
-        .ant-input-prefix {
+        .ant-input-suffix {
             margin: 0;
-            padding-right: 10px;
             color: #BFBFBF;
         }
 
-        .destination {
+        input {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+        }
+
+        .ant-input-affix-wrapper {
+            padding: 7px 21px;
+        }
+
+        .name {
             background-color: #ffffff;
             border: 3px solid;
             border-color: #5454ac;
             border-radius: 0px 0px 0px 25px;
             height: 67px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            /* width: 319px; */
         }
 
         .Date_picker {
@@ -30,12 +34,28 @@
             border: 3px solid;
             border-color: #5454ac;
             height: 67px;
-            left: 0;
-            top: 0;
             width: 100%;
-            /* width: 335px; */
             border-radius: 0px;
             border-left-width: 0px;
+
+            .ant-space-item {
+                width: 100%;
+            }
+
+            .ant-picker {
+                border: none;
+                padding: 7px 21px;
+                width: 100%;
+            }
+
+            .ant-picker-input {
+                margin: 0 5px;
+            }
+
+            .ant-picker-focused {
+                box-shadow: none !important;
+                outline: none;
+            }
         }
 
         .Price {
@@ -43,12 +63,25 @@
             border: 3px solid;
             border-color: #5454ac;
             height: 67px;
-            left: 0;
-            top: 0;
-            /* width: 243px; */
             border-radius: 0px;
             border-left-width: 0px;
             width: 100%;
+
+            .ant-select-selector {
+                border: none;
+                font-size: 20px;
+                padding: 0 !important;
+
+                .ant-select-selection-placeholder {
+                    padding: 0 0 0 21px;
+                    text-align: left;
+                }
+            }
+
+            .ant-select-arrow {
+                padding-right: 10px;
+                font-size: 15px;
+            }
         }
 
         .fish {
@@ -56,13 +89,34 @@
             border: 3px solid;
             border-color: #5454ac;
             height: 67px;
-            left: 0;
-            top: 0;
-            /* width: 259px; */
             border-radius: 0px;
             border-left-width: 0px;
-            border-right-width: 0px;
             width: 100%;
+
+            .ant-select-selection-item {
+                padding-right: 10px;
+            }
+
+            .ant-select-selector {
+                font-size: 20px;
+                padding: 0;
+                border: none;
+
+                .ant-select-selection-placeholder {
+                    margin: 0 15px;
+                    padding: 0;
+                    text-align: left;
+                }
+            }
+
+            .ant-select-arrow {
+                padding-right: 5px;
+                font-size: 13px;
+            }
+        }
+
+        .fish {
+            border-right-width: 0px;
         }
 
         .button_search {
@@ -74,7 +128,7 @@
             left: 0;
             top: 0;
             width: 100%;
-            /* width: 117px; */
+
         }
     }
 
