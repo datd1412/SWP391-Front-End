@@ -19,6 +19,7 @@ import KoiFarmPage from "../page/koifarm/KoiFarmPage";
 import TourDetailPage from "../page/tourdetail/TourDetailPage";
 import TourPage from "../page/tour/TourPage";
 import FaillPage from "../page/result/FaillPage";
+import PrivateRoute from "./routers/PrivateRoute";
 // import ManageTour from "../page/manager/manage-tour/managetour"
 // const ProtectedRouteAuth = ({ children }) => {
 //   const user = useSelector(selectUser);
@@ -113,12 +114,12 @@ export const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
     path: "/manager",
-    element: <ManagerPage />, // ManagerPage sẽ render các trang con
+    element: (
+      <PrivateRoute>
+        <ManagerPage />
+      </PrivateRoute>
+    ), // ManagerPage sẽ render các trang con
     children: [
       {
         path: "ManageFarm", // URL /manager/page1

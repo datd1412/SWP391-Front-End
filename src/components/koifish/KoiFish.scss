@@ -1,8 +1,8 @@
 .koifish {
-  background-color: #f9f9f9; // Nền sáng
-  color: #333; // Màu chữ tối
-  padding: 20px;
-  min-height: calc(100vh - 200px);
+  background-color: #F5E0B3; // Nền đỏ đậm như trong ảnh
+  color: #fff; // Màu chữ sáng
+
+  padding: 20px; // Khoảng cách padding
 
   .search-container {
     margin-bottom: 20px;
@@ -11,11 +11,10 @@
     .search-input {
       padding: 10px;
       width: 300px;
-      border: 1px solid #ccc; // Đường viền màu xám
+      border: 1px solid #ff7f50; // Đường viền màu cam
       border-radius: 4px;
       background-color: #fff; // Nền trắng cho ô tìm kiếm
       color: #333; // Màu chữ
-      transition: border-color 0.3s, background-color 0.3s; // Hiệu ứng chuyển tiếp
 
       // Thay đổi màu viền và nền khi focus
       &:focus {
@@ -30,12 +29,15 @@
     text-align: center;
     margin-bottom: 20px;
     color: #ff7f50; // Màu chữ tiêu đề cam
+    font-size: 40px;
   }
 
   .koi-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); // 3 thẻ trên mỗi hàng
-    gap: 20px; // Khoảng cách giữa các thẻ
+    display: flex; // Sử dụng flexbox
+    flex-wrap: wrap; // Cho phép các thẻ chuyển dòng
+    justify-content: center; // Căn giữa các thẻ
+    row-gap: 50px; // Khoảng cách giữa các thẻ
+    column-gap: 20px;
   }
 
   .koi-card {
@@ -46,6 +48,7 @@
     text-align: center;
     transition: transform 0.3s, background-color 0.3s; // Hiệu ứng chuyển tiếp
     cursor: pointer;
+    width: 20%; // Đặt chiều rộng cho mỗi thẻ
 
     &:hover {
       transform: scale(1.05); // Phóng to khi hover

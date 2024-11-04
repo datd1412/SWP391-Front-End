@@ -1,140 +1,143 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // Import useParams để lấy ID từ URL
-import Slider from 'react-slick';
-import './TourDetail.scss';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import api from '../../../config/axios'; // Import axios config
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Card, Button, Typography, List, Spin, message } from "antd";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import api from "../../../config/axios";
+import "./TourDetail.scss";
+
+const { Title, Paragraph } = Typography;
 
 function TourPage() {
-  const { id } = useParams(); // Lấy ID tour từ URL
+  const { id } = useParams();
   const mainSlider = useRef(null);
-  const thumbSlider = useRef(null);
-  const [nav1, setNav1] = useState(null);
-  const [nav2, setNav2] = useState(null);
-  const [tour, setTour] = useState(null); 
-  const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải
-  const [error, setError] = useState(null); // State để theo dõi lỗi nếu có
-
+  const [tour, setTour] = useState(null);
+  const [farmImages, setFarmImages] = useState([]); // State for multiple farm images and names
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Hàm fetch thông tin chi tiết tour
   const fetchTourDetail = async () => {
     try {
-      const response = await api.get(`/tour/${id}`); // Fetch dữ liệu tour theo ID
-      setTour(response.data); // Cập nhật state với dữ liệu tour
+      const response = await api.get(`/tour/${id}`);
+      setTour(response.data);
+
+      // Fetch details for each farm in the list
+      const farmIds = response.data.listFarmTour.map(
+        (farmTour) => farmTour.farmId
+      );
+      const farmDataPromises = farmIds.map((farmId) =>
+        api.get(`/farm/${farmId}`)
+      );
+      const farmsData = await Promise.all(farmDataPromises);
+
+      // Extract farm names and images
+      const farms = farmsData.map((farm) => ({
+        name: farm.data.farmName,
+        location: farm.data.location,
+        image: farm.data.image,
+      }));
+      setFarmImages(farms);
     } catch (error) {
       console.error(error.toString());
-      setError('Không thể tải dữ liệu tour.'); // Thiết lập thông báo lỗi
+      setError("Không thể tải dữ liệu tour.");
+      message.error("Không thể tải dữ liệu tour.");
     } finally {
-      setLoading(false); // Đặt trạng thái tải về false sau khi hoàn thành
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTourDetail(); // Gọi hàm fetch khi component mount
-  }, [id]); // Chạy lại khi ID thay đổi
+    fetchTourDetail();
+  }, [id]);
 
-  // Nếu đang tải, hiển thị thông báo
   if (loading) {
-    return <div>Đang tải...</div>;
+    return <Spin tip="Đang tải..." />;
   }
 
-  // Nếu có lỗi, hiển thị thông báo lỗi
   if (error) {
     return <div>{error}</div>;
   }
 
-  // Nếu không tìm thấy tour
   if (!tour) {
     return <div>Tour không tồn tại.</div>;
   }
 
-  // Chuyển đổi danh sách hình ảnh thành mảng
-  const mainImages = [
-    tour.image, // Sử dụng hình ảnh từ tour
-    ...tour.listFarmTour.map(farmTour => farmTour.image) // Nếu có hình ảnh trong listFarmTour
-  ];
-
   const mainSettings = {
     slidesToShow: 1,
     slidesToScroll: 1,
-    asNavFor: nav2,
     arrows: true,
     fade: true,
-  };
-
-  const thumbSettings = {
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    asNavFor: nav1,
-    focusOnSelect: true,
-    arrows: false,
-    centerMode: true,
   };
 
   return (
     <div className="tour-detail">
       <div className="container">
         <header className="tour-header">
-          <h1>{tour.tourName}</h1>
-          <p className="tour-subtitle">{tour.decription}</p>
-          <p className="tour-description">
+          <Title>{tour.tourName}</Title>
+          <Paragraph className="tour-subtitle">{tour.decription}</Paragraph>
+          <Paragraph className="tour-description">
             {tour.recipients} người tham gia
-          </p>
+          </Paragraph>
         </header>
 
         <div className="tour-content">
           <div className="tour-image">
-            <button onClick={() => mainSlider.current.slickPrev()} className="prev-button">◀</button>
-            <button onClick={() => mainSlider.current.slickNext()} className="next-button">▶</button>
-
-            <Slider {...mainSettings} ref={mainSlider} className="main-slider">
-              {mainImages.map((image, index) => (
-                <div key={index}>
-                  <img src={image} alt={`Slide ${index + 1}`} loading="lazy" />
-                </div>
-              ))}
-            </Slider>
-
-            {/* Slider hình thu nhỏ */}
-            <Slider {...thumbSettings} ref={thumbSlider} className="thumbnail-slider">
-              {mainImages.map((image, index) => (
-                <div key={index}>
-                  <img src={image} alt={`Thumbnail ${index + 1}`} loading="lazy" />
-                </div>
-              ))}
-            </Slider>
+            
+              <div>
+                <img src={tour.image} alt="Tour main" loading="lazy" />
+              </div>
+            
           </div>
 
-          <div className="tour-details">
-            <ul>
-              <li><strong>Thời gian:</strong> {tour.tourStart} - {tour.tourEnd}</li>
-              <li><strong>Phương tiện:</strong> Máy bay</li>
-              <li><strong>Nơi khởi hành:</strong> Hồ Chí Minh</li>
-            </ul>
-            <p className="price">
-              <span className="old-price">{tour.priceAdult.toLocaleString()} đ</span>
-              <span className="new-price">{tour.priceChild.toLocaleString()} đ</span>
-            </p>
-            <button className="btn-book" onClick={() => navigate("/bookingTour", {state: {tour}})} >Đặt Tour</button>
-          </div>
+          <Card className="tour-details">
+            <List>
+              <List.Item>
+                <strong>Thời gian:</strong> {tour.tourStart} - {tour.tourEnd}
+              </List.Item>
+              <List.Item>
+                <strong>Địa điểm đến:</strong>
+                <ul>
+                  {farmImages.map((farm, index) => (
+                    <li key={index}>
+                      {farm.name} - {farm.location}
+                    </li>
+                  ))}
+                </ul>
+              </List.Item>
+            </List>
+            <Paragraph className="price">
+              <span className="price-label">Giá:</span>
+              <span className="old-price">
+                {tour.priceAdult.toLocaleString()} đ
+              </span>
+              <span className="new-price">
+                {tour.priceChild.toLocaleString()} đ
+              </span>
+            </Paragraph>
+            <Button className="btn-book" type="primary" onClick={() => navigate("/bookingTour", { state: { tour } })}>
+              Đặt Tour
+            </Button>
+          </Card>
         </div>
 
         <section className="tour-schedule">
-          <h2>Chương trình tour chi tiết</h2>
-          {/* Hiển thị lịch trình tour nếu có */}
+          <Title level={2}>Chương trình tour chi tiết</Title>
           {tour.listFarmTour.map((farmTour, index) => (
             <div key={index} className="tour-day">
-              <h3>{farmTour.title}</h3>
-              <p>{farmTour.description}</p>
+              <Title level={3}>{farmTour.title}</Title>
+              <Paragraph>{farmTour.description}</Paragraph>
+              {farmImages[index] && (
+                <img
+                  src={farmImages[index].image}
+                  alt="Farm"
+                  className="farm-image"
+                />
+              )}
             </div>
           ))}
         </section>
-
-        <footer className="tour-footer">
-          <p>&copy; 2024 Koi Farm. Bảo lưu mọi quyền.</p>
-        </footer>
       </div>
     </div>
   );
