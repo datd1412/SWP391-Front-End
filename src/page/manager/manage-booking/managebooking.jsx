@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'; 
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
-import { Table, Button, Popconfirm, Modal, Form, Input } from 'antd';
+import { Table, Button, Modal, Form, Input, Badge, Space, Select } from 'antd';
+import moment from 'moment'; 
+const { Option } = Select;
 
 function BookingApproval() {
     const [bookingData, setBookingData] = useState([]);
@@ -9,7 +11,13 @@ function BookingApproval() {
     const [showOrderModal, setShowOrderModal] = useState(false);
     const [currentOrder, setCurrentOrder] = useState(null);
     const [form] = Form.useForm();
-    
+    const [filterStatus, setFilterStatus] = useState("PENDING");
+    const [selectedTour, setSelectedTour] = useState("ALL");
+    const [sortOrder, setSortOrder] = useState("closest");
+    const [showCustomerModal, setShowCustomerModal] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState({});
+    const [formReadOnly, setFormReadOnly] = useState(false);
+
     // Lấy dữ liệu booking
     const fetchBookingData = async () => {
         try {
@@ -59,17 +67,6 @@ function BookingApproval() {
         }
     };
 
-    // Xóa booking
-    const handleDelete = async (id) => {
-        try {
-            await api.delete(`booking/${id}`);
-            toast.success("Booking deleted successfully");
-            fetchBookingData();
-        } catch (err) {
-            toast.error(err.response?.data || "Error deleting booking");
-        }
-    };
-
     // Hiển thị modal để xem và chỉnh sửa đơn hàng
     const handleViewOrder = async (booking) => {
         const order = await fetchOrderData(booking.id);
@@ -81,23 +78,55 @@ function BookingApproval() {
                 stayFee: order.stayFee,
                 description: order.description || '',
                 estimateFee: booking.totalPrice,
-                total: order.total // Thêm trường total vào đây
+                total: order.total // Adding total field
             });
             setShowOrderModal(true);
         }
+        // Set modal to read-only if status is not "PENDING"
+        setFormReadOnly(booking.status !== "PENDING");
     };
+    
+    
 
     // Xử lý cập nhật mô tả
+    // Xử lý cập nhật mô tả và gửi toàn bộ thông tin đơn hàng
     const handleUpdateDescription = async () => {
         try {
-            await api.put(`order/${currentOrder.id}`, { description: form.getFieldValue('description') });
-            toast.success("Description updated successfully");
+            const values = form.getFieldsValue();
+            await api.put(`order/${currentOrder.id}`, {
+                ...values,
+                total: values.total || currentOrder.total,
+            });
+            // Cập nhật trạng thái booking thành 'REJECTED'
+            await api.put(`booking/${currentOrder.id}`, { status: 'REJECTED' });
+            
+            toast.success("Order rejected and description updated successfully");
             setShowOrderModal(false);
-            fetchBookingData(); // Refresh the booking data to reflect changes
+            fetchBookingData();
         } catch (err) {
-            toast.error(err.response?.data || "Error updating description");
+            toast.error(err.response?.data || "Error updating description and rejecting order");
         }
     };
+    
+
+    
+    const handleShowCustomerInfo = (customer) => {
+        setSelectedCustomer(customer);
+        setShowCustomerModal(true);
+    };
+    // Bộ lọc và sắp xếp với tùy chọn "All"
+    const filteredData = bookingData
+        .filter((booking) => filterStatus === "ALL" || booking.status === filterStatus)
+        .filter((booking) => selectedTour === "ALL" || selectedTour === "" || booking.tourName === selectedTour)
+        .sort((a, b) => {
+            if (sortOrder === "closest") {
+                return new Date(a.bookingDate) - new Date(b.bookingDate);
+            } else if (sortOrder === "farthest") {
+                return new Date(b.bookingDate) - new Date(a.bookingDate);
+            } else {
+                return 0;
+            }
+        });
 
     const columns = [
         {
@@ -111,14 +140,34 @@ function BookingApproval() {
             key: 'tourName',
         },
         {
-            title: 'Number of Adults',
-            dataIndex: 'numberOfAdult',
-            key: 'numberOfAdult',
+            title: 'Customer Name',
+            key: 'customerName',
+            render: (_, record) => (
+                <span>
+                    {record.customerName}
+                    <Button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => handleShowCustomerInfo({ name: record.customerName, email: record.customerEmail, phoneNumber: record.phoneNumber })}
+                    >
+                        ...
+                    </Button>
+                </span>
+            ),
         },
         {
-            title: 'Number of Children',
-            dataIndex: 'numberOfChild',
-            key: 'numberOfChild',
+            title: 'Booking Date',
+            dataIndex: 'bookingDate',
+            key: 'bookingDate',
+            render: (date) => moment(date).format("YYYY-MM-DD") // Formatting date to exclude time
+        },
+        {
+            title: 'Number of People',
+            key: 'numberOfPeople',
+            render: (_, record) => (
+                <span>
+                    {record.numberOfAdult + record.numberOfChild} (Adults: {record.numberOfAdult}, Children: {record.numberOfChild})
+                </span>
+            ),
         },
         {
             title: 'Total Price',
@@ -130,6 +179,9 @@ function BookingApproval() {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            render: (status) => (
+                <Badge status={status === "PENDING" ? "success" : status === "REJECTED" ? "error" : "processing"} text={status} />
+            )
         },
         {
             title: 'Action',
@@ -138,9 +190,8 @@ function BookingApproval() {
             render: (id, booking) => (
                 <>
                     <Button 
-                       
                         type="primary" 
-                        onClick={() => handleViewOrder(booking)} // Hiển thị modal order
+                        onClick={() => handleViewOrder(booking)} 
                     >
                         View Order
                     </Button>
@@ -152,41 +203,88 @@ function BookingApproval() {
                     >
                         Approve
                     </Button>
-                    <Button 
-                        style={{ marginLeft: 8 }} 
-                        type="primary"
-                        onClick={() => updateStatus(id, 'REJECTED')}
-                        disabled={loadingIds.has(id) || booking.status !== 'PENDING'}
-                    >
-                        Reject
-                    </Button>
-                    <Popconfirm
-                        title="Are you sure to delete this booking?"
-                        onConfirm={() => handleDelete(id)}
-                    >
-                        <Button 
-                            type="primary" 
-                            danger 
-                            style={{ marginLeft: 8 }}
-                        >
-                            Delete
-                        </Button>
-                    </Popconfirm>
                 </>
-            ),
+            )    
         },
     ];
 
     return (
         <div>
             <h4>Manage Bookings</h4>
-            <Table dataSource={bookingData} columns={columns} />
+            <Space style={{ marginBottom: 16 }}>
+                {["PENDING", "REJECTED", "APPROVED"].map((status) => {
+                    const buttonStyles = {
+                        backgroundColor: 
+                            status === "PENDING" ? "green" :
+                            status === "REJECTED" ? "red" :
+                            "blue",
+                        color: "#fff",
+                        borderColor: "transparent",
+                    };
+
+                    return (
+                        <Button
+                            key={status}
+                            type={filterStatus === status ? "primary" : "default"}
+                            style={filterStatus === status ? buttonStyles : {}}
+                            onClick={() => setFilterStatus(status)}
+                        >
+                            {status}
+                            <Badge
+                                count={bookingData.filter((b) => b.status === status).length}
+                                style={{
+                                    backgroundColor:
+                                        status === "PENDING"
+                                            ? "green"
+                                            : status === "REJECTED"
+                                            ? "red"
+                                            : "blue",
+                                }}
+                            />
+                        </Button>
+                    );
+                })}
+                
+                <Select
+                    placeholder="Filter by Tour Name"
+                    onChange={(value) => setSelectedTour(value || "ALL")}
+                    allowClear
+                    style={{ width: 200 }}
+                >
+                    <Option value="ALL">All</Option>
+                    {[...new Set(bookingData.map((b) => b.tourName))].map((tour) => (
+                        <Option key={tour} value={tour}>{tour}</Option>
+                    ))}
+                </Select>
+
+                <Select
+                    placeholder="Sort by Date"
+                    onChange={(value) => setSortOrder(value || "ALL")}
+                    allowClear
+                    style={{ width: 150 }}
+                >
+                    <Option value="ALL">All</Option>
+                    <Option value="closest">Closest</Option>
+                    <Option value="farthest">Farthest</Option>
+                </Select>
+            </Space>
+
+            <Table dataSource={filteredData} columns={columns} />
 
             <Modal
                 title="Order Details"
                 visible={showOrderModal}
                 onCancel={() => setShowOrderModal(false)}
-                onOk={handleUpdateDescription}
+                footer={[
+                    <Button key="cancel" onClick={() => setShowOrderModal(false)}>
+                        Cancel
+                    </Button>,
+                    !formReadOnly && (
+                        <Button key="submit" type="primary" danger onClick={handleUpdateDescription}>
+                            Reject
+                        </Button>
+                    ),
+                ]}
             >
                 <Form form={form} layout="vertical">
                     <Form.Item label="Food Fee" name="foodFee">
@@ -199,7 +297,7 @@ function BookingApproval() {
                         <Input type="number" readOnly />
                     </Form.Item>
                     <Form.Item label="Total" name="total">
-                        <Input type="number" readOnly /> {/* Hiển thị trường Total */}
+                        <Input type="number" readOnly />
                     </Form.Item>
                     {currentOrder?.pdfUrl && (
                         <div style={{ margin: '10px 0' }}>
@@ -209,17 +307,23 @@ function BookingApproval() {
                             </a>
                         </div>
                     )}
-                    <Form.Item
-                        label="Description"
-                        name="description"
-                        rules={[{ required: true, message: 'Please input the description!' }]}
-                    >
-                        <Input.TextArea rows={4} />
-                    </Form.Item>
+                    <Form.Item label="Description" name="description">
+                         <Input.TextArea rows={4} readOnly={formReadOnly} />
+                     </Form.Item>
                     <Form.Item label="Estimate Fee" name="estimateFee">
                         <Input type="number" readOnly />
                     </Form.Item>
                 </Form>
+            </Modal>
+            <Modal
+                open={showCustomerModal}
+                onCancel={() => setShowCustomerModal(false)}
+                footer={null}
+                title="Customer Information"
+            >
+                <p>Name: {selectedCustomer.name}</p>
+                <p>Email: {selectedCustomer.email}</p>
+                <p>Phone number: {selectedCustomer.phoneNumber}</p>
             </Modal>
         </div>
     );

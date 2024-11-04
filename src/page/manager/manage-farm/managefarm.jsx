@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
-import { Table, Space, Typography, Modal, Button, Form, Input, TimePicker, Popconfirm, Upload, Select, Row, Col} from 'antd';
+import { Table, Space, Typography, Modal, Button, Form, Input, TimePicker, Popconfirm, Upload, Select, Row, Col, AutoComplete, Image } from 'antd';
 import dayjs from 'dayjs';
 import { PlusOutlined } from '@ant-design/icons';
-import uploadFile from '../../../utils/file'; // Giả sử bạn đã có hàm uploadFile để xử lý việc upload
+import uploadFile from '../../../utils/file';
 
 function ManageFarm() {
     const [datas, setDatas] = useState([]);
-    const [tourList, setTourList] = useState([]); // Danh sách tour
-    const [koiList, setKoiList] = useState([]); // Danh sách cá koi
-    const [fileList, setFileList] = useState([]); // Danh sách file ảnh
+    const [tourList, setTourList] = useState([]);
+    const [koiList, setKoiList] = useState([]);
+    const [fileList, setFileList] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [filteredData, setFilteredData] = useState([]);
+    const [locationFilter, setLocationFilter] = useState('');
 
-    // Lấy danh sách tour và cá koi từ API
     const fetchRelatedData = async () => {
         try {
             const tours = await api.get("tour");
@@ -27,22 +28,21 @@ function ManageFarm() {
         }
     };
 
-    // GET: Lấy dữ liệu farm
     const fetchData = async () => {
         try {
             const response = await api.get("farm");
             setDatas(response.data);
+            setFilteredData(response.data);
         } catch (err) {
             toast.error(err.response.data);
         }
     };
 
-    // CREATE OR UPDATE: Lưu dữ liệu farm
     const handleSumbit = async (values) => {
         if (fileList.length > 0) {
             const file = fileList[0];
             const url = await uploadFile(file.originFileObj);
-            values.image = url; // Thêm đường dẫn ảnh vào values
+            values.image = url; // Add image URL to values
         }
     
         const formattedValues = {
@@ -50,12 +50,12 @@ function ManageFarm() {
             startTime: values.startTime.format("HH:mm:ss"),
             endTime: values.endTime.format("HH:mm:ss"),
             listFarmTour: values.listFarmTour.map(tour => ({
-                farmId: tour.farmId, // Gửi farmId tương ứng
+                farmId: tour.farmId,
                 tourId: tour.tourId,
                 description: tour.description,
             })),
             listFarmKoi: values.listFarmKoi.map(koi => ({
-                farmId: koi.farmId, // Gửi farmId tương ứng
+                farmId: koi.farmId,
                 koiId: koi.koiId,
                 quantity: koi.quantity,
             })),    
@@ -83,7 +83,6 @@ function ManageFarm() {
         }
     };
 
-    // DELETE: Xóa farm
     const handleDelete = async (id) => {
         try {
             await api.delete(`farm/${id}`);
@@ -96,7 +95,7 @@ function ManageFarm() {
 
     useEffect(() => {
         fetchData();
-        fetchRelatedData(); // Lấy dữ liệu liên quan khi component render
+        fetchRelatedData();
     }, []);
 
     const getBase64 = (file) =>
@@ -123,7 +122,26 @@ function ManageFarm() {
         </div>
     );
 
+    const handleFilterChange = (value) => {
+        const filtered = datas.filter(item => 
+            item.farmName.toLowerCase().includes(value.toLowerCase()) ||
+            item.location.toLowerCase().includes(locationFilter.toLowerCase())
+        );
+        setFilteredData(filtered);
+    };
+
+    const handleLocationFilterChange = (value) => {
+        setLocationFilter(value);
+        handleFilterChange(value);
+    };
+
     const columns = [
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            key: 'image',
+            render: (image) => (image ? <Image width={50} src={image} /> : 'No Image'),
+        },
         {
             title: 'ID',
             dataIndex: 'id',
@@ -145,13 +163,12 @@ function ManageFarm() {
             key: "id",
             render: (id, farm) => (
                 <>
-                    <Button type="primary"  style={{ marginLeft: 8 }}  onClick={() => {
+                    <Button type="default" style={{ marginLeft: 8 }} onClick={() => {
                         setShowModal(true);
                         form.setFieldsValue({
                             ...farm,
                             startTime: dayjs(farm.startTime, "HH:mm:ss"),
                             endTime: dayjs(farm.endTime, "HH:mm:ss"),
-                            // Thiết lập farmKoiList và listFarmTour
                             listFarmTour: farm.listFarmTour.map(tour => ({
                                 tourId: tour.tourId,
                                 description: tour.description,
@@ -170,7 +187,7 @@ function ManageFarm() {
                         description="Do you want to delete this farm?"
                         onConfirm={() => handleDelete(id)}
                     >
-                        <Button type="primary" danger  style={{ marginLeft: 8 }} >
+                        <Button type="default" danger style={{ marginLeft: 8 }}>
                             Delete
                         </Button>
                     </Popconfirm>
@@ -181,14 +198,29 @@ function ManageFarm() {
 
     return (
         <div>
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                <AutoComplete
+                    style={{ width: 200 }}
+                    placeholder="Search by Farm Name"
+                    options={datas.map(farm => ({ value: farm.farmName }))}
+                    onChange={handleFilterChange}
+                />
+                <AutoComplete
+                    style={{ width: 200 }}
+                    placeholder="Search by Location"
+                    options={datas.map(farm => ({ value: farm.location }))}
+                    onChange={handleLocationFilterChange}
+                />
+            </div>
+
             <Button onClick={() => {
                 setShowModal(true);
                 form.resetFields();
             }}>
-                Add 
+                Add Farm
             </Button>
             <Typography.Title level={4}>Farm</Typography.Title>
-            <Table dataSource={datas} columns={columns} />
+            <Table dataSource={filteredData.length > 0 ? filteredData : datas} columns={columns} />
 
             <Modal
                 open={showModal}
@@ -250,7 +282,6 @@ function ManageFarm() {
                         </Row>
                     </Form.Item>
 
-                    {/* Chọn Tour */}
                     <Form.List name="listFarmTour">
                         {(fields, { add, remove }) => (
                             <>
@@ -285,7 +316,6 @@ function ManageFarm() {
                         )}
                     </Form.List>
 
-                    {/* Chọn Cá Koi */}
                     <Form.List name="listFarmKoi">
                         {(fields, { add, remove }) => (
                             <>
@@ -321,7 +351,6 @@ function ManageFarm() {
                         )}
                     </Form.List>
 
-                    {/* Upload Hình Ảnh */}
                     <Form.Item
                         label="Upload Image"
                         name="image"
