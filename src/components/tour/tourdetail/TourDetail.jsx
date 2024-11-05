@@ -75,7 +75,7 @@ function TourPage() {
       <div className="container">
         <header className="tour-header">
           <Title>{tour.tourName}</Title>
-          <Paragraph className="tour-subtitle">{tour.description}</Paragraph>
+          <Paragraph className="tour-subtitle">{tour.decription}</Paragraph>
           <Paragraph className="tour-description">
             {tour.recipients} người tham gia
           </Paragraph>
