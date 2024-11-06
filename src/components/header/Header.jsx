@@ -15,15 +15,19 @@ const { Text } = Typography; // Destructure Text from Typography
 function Header({ user, setUser }) {
   const navigate = useNavigate();
 
+  const handleSwitchAdmin = () => {
+    navigate("/manager");
+
+  }
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-    navigate("/login");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 
   const menu = (
     <Menu>
-      <Menu.Item key="profile" icon={<UserOutlined />}>
+      <Menu.Item onClick={() => navigate("/profile", { state: { user } })} key="profile" icon={<UserOutlined />}>
         Profile
       </Menu.Item>
       <Menu.Item key="notifications" icon={<BellOutlined />}>
@@ -38,11 +42,7 @@ function Header({ user, setUser }) {
 
   return (
     <div className="navbar">
-      <img
-        src="src\\image\\koi logo - remove bg.png"
-        alt="Koi Fish Logo"
-        width={"70px"}
-      />
+      <img src="https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/koi%20logo%20-%20remove%20bg.png?alt=media&token=e721ab61-93b9-45d8-92bd-eb4177902ed7" width={'70px'} />
       <Menu mode="horizontal" theme="light" className="menu-items">
         <Menu.Item onClick={() => navigate("/")} key="home">
           Home
@@ -57,6 +57,20 @@ function Header({ user, setUser }) {
           Koi Fish
         </Menu.Item>
       </Menu>
+
+      {
+        user?.data.role === "ADMIN" && (
+          <Switch
+            unCheckedChildren="Switch Staff"
+            defaultChecked={false}
+            style={{
+              marginRight: '30px'
+            }}
+            onChange={handleSwitchAdmin}
+          />
+        )
+      }
+
       <div className="auth-buttons">
         {user ? (
           <Dropdown overlay={menu} trigger={["click"]}>
@@ -72,14 +86,8 @@ function Header({ user, setUser }) {
                 src="https://example.com/path-to-avatar.jpg"
                 icon={<UserOutlined />}
               />
-              <div
-                style={{
-                  marginLeft: "10px",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Text strong>{user?.username}</Text>
+              <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column' }}>
+                <Text strong>{user.data?.username}</Text>
               </div>
             </div>
           </Dropdown>

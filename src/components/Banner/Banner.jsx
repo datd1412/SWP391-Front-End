@@ -4,19 +4,35 @@ import './Banner.scss';
 
 const Banner = () => {
   return (
-    <Carousel>
+    <Carousel autoplay={true}>
       <div className='banner-item'>
         <img
-          src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2335da3c-0b92-4efd-8589-97cab1d3c2ea/dgfob7i-676713ac-ee25-4218-8ff8-ec07e46df8b8.jpg/v1/fill/w_1154,h_692,q_75,strp/koi_pond___ai_wallpaper_by_marwil_arts_dgfob7i-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjkyIiwicGF0aCI6IlwvZlwvMjMzNWRhM2MtMGI5Mi00ZWZkLTg1ODktOTdjYWIxZDNjMmVhXC9kZ2ZvYjdpLTY3NjcxM2FjLWVlMjUtNDIxOC04ZmY4LWVjMDdlNDZkZjhiOC5qcGciLCJ3aWR0aCI6Ijw9MTE1NCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.iP5PGBM2h58oRyikq_KIwWgNEwUFtL0vyGUwwVdSFXo"
+          src="https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/Banner%201.png?alt=media&token=daa9d552-0891-4542-a0cb-b4afbdeb3c42"
           alt="Sale Banner 1"
-          style={{ width: '700px' }}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
         />
       </div>
       <div className='banner-item'>
         <img
-          src="https://thumbs.dreamstime.com/b/beautiful-koi-fish-wallpaper-colorful-graceful-digital-art-captivating-showcases-stunning-arrangement-vividly-308854647.jpg"
+          src="https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/Banner%202.png?alt=media&token=8729daeb-70f7-4e80-aae4-2e1ea64e9b87"
           alt="Sale Banner 2"
-          style={{ width: '700px' }}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
+      </div>
+      <div className='banner-item'>
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/Banner%203.jpg?alt=media&token=e7d1f38f-2b0e-4fff-a1df-c203452d8212"
+          alt="Sale Banner 3"
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
         />
       </div>
     </Carousel>

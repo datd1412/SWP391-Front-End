@@ -148,8 +148,8 @@ function ManageTour() {
                         setShowModal(true); 
                         form.setFieldsValue({ 
                             ...tour,
-                            tourStart: dayjs(tour.tourStart), // Chuy?n d?i thành dayjs
-                            tourEnd: dayjs(tour.tourEnd), // Chuy?n d?i thành dayjs
+                            tourStart: dayjs(tour.tourStart), // Chuyển đổi thành dayjs
+                            tourEnd: dayjs(tour.tourEnd), // Chuyển đổi thành dayjs
                             listFarmTour: tour.listFarmTour.map(farmTour => ({
                                 farmId: farmTour.farmId,
                                 description: farmTour.description
@@ -192,7 +192,7 @@ function ManageTour() {
                 <Form.Item name="decription" label="Description" rules={[{ required: true, message: 'Please input the description!' }]}>
                     <Input.TextArea />
                 </Form.Item>
-                {/* Ð?t tourStart và tourEnd trên cùng m?t hàng */}
+                {/* Đặt tourStart và tourEnd trên cùng một hàng */}
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item name="tourStart" label="Start Date" rules={[{ required: true, message: 'Please select the start date!' }]}>

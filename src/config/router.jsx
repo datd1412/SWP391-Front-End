@@ -5,17 +5,21 @@ import LoginPage from "../page/login/LoginPage";
 import RegisterPage from "../page/register/RegisterPage";
 import HomePage from "../page/home/HomePage";
 import ErrorPage from "../page/error/ErrorPage";
-import Header from "../components/header/Header";
-import Footer from '../components/footer/Footer';
 import ManageFarm from "../page/manager/manage-farm/managefarm";
 import Layout from "../components/layout/layout"
 import ManageKoi from "../page/manager/manage-koi/managekoi";
 import ManageTour from "../page/manager/manage-tour/managetour";
 import BookingApproval from "../page/manager/manage-booking/managebooking";
-import TourPage from "../page/tour/TourPage";
-import TourDetailPage from "../page/tourdetail/TourDetailPage";
-import KoiFarmPage from "../page/koifarm/KoiFarmPage";
+import ProfilePage from "../page/profile/ProfilePage";
+import BookingPage from "../page/booking/BookingPage";
+import TestSearch from "../components/SearchBar/TestSearch";
+import SuccessPage from "../page/result/SuccessPage";
 import KoiFishPage from "../page/koifish/KoiFishPage";
+import KoiFarmPage from "../page/koifarm/KoiFarmPage";
+import TourDetailPage from "../page/tourdetail/TourDetailPage";
+import TourPage from "../page/tour/TourPage";
+import FaillPage from "../page/result/FaillPage";
+import PrivateRoute from "./routers/PrivateRoute";
 // import ManageTour from "../page/manager/manage-tour/managetour"
 // const ProtectedRouteAuth = ({ children }) => {
 //   const user = useSelector(selectUser);
@@ -64,6 +68,22 @@ export const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
+        path: "/profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "/bookingtour",
+        element: <BookingPage />,
+      },
+      {
+        path: "/success",
+        element: <SuccessPage />,
+      },
+      {
+        path: "/failPayment",
+        element: <FaillPage />
+      },
+      {
         path: "/tour",
         element: <TourPage />,
       },
@@ -79,6 +99,10 @@ export const router = createBrowserRouter([
         path: "/koifish",
         element: <KoiFishPage />,
       },
+      {
+        path: "/test",
+        element: <TestSearch />
+      }
     ]
   },
   {
@@ -86,33 +110,33 @@ export const router = createBrowserRouter([
     element: <RegisterPage />,
   },
   {
-    path:"/login",
-    element: <LoginPage/>,
-  },
-  {
-    path:"/login",
-    element: <LoginPage/>,
+    path: "/login",
+    element: <LoginPage />,
   },
   {
     path: "/manager",
-    element: <ManagerPage />, // ManagerPage sẽ render các trang con
+    element: (
+      <PrivateRoute>
+        <ManagerPage />
+      </PrivateRoute>
+    ), // ManagerPage sẽ render các trang con
     children: [
       {
         path: "ManageFarm", // URL /manager/page1
         element: <ManageFarm />, // Trang Page1
       },
       {
-        path:"ManageKoi",
+        path: "ManageKoi",
         element: <ManageKoi />
       },
       {
-         path:"ManageTour",
-         element: <ManageTour />
+        path: "ManageTour",
+        element: <ManageTour />
       },
       {
-        path:"ManageBooking",
+        path: "ManageBooking",
         element: <BookingApproval />
-     },
+      },
       {
         path: "", // Route con mặc định
         element: <Navigate to="/manager/ManageFarm" replace />, // Chuyển hướng về ManageKoi

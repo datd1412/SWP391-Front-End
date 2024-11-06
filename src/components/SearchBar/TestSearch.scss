@@ -1,0 +1,292 @@
+/* .booking-container {
+
+  .tracking-bar {
+      background-color: #FFFFFF;
+      border: 2px solid #EEEEEE;
+      padding: 20px 50px;
+  }
+
+  .steps-content {
+      background-color: #f0f0f0;
+
+      .booking-info-container {
+          position: relative;
+
+          .hotel-first {
+              display: flex;
+              justify-content: center;
+              height: 100vh;
+
+              .hotel-container {
+                  min-width: 1120px;
+                  max-height: 650px;
+                  margin: 70px 0;
+
+                  .hotel-header {
+                      h1 {
+                          width: 80%;
+                          font-size: 60px;
+                          margin-top: 60px;
+                      }
+
+                      p {
+                          width: 90%;
+                          font-size: 16px;
+                          line-height: 25px;
+                          margin-top: 20px;
+                      }
+                  }
+
+                  .actions {
+                      margin-top: 30px;
+
+                      .discover-now {
+                          display: flex;
+                          align-items: center;
+                          background-color: #ffe498;
+                          color: #e27637;
+                          border-radius: 7px;
+                          border: none;
+                          padding: 20px;
+                          font-size: 15px;
+                          font-weight: bold;
+                          letter-spacing: 0.25px;
+                          transition: background-color 0.3s ease, color 0.3s ease;
+                      }
+
+                      .discover-now:hover {
+                          background-color: #e27637;
+                          color: white;
+                      }
+                  }
+
+                  .right-booking {
+                      background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/koi_book_img.jpg?alt=media&token=dc163234-6059-422c-9743-a44bbd9f1425');
+                      border-radius: 10px;
+                      background-size: cover;
+                      background-position: center;
+                  }
+              }
+          }
+
+          .hotel-second {
+              display: flex;
+              justify-content: center;
+              position: absolute;
+              left: 390px;
+              bottom: 220px;
+
+              .hotel-form-container {
+                  display: flex;
+                  justify-content: center;
+                  flex-direction: column;
+                  min-width: 1120px;
+
+                  h2 {
+                      margin-bottom: 15px;
+                  }
+
+                  .hotel-wrapper {
+                      background-color: #fff;
+                      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+                      border-radius: 16px;
+                      max-width: 970px;
+
+                      .hotel-form {
+                          display: flex;
+                          gap: 50px;
+                          padding: 15px;
+
+                          .ant-form-item-label {
+                              label {
+                                  font-size: 17px;
+                              }
+                          }
+
+                          .booking-email {
+                              min-width: 350px;
+                          }
+
+                          .booking-guests {
+                              min-width: 250px;
+                          }
+
+                          .ant-form-item {
+                              margin: 0;
+
+                              .ant-form-item-control-input-content {
+
+                                  .ant-input {
+                                      font-size: 20px;
+                                  }
+
+                                  .ant-btn {
+                                      padding: 4px 20px;
+                                      height: 100%;
+
+                                      span {
+                                          font-size: 20px;
+                                      }
+                                  }
+                              }
+                          }
+
+                          .btn-booking-next {
+                              background-color: #fad46c;
+                              color: #eee;
+                              display: flex;
+                              justify-content: center;
+                              align-items: center;
+                              border-radius: 6px;
+                              font-weight: 700;
+                              font-size: 17px;
+                              letter-spacing: 3px;
+                              margin-top: 41px;
+                              margin-left: 20px;
+
+                              span {
+                                  padding: 20px;
+                              }
+                          }
+                      }
+                  }
+
+              }
+          }
+
+          .floating-images {
+              .floating-image-1 {
+                  background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/floating_3.jpg?alt=media&token=f4fe623a-eeeb-4801-92b2-b79fad445ad1');
+                  background-size: cover;
+                  border: 2px solid #6cc538;
+                  border-radius: 50%;
+                  width: 60px;
+                  height: 60px;
+                  position: absolute;
+                  left: 925px;
+                  top: 100px;
+              }
+
+              .floating-image-2 {
+                  background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/floating_2.jpg?alt=media&token=9ff17c7c-b57d-4bd0-988c-d69b30699a47');
+                  background-size: cover;
+                  border: 2px solid #6cc538;
+                  border-radius: 50%;
+                  width: 80px;
+                  height: 80px;
+                  position: absolute;
+                  left: 915px;
+                  top: 200px;
+              }
+          }
+      }
+
+      .bk-guest-board {
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+
+      }
+
+      .booking-payment {
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+
+          .booking-method-board {
+              background-color: #FFFFFF;
+              width: 30%;
+              display: flex;
+              justify-content: center;
+              flex-direction: column;
+              border-radius: 10px;
+              padding: 30px 50px;
+              margin: 50px 0;
+
+              h2 {
+                  text-align: center;
+                  margin-bottom: 40px;
+                  color: #062444;
+              }
+
+              .booking-payment-logo {
+                  display: flex;
+                  justify-content: center;
+
+                  .booking-payment-logo-item {
+                      background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/4142132-removebg-preview.png?alt=media&token=59e4afec-6f71-4fd3-87a0-0d21189621a4');
+                      background-size: cover;
+                      display: flex;
+                      width: 100px;
+                      height: 100px;
+                  }
+              }
+
+              .ant-list-item {
+                  cursor: pointer;
+                  display: flex;
+                  padding: 20px;
+
+                  .ant-avatar {
+                      width: 50px;
+                      height: 50px;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+
+                      svg {
+                          font-size: 30px;
+                          color: #a4f3cd;
+                      }
+                  }
+
+                  .ant-list-item-meta-avatar {
+                      margin-right: 35px;
+                      padding-left: 10px;
+                  }
+
+                  .ant-list-item-meta-content {
+                      margin: auto;
+
+                      h4 {
+                          font-size: 18px;
+                          color: #062444;
+                      }
+                  }
+              }
+
+              .next-arrow {
+                  font-size: 20px;
+                  color: #a4f3cd;
+                  padding-right: 10px;
+              }
+
+              .ant-list-item:hover {
+                  background-color: #f0f0f0;
+                  border-radius: 8px;
+              }
+          }
+
+          .btn-payment {
+              display: flex;
+              justify-content: center;
+
+              .btn-booking {
+                  min-width: 120px;
+                  color: #062444;
+                  padding: 5px 0;
+                  margin-top: 70px;
+              }
+
+              .prev {
+                  margin-right: 70px;
+              }
+
+              .next {
+                  margin-left: 70px;
+              }
+          }
+      }
+  }
+
+} */

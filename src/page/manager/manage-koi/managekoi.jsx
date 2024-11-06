@@ -123,13 +123,27 @@ function ManageKoi() {
             key: "id",
             render: (id, koi) => (
                 <Space>
-                    <Button onClick={() => { 
-                        setShowModal(true); 
-                        form.setFieldsValue({ ...koi }); 
-                        setFileList([]); // Reset fileList when editing
-                    }}>Edit</Button>
-                    <Popconfirm title="Do you want to delete this fish?" onConfirm={() => handleDelete(id)}>
-                        <Button danger>Delete</Button>
+                    <Button type="primary"  style={{ marginLeft: 8 }}  onClick={() => {
+                        setShowModal(true);
+                        form.setFieldsValue({
+                            ...koi,
+                            farmKoiList: koi.farmKoiList.map(farmKoi => ({
+                                farmId: farmKoi.farmId,
+                                quantity: farmKoi.quantity,
+                            })),
+                        });
+                    }}>
+                        Edit
+                    </Button>
+
+                    <Popconfirm
+                        title="Delete"
+                        description="Do you want to delete this koi fish?"
+                        onConfirm={() => handleDelete(id)}
+                    >
+                        <Button type="primary" danger  style={{ marginLeft: 8 }} >
+                            Delete
+                        </Button>
                     </Popconfirm>
                 </Space>
             ),

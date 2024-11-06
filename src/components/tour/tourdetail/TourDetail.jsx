@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Card, Button, Typography, List, Spin, message } from "antd";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -16,6 +16,7 @@ function TourPage() {
   const [farmImages, setFarmImages] = useState([]); // State for multiple farm images and names
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const fetchTourDetail = async () => {
     try {
@@ -115,7 +116,7 @@ function TourPage() {
                 {tour.priceChild.toLocaleString()} đ
               </span>
             </Paragraph>
-            <Button className="btn-book" type="primary">
+            <Button className="btn-book" type="primary" onClick={() => navigate("/bookingTour", { state: { tour } })}>
               Đặt Tour
             </Button>
           </Card>

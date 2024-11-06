@@ -6,15 +6,27 @@ import { Link, useNavigate } from "react-router-dom";
 import { provider } from "../../config/firebase";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import api from "../../config/axios";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/action/userAction";
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onFinish = async (values) => {
     try {
       const response = await api.post("/login", values);
-      localStorage.setItem("token", response.data.data.token);
+      /*       const { token } = response.data; */
+      localStorage.setItem("token",response.data.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));
+      const user = {
+        fullName: response.data.data.fullName,
+        username: response.data.data.username,
+        email: response.data.data.email,
+        address: response.data.data.address,
+        role: response.data.data.role,
+      }
+      dispatch(setUser(user));
       navigate("/");
     } catch (e) {
       console.log(e);

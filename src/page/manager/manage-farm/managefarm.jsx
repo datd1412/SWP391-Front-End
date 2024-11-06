@@ -145,7 +145,7 @@ function ManageFarm() {
             key: "id",
             render: (id, farm) => (
                 <>
-                    <Button type="primary" onClick={() => {
+                    <Button type="primary"  style={{ marginLeft: 8 }}  onClick={() => {
                         setShowModal(true);
                         form.setFieldsValue({
                             ...farm,
@@ -170,7 +170,7 @@ function ManageFarm() {
                         description="Do you want to delete this farm?"
                         onConfirm={() => handleDelete(id)}
                     >
-                        <Button type="primary" danger>
+                        <Button type="primary" danger  style={{ marginLeft: 8 }} >
                             Delete
                         </Button>
                     </Popconfirm>

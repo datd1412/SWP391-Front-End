@@ -30,8 +30,8 @@ const Tour = () => {
     <div className="tour-page">
       {/* Banner */}
       <div className="tour-banner">
-        <h1>Khám Phá Các Tour Tại Đây</h1>
-        <p>Trải nghiệm một chuyến tham quan đầy thú vị tại đây với nhiều hoạt động hấp dẫn.</p>
+        <h1>Khám Phá Các Tour Tại Koi Farm</h1>
+        <p>Trải nghiệm một chuyến tham quan đầy thú vị tại Koi Farm với nhiều hoạt động hấp dẫn.</p>
         <Button type="primary">
           <Link to="/book">Đặt Tour Ngay</Link>
         </Button>
