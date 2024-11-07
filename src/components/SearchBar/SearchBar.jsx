@@ -79,7 +79,7 @@ const SearchBar = () => {
               },
               {
                 value: 5000000,
-                label: 'Under 1 jack',
+                label: 'Under 5.000.000 VND',
               },
             ]}
             onChange={(value) =>

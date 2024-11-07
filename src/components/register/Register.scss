@@ -17,7 +17,7 @@
     border-radius: 0 250px 200px 0;
     color: #fff;
     height: 100%;
-    background-image: url('src/image/register background.jpg');
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/register%20background.jpg?alt=media&token=7181e5c1-1850-4cf5-9d02-3eaec5e5fb1e');
     /* Encoding spaces */
     background-size: cover;
     /* Make sure the image covers the entire div */
@@ -95,6 +95,9 @@
 
   .form-register {
     width: 500px;
+    .ant-input-suffix {
+      margin-right: 10px;
+    }
   }
 
   .btn-container {

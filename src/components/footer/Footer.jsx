@@ -32,7 +32,7 @@ function Footer() {
                 </li>
                 <li>
                   <FontAwesomeIcon icon={faLocationDot} />
-                  Address: ???
+                  Address: 15 Ly Thuong Kiet Street, Ward 7, Tan Binh District, Ho Chi Minh City, Vietnam
                 </li>
               </ul>
             </div>

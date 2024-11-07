@@ -253,5 +253,4 @@ function ManageKoi() {
         </div>
     );
 }
-
 export default ManageKoi; 
