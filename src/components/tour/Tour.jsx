@@ -1,34 +1,37 @@
 import React, { useEffect, useState } from "react";
-
 import { Card, Button, Row, Col } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Tour.scss";
 import api from "../../config/axios";
 
 const { Meta } = Card;
 
 const Tour = () => {
-  const [tours, setTours] = useState([]); 
+  const [tours, setTours] = useState([]);
+  const location = useLocation();
 
-  
-    
-    const fetchTours = async () => {
-      try {
-        const response = await api.get("/tour"); 
-        setTours(response.data); 
-      } catch (error) {
-        console.error(error.toString()); 
-      }
-    }; 
+  const searchResults = location.state?.searchResults;
 
-    useEffect(() => {
+  const fetchTours = async () => {
+    try {
+      const response = await api.get("/tour");
+      setTours(response.data);
+    } catch (error) {
+      console.error(error.toString());
+    }
+  };
+
+  useEffect(() => {
+    if (searchResults) {
+      setTours(searchResults);
+    } else {
       fetchTours();
-    }, []);
-  
+    }
+  }, [searchResults]);
 
   return (
     <div className="tour-page">
-      {/* Banner */}
+      {/* Tour Banner */}
       <div className="tour-banner">
         <h1>Khám Phá Các Tour Tại Koi Farm</h1>
         <p>Trải nghiệm một chuyến tham quan đầy thú vị tại Koi Farm với nhiều hoạt động hấp dẫn.</p>
@@ -37,7 +40,7 @@ const Tour = () => {
         </Button>
       </div>
 
-      {/* Danh Sách Các Tour */}
+      {/* Tour List */}
       <section className="tour-list">
         <h2>Danh Sách Các Tour</h2>
         <Row gutter={16}>
@@ -51,14 +54,9 @@ const Tour = () => {
                   </Button>
                 ]}
               >
-                <Meta title= {tour.tourName}  />
-                <p>
-                  <strong>Giá:</strong> {tour.priceAdult}đ
-                </p>
-                <p>
-                  <strong>Thời gian:</strong> {new Date(tour.tourStart).toLocaleString()} - {new Date(tour.tourEnd).toLocaleString()}
-                </p>
-               
+                <Meta title={tour.tourName} />
+                <p><strong>Giá:</strong> {tour.priceAdult}đ</p>
+                <p><strong>Thời gian:</strong> {new Date(tour.tourStart).toLocaleString()} - {new Date(tour.tourEnd).toLocaleString()}</p>
               </Card>
             </Col>
           ))}

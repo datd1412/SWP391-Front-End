@@ -38,6 +38,7 @@
     justify-content: center; // Căn giữa các thẻ
     row-gap: 50px; // Khoảng cách giữa các thẻ
     column-gap: 20px;
+
   }
 
   .koi-card {
@@ -49,6 +50,7 @@
     transition: transform 0.3s, background-color 0.3s; // Hiệu ứng chuyển tiếp
     cursor: pointer;
     width: 20%; // Đặt chiều rộng cho mỗi thẻ
+    
 
     &:hover {
       transform: scale(1.05); // Phóng to khi hover
@@ -56,9 +58,10 @@
     }
 
     .koi-image {
-      width: 150px; // Đặt kích thước hình ảnh
-      height: auto;
-      border-radius: 4px;
+      width: 100%; // Đặt kích thước hình ảnh
+      height: 88%; // Chiều cao cố định cho hình ảnh
+      border-radius: 4px; // Bo góc cho hình ảnh
+      object-fit: cover; // Giữ tỷ lệ hình ảnh
     }
 
     h3 {

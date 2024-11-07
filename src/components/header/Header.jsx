@@ -42,7 +42,7 @@ function Header({ user, setUser }) {
 
   return (
     <div className="navbar">
-      <img src="https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/koi%20logo%20-%20remove%20bg.png?alt=media&token=e721ab61-93b9-45d8-92bd-eb4177902ed7" width={'70px'} />
+      <img src="https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/koi%20logo%20-%20remove%20bg.png?alt=media&token=e721ab61-93b9-45d8-92bd-eb4177902ed7" width={'70px'} onClick={() => navigate("/")}/>
       <Menu mode="horizontal" theme="light" className="menu-items">
         <Menu.Item onClick={() => navigate("/")} key="home">
           Home

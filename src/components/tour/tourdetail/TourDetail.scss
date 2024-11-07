@@ -85,19 +85,13 @@
         color: #ff6f00; // Orange for price
         font-weight: bold;
 
-        .old-price {
-          text-decoration: line-through;
-          margin-right: 0.75rem;
-          color: #999;
-        }
+        
 
-        .price-label {
-          margin-right: 0.5rem;
-          font-weight: 600;
+        .adult-price{
+          color: #fa920a;
         }
-
-        .new-price {
-          color: #ff6f00;
+        .child-price {
+          color: #ffa135;
         }
       }
 

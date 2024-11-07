@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <div className="navbar">
 
-      <img src="src\image\koi logo - remove bg.png" alt="Koi Fish Logo" width={'70px'} />
+      <img src="src\image\koi logo - remove bg.png" alt="Koi Fish Logo" width={'70px'} onClick={() => navigate("/")} />
       <Menu mode="horizontal" theme="light" className='menu-items'>
         <Menu.Item key="home">Home</Menu.Item>
         <Menu.Item key="koiFarm">Koi Farm</Menu.Item>
