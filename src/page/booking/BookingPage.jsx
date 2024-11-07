@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, DatePicker, Divider, Form, Input, InputNumber, List, Menu, Popover, Result, Row, Space, Steps, Typography } from 'antd'
+import { Avatar, Button, Col, DatePicker, Divider, Form, Image, Input, InputNumber, List, Menu, Popover, Result, Row, Space, Steps, Typography } from 'antd'
 import React, { useState } from 'react'
 import './BookingPage.scss'
 import { BankOutlined, DollarOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
@@ -10,17 +10,18 @@ import { addBooking } from '../../redux/action/bookingActions';
 const { Text, Title } = Typography;
 
 function BookingPage() {
-    const description = 'This is a description.';
+    const selectedTab = '3';
     const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const tour = location.state?.tour;
     console.log("ID: ", tour);
-    const [steps, setSteps] = useState(0);
+    const [steps, setSteps] = useState(1);
 
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
 
+    const [visibleDiv, setvisibleDiv] = useState(false);
     const [selectedMethod, setSelectedMethod] = useState(null);
 
     const handleAdultCount = (count) => {
@@ -30,32 +31,6 @@ function BookingPage() {
     const handleChildrenCount = (count) => {
         setChildren((prev) => Math.max(0, prev + count));
     }
-
-    const items = [
-        {
-            title: 'Tour Detail',
-            description,
-        },
-        {
-            title: 'Payment Detail',
-            description,
-        },
-        {
-            title: 'Review Order',
-            description,
-        },
-    ];
-
-    const paymentMethods = [
-        {
-            title: 'VNPAY',
-            icon: <BankOutlined />,
-        },
-        {
-            title: 'Pay with Cash',
-            icon: <DollarOutlined />,
-        },
-    ];
 
     const content = (
         <Space className="bk-guest-board">
@@ -178,10 +153,10 @@ function BookingPage() {
                             <div className='payment-loader'></div>
                             <div className='payment-loading-row'>
                                 <Title>Your booking is being reviewed.</Title>
-                                <Text style={{fontSize: '20px'}}>
+                                <Text style={{ fontSize: '20px' }}>
                                     Approval may take 5-10 minutes—Please check back to complete payment.
                                 </Text>
-                                <Button className='payment-return-btn' onClick={() => navigate("/profile")}>View My Booking</Button>
+                                <Button className='payment-return-btn' onClick={() => navigate("/profile", { state: { selectedTab } })}>View My Booking</Button>
                             </div>
                             <Divider />
                             <Row className='payment-gateway-row'>
@@ -191,21 +166,120 @@ function BookingPage() {
                                 <Col span={12}>
                                     <div className='payment-gateway-right'>
                                         <Title>A better way to <strong>Pay Money</strong></Title>
-                                        <Button className='payment-method-btn'>See How it Works</Button>
+                                        <Button
+                                            className='payment-method-btn'
+                                            onClick={() => setvisibleDiv(!visibleDiv)}
+                                        >
+                                            See How it Works
+                                        </Button>
                                     </div>
                                 </Col>
                             </Row>
-
-
-
-
-
-
                         </div>
                     </div>
                 )}
 
             </div>
+            {
+                visibleDiv && (
+                    <div className='payment-tutorial-container'>
+                        <Row style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+                            <Title>The simple way to send money</Title>
+                        </Row>
+                        <Row>
+                            <Col span={8} className='payment-steps'>
+                                <Row>
+                                    <Col span={8}>
+                                        <Text
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'end',
+                                                paddingRight: '40px',
+                                                fontSize: '80px',
+                                                fontWeight: 'bold',
+                                                color: '#DEE3E4'
+                                            }}
+                                        >
+                                            1
+                                        </Text>
+                                    </Col>
+                                    <Col span={16} style={{ display: 'flex', flexDirection: 'column', paddingTop: '25px' }}>
+                                        <Title level={3}>Choose your bank</Title>
+                                        <Text style={{ fontSize: '16px' }}>In the payment method selection section, choose to use domestic card and bank.
+                                            Then, choose your bank. </Text>
+                                        <Image
+                                            style={{ borderRadius: '10px', marginTop: '10px'}}
+                                            width={400}
+                                            src='src/image/step_1.png'
+                                            preview={false}
+                                        />
+                                    </Col>
+
+                                </Row>
+                            </Col>
+                            <Col span={8} className='payment-steps'>
+                                <Row>
+                                    <Col span={8}>
+                                        <Text
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'end',
+                                                paddingRight: '40px',
+                                                fontSize: '80px',
+                                                fontWeight: 'bold',
+                                                color: '#DEE3E4'
+                                            }}
+                                        >
+                                            2
+                                        </Text>
+                                    </Col>
+                                    <Col span={16} style={{ display: 'flex', flexDirection: 'column', paddingTop: '25px' }}>
+                                        <Row>
+                                            <Title level={3}>Fill in your account</Title>
+                                            <Text>Fill in the necessary information, such as full name, card number, etc.</Text>
+                                            <Image
+                                                style={{ borderRadius: '10px' }}
+                                                width={400}
+                                                src='src/image/step_2.png'
+                                                preview={false}
+                                            />
+                                        </Row>
+                                    </Col>
+                                </Row>
+
+                            </Col>
+                            <Col span={8} className='payment-steps'>
+                                <Row>
+                                    <Col span={8}>
+                                        <Text
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'end',
+                                                paddingRight: '40px',
+                                                fontSize: '80px',
+                                                fontWeight: 'bold',
+                                                color: '#DEE3E4'
+                                            }}
+                                        >                                            3
+                                        </Text>
+                                    </Col>
+                                    <Col span={16} style={{ display: 'flex', flexDirection: 'column', paddingTop: '25px' }}>
+                                        <Title level={3}>Enter an OTP</Title>
+                                        <Text>The system will send the OTP code. Enter correctly and wait until notification of successful transaction process</Text>
+                                        <Image
+                                            style={{ borderRadius: '10px' }}
+                                            width={400}
+                                            src='src/image/step_3.png'
+                                            preview={false}
+                                        />
+                                    </Col>
+
+                                </Row>
+                            </Col>
+                        </Row>
+                    </div>
+                )
+            }
         </div>
     )
 }

@@ -186,11 +186,11 @@
         }
 
         .booking-payment {
-            background-image: url('src/image/payment_bg.jpeg');
+            background-image: url('https://firebasestorage.googleapis.com/v0/b/loginby-35c92.appspot.com/o/payment_bg-transformed.jpeg?alt=media&token=37cd6b95-4f8f-4484-8d58-3af0dd8469dc');
             background-size: cover;
             background-position: center;
             position: relative;
-            height: 95vh;
+            min-height: 95vh;
             color: #fff;
 
             .payment-method-board {
@@ -308,6 +308,11 @@
             background-color: rgba(112, 100, 77, 0.5);
         }
 
+    }
+
+    .payment-tutorial-container {
+        padding: 50px 0;
+        
     }
 
 }

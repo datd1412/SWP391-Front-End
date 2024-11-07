@@ -9,12 +9,14 @@ import {
 } from "@ant-design/icons";
 import "./Header.scss";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../../redux/action/userAction";
 
 const { Text } = Typography; // Destructure Text from Typography
 
 function Header({ user, setUser }) {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleSwitchAdmin = () => {
     navigate("/manager");
 
@@ -22,6 +24,7 @@ function Header({ user, setUser }) {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    dispatch(clearUser());
     navigate('/login');
   };
 

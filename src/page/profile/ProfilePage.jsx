@@ -7,8 +7,8 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Card, Col, Divider, Form, Input, Layout, List, Menu, Modal, Rate, Row, Space, Steps, Switch, Table, Tag, theme, Typography } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Avatar, Button, Card, Col, Divider, Form, Input, Layout, List, Menu, Modal, Rate, Row, Space, Steps, Switch, Table, Tabs, Tag, theme, Typography } from 'antd';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import api from '../../config/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCalendar, faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { setUser } from '../../redux/action/userAction';
 import { cancelBooking } from '../../redux/action/bookingActions';
 import { useForm } from 'antd/es/form/Form';
+import TabPane from 'antd/es/tabs/TabPane';
 
 const { Header, Sider, Content } = Layout;
 const { Text, Title } = Typography;
@@ -24,6 +25,7 @@ function ProfilePage() {
   const [collapsed, setCollapsed] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [selectedKey, setSelectedKey] = useState('1');
+  const location = useLocation();
   const user = useSelector((state) => state.user);
   const [feedbackForm] = Form.useForm();
   const dispatch = useDispatch();
@@ -33,6 +35,7 @@ function ProfilePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openFeedback, setopenFeedback] = useState(false);
   const [koiImages, setkoiImages] = useState([]);
+  const [activeTab, setactiveTab] = useState('inProgress');
 
   const navigate = useNavigate();
 
@@ -45,6 +48,14 @@ function ProfilePage() {
     PENDING: 'yellow',
     PROCESSING: 'default',
   };
+
+  const filterBookings = (status) => {
+    if (status==='COMPLETED') {
+      return myBookings.filter((booking) => booking.status === 'COMPLETE');
+    }else {
+      return myBookings.filter((booking) => booking.status !== 'COMPLETE');
+    }
+  }
 
   const fetchKoiImage = async (id) => {
     try {
@@ -172,6 +183,10 @@ function ProfilePage() {
   };
 
   useEffect(() => {
+    if (location.state && location.state.selectedTab) {
+      setSelectedKey(location.state.selectedTab);
+    }
+    console.log("select: ", selectedKey);
     bookingList.map((index) => (
       fetchBookings(index.tourId, index.bookingId)
     ))
@@ -215,7 +230,7 @@ function ProfilePage() {
             style={{
               margin: '24px 16px',
               padding: '16px 32px',
-              height: 493,
+              height: 713,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -245,20 +260,6 @@ function ProfilePage() {
                     message: "Email cannot be blank",
                   }
                 ]}>
-                  <Input />
-                </Form.Item>
-                <Form.Item label="Phone number" name="phone" rules={[
-                  {
-                    required: "true",
-                    message: "Phone number cannot be blank"
-                  },
-                  {
-                    pattern: '(84|0[3|5|7|8|9])+([0-9]{8})\\b',
-                    message: "Illegal phone number",
-                  }
-                ]}
-                  initialValue={user.phone}
-                >
                   <Input />
                 </Form.Item>
 
@@ -331,7 +332,7 @@ function ProfilePage() {
             style={{
               margin: '24px 16px',
               padding: '16px 32px',
-              height: 493,
+              height: 713,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -361,7 +362,7 @@ function ProfilePage() {
             style={{
               margin: '24px 16px',
               padding: '16px 32px',
-              minHeight: '500px',
+              minHeight: '743px',
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -375,10 +376,11 @@ function ProfilePage() {
                   </div>
                 ) : (
                   <div className="my-bookings-list">
-                    <Typography.Title level={4} className="my-bookings-title">My Bookings</Typography.Title>
-                    <List
+                    <Tabs activeKey={activeTab} onChange={(tab) => setactiveTab(tab)}>
+                      <TabPane tab="In Progress" key="inProgress">
+                      <List
                       itemLayout="vertical"
-                      dataSource={myBookings}
+                      dataSource={filterBookings('NOT_COMPLETED')}
                       renderItem={(booking) => (
                         <Card
                           className="my-booking-card"
@@ -546,6 +548,180 @@ function ProfilePage() {
                         </Card>
                       )}
                     />
+                      </TabPane>
+                      <TabPane tab="Completed" key="completed">
+                      <List
+                      itemLayout="vertical"
+                      dataSource={filterBookings('COMPLETED')}
+                      renderItem={(booking) => (
+                        <Card
+                          className="my-booking-card"
+                          hoverable
+                        >
+                          <Row gutter={16} align="middle">
+                            <Col>
+                              <Avatar shape="square" size={90} src={booking.avatar} />
+                            </Col>
+                            <Col style={{ marginLeft: '10px', marginBottom: '20px', }}>
+                              <Typography.Title level={5} className="my-booking-name">
+                                {booking.tourName}
+                                {
+                                  booking.isPaid === "PAID" ? (
+                                    <img
+                                      className="bk-payment-result"
+                                      src='src/image/paid_stamp.png'
+                                      width="70px"
+                                    />
+                                  ) : (
+                                    <Tag
+                                      style={{ fontSize: '15px', marginLeft: '10px' }}
+                                      color={statusColorMap[booking.status.toUpperCase()]}>
+                                      {booking.status.toUpperCase()}
+                                    </Tag>
+                                  )
+                                }
+                              </Typography.Title>
+                              <Text type="secondary" style={{ fontSize: '17px', fontWeight: '480', }}>{booking.location}</Text>
+                            </Col>
+                            <Col>
+                              {booking.availableDates.map((date, index) => (
+                                <div key={index} className="my-booking-status">
+                                  {date.isCheckin ? (
+                                    <div>
+                                      <FontAwesomeIcon icon={faCalendar} color='#52c41a' />
+                                      <Text className="my-booking-availibility-date">Checkin: {date.date}</Text>
+                                    </div>
+                                  ) : (
+                                    <div>
+                                      <FontAwesomeIcon icon={faCalendarCheck} color='#ff4d4f' />
+                                      <Text className="my-booking-availibility-date">Checkout: {date.date}</Text>
+                                    </div>
+
+                                  )}
+                                </div>
+                              ))}
+                            </Col>
+                            {
+                              (booking.status === "PROCESSING" || booking.status === "PENDING") ? (
+                                <>
+                                  <Col>
+                                    <Button
+                                      className='view-bk-detail-btn'
+                                      onClick={() => viewBookingDetails(booking)}
+                                    >
+                                      View Detail
+                                    </Button>
+                                  </Col>
+                                  <Col>
+                                    <Button
+                                      className="cancel-booking-btn"
+                                      onClick={(e) => {
+                                        showCancelModal();
+                                        e.stopPropagation();
+                                      }}
+                                    >
+                                      Cancel Booking
+                                    </Button>
+                                    <Modal
+                                      className='cancel-booking-confirm'
+                                      open={isModalOpen}
+                                      onCancel={() => setIsModalOpen(false)}
+                                      footer={null}
+                                    >
+                                      <Typography.Title
+                                        level={3}
+                                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                                      >
+                                        Are you sure?
+                                      </Typography.Title>
+                                      <p style={{ textAlign: 'center', fontSize: '15px' }}>
+                                        Are you sure to delete this booking? This action cannot be undone once the booking is APPROVED.
+                                      </p>
+                                      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
+                                        <Button onClick={handleCancel} style={{ borderRadius: '8px', padding: '20px 30px' }}>
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          type="primary"
+                                          onClick={() => handleCancelBooking(booking)}
+                                          danger
+                                          style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', borderRadius: '8px', padding: '20px 30px' }}
+                                        >
+                                          Delete
+                                        </Button>
+                                      </div>
+                                    </Modal>
+                                  </Col>
+                                </>
+                              ) : (
+                                <>
+                                  {trackingDeliveryStatus(booking.processing) == process.length - 1 ? (
+                                    <>
+                                      <Col>
+                                        <Button
+                                          className='view-bk-detail-btn'
+                                          onClick={() => viewBookingDetails(booking)}
+                                        >
+                                          View Detail
+                                        </Button>
+                                      </Col>
+                                      <Col>
+                                        <Button
+                                          className='feedback-bk-btn'
+                                          onClick={() => setopenFeedback(true)}
+                                        >
+                                          Feedback
+                                        </Button>
+                                      </Col>
+                                      <Modal
+                                        open={openFeedback}
+                                        onOk={() => feedbackForm.submit()}
+                                        onCancel={handleCancel}
+                                        width={400}
+                                      >
+                                        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                                          <Typography.Title level={2} style={{ marginBottom: '5px' }}>Feedback</Typography.Title>
+                                          <Text type='secondary' style={{ fontSize: '15px', marginBottom: '5px' }}>Please rate your experience below</Text>
+                                        </div>
+                                        <Form
+                                          form={feedbackForm}
+                                          labelCol={{
+                                            span: 24,
+                                          }}
+                                          onFinish={handleFeedback}
+                                        >
+                                          <Form.Item name="rating">
+                                            <Rate style={{ display: 'flex', justifyContent: 'center' }} />
+                                          </Form.Item>
+                                          <Form.Item label="Additional feedback" name="comment">
+                                            <Input.TextArea placeholder='My Feedback!' />
+                                          </Form.Item>
+                                        </Form>
+                                      </Modal>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Col></Col>
+                                      <Col>
+                                        <Button
+                                          className='view-bk-detail-btn'
+                                          onClick={() => viewBookingDetails(booking)}
+                                        >
+                                          View Detail
+                                        </Button>
+                                      </Col>
+                                    </>
+                                  )}
+                                </>
+                              )
+                            }
+
+                          </Row>
+                        </Card>
+                      )}
+                    />
+                      </TabPane>
+                    </Tabs>
                   </div>
                 )
               }
@@ -675,8 +851,8 @@ function ProfilePage() {
                           </Col>
                           <Col span={24}>
                             <Table
-                            style={{ marginTop: '10px' }}
-                              width='500px' 
+                              style={{ marginTop: '10px' }}
+                              width='500px'
                               columns={columns}
                               dataSource={myOrder.listOfKois}
                               pagination={{ pageSize: 2 }}
