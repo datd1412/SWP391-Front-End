@@ -1,11 +1,12 @@
-import { Avatar, Button, Col, DatePicker, Divider, Form, Image, Input, InputNumber, List, Menu, Popover, Result, Row, Space, Steps, Typography } from 'antd'
+import { Avatar, Button, Col, Divider, Form, Image, Input, Popover, Row, Typography } from 'antd'
 import React, { useState } from 'react'
 import './BookingPage.scss'
-import { BankOutlined, DollarOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import api from '../../config/axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addBooking } from '../../redux/action/bookingActions';
+import { toast } from 'react-toastify';
 
 const { Text, Title } = Typography;
 
@@ -16,13 +17,13 @@ function BookingPage() {
     const navigate = useNavigate();
     const tour = location.state?.tour;
     console.log("ID: ", tour);
-    const [steps, setSteps] = useState(1);
+    const [steps, setSteps] = useState(0);
 
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
 
     const [visibleDiv, setvisibleDiv] = useState(false);
-    const [selectedMethod, setSelectedMethod] = useState(null);
+    const [validateMess, setvalidateMess] = useState('Phone number');
 
     const handleAdultCount = (count) => {
         setAdults((prev) => Math.max(1, prev + count));
@@ -32,28 +33,45 @@ function BookingPage() {
         setChildren((prev) => Math.max(0, prev + count));
     }
 
-    const content = (
-        <Space className="bk-guest-board">
-            <div>
-                <span className="bk-left-board">
-                    <span>Adults:</span>
-                    <small>Ages 13 or above</small>
-                </span>
-                <span className="bk-right-board">
-                    <Button icon={<MinusOutlined />} onClick={() => handleAdultCount(-1)} disabled={adults <= 1} />
-                    <span>{adults}</span>
-                    <Button icon={<PlusOutlined />} onClick={() => handleAdultCount(1)} />
-                </span>
-            </div>
+    const validatePhone = (e) => {
+        const phonePattern = /^(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+        const value = e.target.value;
+        if (!value) {
+            setvalidateMess("Please enter your phone number!");
+        } else if (!phonePattern.test(value)) {
+            setvalidateMess("Illegal phone number");
+        } else {
+            setvalidateMess("Phone number");
+        }
+    }
 
-            <div>
-                <span>Children:</span>
-                <small>Ages 13 below</small>
-                <Button icon={<MinusOutlined />} onClick={() => handleChildrenCount(-1)} disabled={children <= 0} />
-                <span>{children}</span>
-                <Button icon={<PlusOutlined />} onClick={() => handleChildrenCount(1)} />
-            </div>
-        </Space>
+    const content = (
+        <Col className="bk-guest-board">
+            <Row>
+                <Col span={16} style={{ marginBottom: '10px' }}>
+                    <span style={{ fontSize: '17px' }}>Adults:</span> <br/>
+                    <small>Ages 13 or above</small>
+                </Col>
+                <Col span={8}>
+                    <Button icon={<MinusOutlined />} onClick={() => handleAdultCount(-1)} disabled={adults <= 1} />
+                    <span> {adults} </span>
+                    <Button icon={<PlusOutlined />} onClick={() => handleAdultCount(1)} />
+                </Col>
+            </Row>
+            
+            <Row>
+                <Col span={16}>
+                    <span style={{ fontSize: '17px' }}>Children:</span> <br/>
+                    <small>Ages 13 below</small>
+                </Col>
+                <Col span={8}>
+                    <Button icon={<MinusOutlined />} onClick={() => handleChildrenCount(-1)} disabled={children <= 0} />
+                    <span> {children} </span>
+                    <Button icon={<PlusOutlined />} onClick={() => handleChildrenCount(1)} />
+                </Col>
+
+            </Row>
+        </Col>
     );
 
     const handleSubmit = async (values) => {
@@ -67,23 +85,20 @@ function BookingPage() {
 
             const response = await api.post("/booking", details);
             console.log(response.data);
-            /* console.log("Tour ID: " + tour.id);
-            console.log("Adult: " + adults);
-            console.log("Children: " + children);
-            console.log("Phone: " + values.phone); */
             const newBooking = {
                 tourId: tour.id, bookingId: response.data,
             };
             dispatch(addBooking(newBooking));
             setSteps(steps + 1);
+            toast.success("Booking Successfully!", {
+                position: "top-center",
+                autoClose: 3000,
+                closeOnClick: true,
+              });
 
         } catch (error) {
             console.log(error.toString());
         }
-    }
-
-    const handlePayment = () => {
-        console.log(selectedMethod);
     }
 
     return (
@@ -123,7 +138,10 @@ function BookingPage() {
                                                 message: "Illegal phone number",
                                             },
                                         ]}>
-                                            <Input placeholder="Phone number" />
+                                            <Input
+                                                placeholder={validateMess}
+                                                onChange={validatePhone}
+                                            />
                                         </Form.Item>
 
                                         <Form.Item label="Guests" className="booking-guests">
@@ -208,7 +226,7 @@ function BookingPage() {
                                         <Text style={{ fontSize: '16px' }}>In the payment method selection section, choose to use domestic card and bank.
                                             Then, choose your bank. </Text>
                                         <Image
-                                            style={{ borderRadius: '10px', marginTop: '10px'}}
+                                            style={{ borderRadius: '10px', marginTop: '10px' }}
                                             width={400}
                                             src='src/image/step_1.png'
                                             preview={false}

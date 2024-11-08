@@ -4,6 +4,7 @@ import { SearchOutlined, EnvironmentOutlined, DollarOutlined } from '@ant-design
 import './SearchBar.scss';
 import { useNavigate } from 'react-router-dom';
 import api from '../../config/axios';
+import { toast } from 'react-toastify';
 
 
 const SearchBar = () => {
@@ -16,6 +17,26 @@ const SearchBar = () => {
     koiType: "",
   })
 
+  const handleToastingLoad = () => {
+    const myPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("Data loaded successfully!");
+      }, 2000);
+    });
+
+    toast.promise(myPromise, {
+      pending: "Searching, please wait...",
+      success: {
+        render: "Data loaded successfully! 👌",
+        onClose: () => navigate("/tour"),
+      },
+      error: "Failed to load data 😞"
+    }, {
+      position: "top-center",
+      autoClose: 1500,
+    })
+
+  }
 
 
   const [selectedKoiTypes, setSelectedKoiTypes] = useState([]);
@@ -32,6 +53,7 @@ const SearchBar = () => {
         koiType: "Kohaku",
       }
       const response = await api.get("/tour/search", searchFields);
+      handleToastingLoad();
       /* navigate("/tour", { state: { response } }); */
       console.log("Danh sach tour: ", response.data);
       console.log(searchFields);

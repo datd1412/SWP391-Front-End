@@ -6,8 +6,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { provider } from "../../config/firebase";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import api from "../../config/axios";
+import { toast } from 'react-toastify';
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/action/userAction";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHand, faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 
 function Login() {
   const navigate = useNavigate();
@@ -28,9 +31,21 @@ function Login() {
       }
       dispatch(setUser(user));
       navigate("/");
+      toast.success("Login Success", {
+        position: "top-center",
+        icon: <FontAwesomeIcon icon={faThumbsUp} color="#CA803D"/>,
+        autoClose: 3000,
+        closeOnClick: true,
+      });
     } catch (e) {
       console.log(e);
-      alert("Invalid username or password!");
+      toast.error("Invalid username or password!", {
+        position: "top-left",
+        icon: <FontAwesomeIcon icon={faHand} color="#ED766A"/>,
+        autoClose: 3000,
+        closeOnClick: true,
+      });
+
     }
   };
 

@@ -17,6 +17,7 @@ import { setUser } from '../../redux/action/userAction';
 import { cancelBooking } from '../../redux/action/bookingActions';
 import { useForm } from 'antd/es/form/Form';
 import TabPane from 'antd/es/tabs/TabPane';
+import { toast } from 'react-toastify';
 
 const { Header, Sider, Content } = Layout;
 const { Text, Title } = Typography;
@@ -41,7 +42,6 @@ function ProfilePage() {
 
   const [passwordForm] = Form.useForm();
   const [profileForm] = Form.useForm();
-
   const statusColorMap = {
     APPROVED: 'green',
     REJECTED: 'red',
@@ -50,9 +50,10 @@ function ProfilePage() {
   };
 
   const filterBookings = (status) => {
-    if (status==='COMPLETED') {
+    console.log("Booking sau delete: ",myBookings);
+    if (status === 'COMPLETED') {
       return myBookings.filter((booking) => booking.status === 'COMPLETE');
-    }else {
+    } else {
       return myBookings.filter((booking) => booking.status !== 'COMPLETE');
     }
   }
@@ -101,14 +102,23 @@ function ProfilePage() {
     setmyOrder(null);
     setIsModalOpen(false);
     setopenFeedback(false);
-    console.log("hine ne ni: ", koiImages);
   };
 
-  const handleCancelBooking = (booking) => {
+  const handleCancelBooking = async (booking) => {
     try {
-      const response = api.delete(`/booking/${booking.invoiceNo}`);
+      const response = await api.delete(`/booking/${booking.invoiceNo}`);
       dispatch(cancelBooking(booking.invoiceNo));
-      console.log("Cai nay de xoa: ", response);
+
+      setmyBookings((prevBookings) => 
+        prevBookings.filter((item) => item.invoiceNo !== booking.invoiceNo)
+      );
+
+      setIsModalOpen(false);
+      toast.success("Your booking has been deleted!", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+      });
     } catch (error) {
       console.log(error.toString());
     }
@@ -190,7 +200,6 @@ function ProfilePage() {
     bookingList.map((index) => (
       fetchBookings(index.tourId, index.bookingId)
     ))
-
   }, []);
 
   const toggleEdit = () => {
@@ -378,348 +387,348 @@ function ProfilePage() {
                   <div className="my-bookings-list">
                     <Tabs activeKey={activeTab} onChange={(tab) => setactiveTab(tab)}>
                       <TabPane tab="In Progress" key="inProgress">
-                      <List
-                      itemLayout="vertical"
-                      dataSource={filterBookings('NOT_COMPLETED')}
-                      renderItem={(booking) => (
-                        <Card
-                          className="my-booking-card"
-                          hoverable
-                        >
-                          <Row gutter={16} align="middle">
-                            <Col>
-                              <Avatar shape="square" size={90} src={booking.avatar} />
-                            </Col>
-                            <Col style={{ marginLeft: '10px', marginBottom: '20px', }}>
-                              <Typography.Title level={5} className="my-booking-name">
-                                {booking.tourName}
+                        <List
+                          itemLayout="vertical"
+                          dataSource={filterBookings('NOT_COMPLETED')}
+                          renderItem={(booking) => (
+                            <Card
+                              className="my-booking-card"
+                              hoverable
+                            >
+                              <Row gutter={16} align="middle">
+                                <Col>
+                                  <Avatar shape="square" size={90} src={booking.avatar} />
+                                </Col>
+                                <Col style={{ marginLeft: '10px', marginBottom: '20px', }}>
+                                  <Typography.Title level={5} className="my-booking-name">
+                                    {booking.tourName}
+                                    {
+                                      booking.isPaid === "PAID" ? (
+                                        <img
+                                          className="bk-payment-result"
+                                          src='src/image/paid_stamp.png'
+                                          width="70px"
+                                        />
+                                      ) : (
+                                        <Tag
+                                          style={{ fontSize: '15px', marginLeft: '10px' }}
+                                          color={statusColorMap[booking.status.toUpperCase()]}>
+                                          {booking.status.toUpperCase()}
+                                        </Tag>
+                                      )
+                                    }
+                                  </Typography.Title>
+                                  <Text type="secondary" style={{ fontSize: '17px', fontWeight: '480', }}>{booking.location}</Text>
+                                </Col>
+                                <Col>
+                                  {booking.availableDates.map((date, index) => (
+                                    <div key={index} className="my-booking-status">
+                                      {date.isCheckin ? (
+                                        <div>
+                                          <FontAwesomeIcon icon={faCalendar} color='#52c41a' />
+                                          <Text className="my-booking-availibility-date">Checkin: {date.date}</Text>
+                                        </div>
+                                      ) : (
+                                        <div>
+                                          <FontAwesomeIcon icon={faCalendarCheck} color='#ff4d4f' />
+                                          <Text className="my-booking-availibility-date">Checkout: {date.date}</Text>
+                                        </div>
+
+                                      )}
+                                    </div>
+                                  ))}
+                                </Col>
                                 {
-                                  booking.isPaid === "PAID" ? (
-                                    <img
-                                      className="bk-payment-result"
-                                      src='src/image/paid_stamp.png'
-                                      width="70px"
-                                    />
+                                  (booking.status === "PROCESSING" || booking.status === "PENDING") ? (
+                                    <>
+                                      <Col>
+                                        <Button
+                                          className='view-bk-detail-btn'
+                                          onClick={() => viewBookingDetails(booking)}
+                                        >
+                                          View Detail
+                                        </Button>
+                                      </Col>
+                                      <Col>
+                                        <Button
+                                          className="cancel-booking-btn"
+                                          onClick={(e) => {
+                                            showCancelModal();
+                                            e.stopPropagation();
+                                          }}
+                                        >
+                                          Cancel Booking
+                                        </Button>
+                                        <Modal
+                                          className='cancel-booking-confirm'
+                                          open={isModalOpen}
+                                          onCancel={() => setIsModalOpen(false)}
+                                          footer={null}
+                                        >
+                                          <Typography.Title
+                                            level={3}
+                                            style={{ textAlign: 'center', fontWeight: 'bold' }}
+                                          >
+                                            Are you sure?
+                                          </Typography.Title>
+                                          <p style={{ textAlign: 'center', fontSize: '15px' }}>
+                                            Are you sure to delete this booking? This action cannot be undone once the booking is APPROVED.
+                                          </p>
+                                          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
+                                            <Button onClick={handleCancel} style={{ borderRadius: '8px', padding: '20px 30px' }}>
+                                              Cancel
+                                            </Button>
+                                            <Button
+                                              type="primary"
+                                              onClick={() => handleCancelBooking(booking)}
+                                              danger
+                                              style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', borderRadius: '8px', padding: '20px 30px' }}
+                                            >
+                                              Delete
+                                            </Button>
+                                          </div>
+                                        </Modal>
+                                      </Col>
+                                    </>
                                   ) : (
-                                    <Tag
-                                      style={{ fontSize: '15px', marginLeft: '10px' }}
-                                      color={statusColorMap[booking.status.toUpperCase()]}>
-                                      {booking.status.toUpperCase()}
-                                    </Tag>
+                                    <>
+                                      {trackingDeliveryStatus(booking.processing) == process.length - 1 ? (
+                                        <>
+                                          <Col>
+                                            <Button
+                                              className='view-bk-detail-btn'
+                                              onClick={() => viewBookingDetails(booking)}
+                                            >
+                                              View Detail
+                                            </Button>
+                                          </Col>
+                                          <Col>
+                                            <Button
+                                              className='feedback-bk-btn'
+                                              onClick={() => setopenFeedback(true)}
+                                            >
+                                              Feedback
+                                            </Button>
+                                          </Col>
+                                          <Modal
+                                            open={openFeedback}
+                                            onOk={() => feedbackForm.submit()}
+                                            onCancel={handleCancel}
+                                            width={400}
+                                          >
+                                            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                                              <Typography.Title level={2} style={{ marginBottom: '5px' }}>Feedback</Typography.Title>
+                                              <Text type='secondary' style={{ fontSize: '15px', marginBottom: '5px' }}>Please rate your experience below</Text>
+                                            </div>
+                                            <Form
+                                              form={feedbackForm}
+                                              labelCol={{
+                                                span: 24,
+                                              }}
+                                              onFinish={handleFeedback}
+                                            >
+                                              <Form.Item name="rating">
+                                                <Rate style={{ display: 'flex', justifyContent: 'center' }} />
+                                              </Form.Item>
+                                              <Form.Item label="Additional feedback" name="comment">
+                                                <Input.TextArea placeholder='My Feedback!' />
+                                              </Form.Item>
+                                            </Form>
+                                          </Modal>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Col></Col>
+                                          <Col>
+                                            <Button
+                                              className='view-bk-detail-btn'
+                                              onClick={() => viewBookingDetails(booking)}
+                                            >
+                                              View Detail
+                                            </Button>
+                                          </Col>
+                                        </>
+                                      )}
+                                    </>
                                   )
                                 }
-                              </Typography.Title>
-                              <Text type="secondary" style={{ fontSize: '17px', fontWeight: '480', }}>{booking.location}</Text>
-                            </Col>
-                            <Col>
-                              {booking.availableDates.map((date, index) => (
-                                <div key={index} className="my-booking-status">
-                                  {date.isCheckin ? (
-                                    <div>
-                                      <FontAwesomeIcon icon={faCalendar} color='#52c41a' />
-                                      <Text className="my-booking-availibility-date">Checkin: {date.date}</Text>
-                                    </div>
-                                  ) : (
-                                    <div>
-                                      <FontAwesomeIcon icon={faCalendarCheck} color='#ff4d4f' />
-                                      <Text className="my-booking-availibility-date">Checkout: {date.date}</Text>
-                                    </div>
 
-                                  )}
-                                </div>
-                              ))}
-                            </Col>
-                            {
-                              (booking.status === "PROCESSING" || booking.status === "PENDING") ? (
-                                <>
-                                  <Col>
-                                    <Button
-                                      className='view-bk-detail-btn'
-                                      onClick={() => viewBookingDetails(booking)}
-                                    >
-                                      View Detail
-                                    </Button>
-                                  </Col>
-                                  <Col>
-                                    <Button
-                                      className="cancel-booking-btn"
-                                      onClick={(e) => {
-                                        showCancelModal();
-                                        e.stopPropagation();
-                                      }}
-                                    >
-                                      Cancel Booking
-                                    </Button>
-                                    <Modal
-                                      className='cancel-booking-confirm'
-                                      open={isModalOpen}
-                                      onCancel={() => setIsModalOpen(false)}
-                                      footer={null}
-                                    >
-                                      <Typography.Title
-                                        level={3}
-                                        style={{ textAlign: 'center', fontWeight: 'bold' }}
-                                      >
-                                        Are you sure?
-                                      </Typography.Title>
-                                      <p style={{ textAlign: 'center', fontSize: '15px' }}>
-                                        Are you sure to delete this booking? This action cannot be undone once the booking is APPROVED.
-                                      </p>
-                                      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
-                                        <Button onClick={handleCancel} style={{ borderRadius: '8px', padding: '20px 30px' }}>
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          type="primary"
-                                          onClick={() => handleCancelBooking(booking)}
-                                          danger
-                                          style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', borderRadius: '8px', padding: '20px 30px' }}
-                                        >
-                                          Delete
-                                        </Button>
-                                      </div>
-                                    </Modal>
-                                  </Col>
-                                </>
-                              ) : (
-                                <>
-                                  {trackingDeliveryStatus(booking.processing) == process.length - 1 ? (
-                                    <>
-                                      <Col>
-                                        <Button
-                                          className='view-bk-detail-btn'
-                                          onClick={() => viewBookingDetails(booking)}
-                                        >
-                                          View Detail
-                                        </Button>
-                                      </Col>
-                                      <Col>
-                                        <Button
-                                          className='feedback-bk-btn'
-                                          onClick={() => setopenFeedback(true)}
-                                        >
-                                          Feedback
-                                        </Button>
-                                      </Col>
-                                      <Modal
-                                        open={openFeedback}
-                                        onOk={() => feedbackForm.submit()}
-                                        onCancel={handleCancel}
-                                        width={400}
-                                      >
-                                        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                                          <Typography.Title level={2} style={{ marginBottom: '5px' }}>Feedback</Typography.Title>
-                                          <Text type='secondary' style={{ fontSize: '15px', marginBottom: '5px' }}>Please rate your experience below</Text>
-                                        </div>
-                                        <Form
-                                          form={feedbackForm}
-                                          labelCol={{
-                                            span: 24,
-                                          }}
-                                          onFinish={handleFeedback}
-                                        >
-                                          <Form.Item name="rating">
-                                            <Rate style={{ display: 'flex', justifyContent: 'center' }} />
-                                          </Form.Item>
-                                          <Form.Item label="Additional feedback" name="comment">
-                                            <Input.TextArea placeholder='My Feedback!' />
-                                          </Form.Item>
-                                        </Form>
-                                      </Modal>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Col></Col>
-                                      <Col>
-                                        <Button
-                                          className='view-bk-detail-btn'
-                                          onClick={() => viewBookingDetails(booking)}
-                                        >
-                                          View Detail
-                                        </Button>
-                                      </Col>
-                                    </>
-                                  )}
-                                </>
-                              )
-                            }
-
-                          </Row>
-                        </Card>
-                      )}
-                    />
+                              </Row>
+                            </Card>
+                          )}
+                        />
                       </TabPane>
                       <TabPane tab="Completed" key="completed">
-                      <List
-                      itemLayout="vertical"
-                      dataSource={filterBookings('COMPLETED')}
-                      renderItem={(booking) => (
-                        <Card
-                          className="my-booking-card"
-                          hoverable
-                        >
-                          <Row gutter={16} align="middle">
-                            <Col>
-                              <Avatar shape="square" size={90} src={booking.avatar} />
-                            </Col>
-                            <Col style={{ marginLeft: '10px', marginBottom: '20px', }}>
-                              <Typography.Title level={5} className="my-booking-name">
-                                {booking.tourName}
+                        <List
+                          itemLayout="vertical"
+                          dataSource={filterBookings('COMPLETED')}
+                          renderItem={(booking) => (
+                            <Card
+                              className="my-booking-card"
+                              hoverable
+                            >
+                              <Row gutter={16} align="middle">
+                                <Col>
+                                  <Avatar shape="square" size={90} src={booking.avatar} />
+                                </Col>
+                                <Col style={{ marginLeft: '10px', marginBottom: '20px', }}>
+                                  <Typography.Title level={5} className="my-booking-name">
+                                    {booking.tourName}
+                                    {
+                                      booking.isPaid === "PAID" ? (
+                                        <img
+                                          className="bk-payment-result"
+                                          src='src/image/paid_stamp.png'
+                                          width="70px"
+                                        />
+                                      ) : (
+                                        <Tag
+                                          style={{ fontSize: '15px', marginLeft: '10px' }}
+                                          color={statusColorMap[booking.status.toUpperCase()]}>
+                                          {booking.status.toUpperCase()}
+                                        </Tag>
+                                      )
+                                    }
+                                  </Typography.Title>
+                                  <Text type="secondary" style={{ fontSize: '17px', fontWeight: '480', }}>{booking.location}</Text>
+                                </Col>
+                                <Col>
+                                  {booking.availableDates.map((date, index) => (
+                                    <div key={index} className="my-booking-status">
+                                      {date.isCheckin ? (
+                                        <div>
+                                          <FontAwesomeIcon icon={faCalendar} color='#52c41a' />
+                                          <Text className="my-booking-availibility-date">Checkin: {date.date}</Text>
+                                        </div>
+                                      ) : (
+                                        <div>
+                                          <FontAwesomeIcon icon={faCalendarCheck} color='#ff4d4f' />
+                                          <Text className="my-booking-availibility-date">Checkout: {date.date}</Text>
+                                        </div>
+
+                                      )}
+                                    </div>
+                                  ))}
+                                </Col>
                                 {
-                                  booking.isPaid === "PAID" ? (
-                                    <img
-                                      className="bk-payment-result"
-                                      src='src/image/paid_stamp.png'
-                                      width="70px"
-                                    />
+                                  (booking.status === "PROCESSING" || booking.status === "PENDING") ? (
+                                    <>
+                                      <Col>
+                                        <Button
+                                          className='view-bk-detail-btn'
+                                          onClick={() => viewBookingDetails(booking)}
+                                        >
+                                          View Detail
+                                        </Button>
+                                      </Col>
+                                      <Col>
+                                        <Button
+                                          className="cancel-booking-btn"
+                                          onClick={(e) => {
+                                            showCancelModal();
+                                            e.stopPropagation();
+                                          }}
+                                        >
+                                          Cancel Booking
+                                        </Button>
+                                        <Modal
+                                          className='cancel-booking-confirm'
+                                          open={isModalOpen}
+                                          onCancel={() => setIsModalOpen(false)}
+                                          footer={null}
+                                        >
+                                          <Typography.Title
+                                            level={3}
+                                            style={{ textAlign: 'center', fontWeight: 'bold' }}
+                                          >
+                                            Are you sure?
+                                          </Typography.Title>
+                                          <p style={{ textAlign: 'center', fontSize: '15px' }}>
+                                            Are you sure to delete this booking? This action cannot be undone once the booking is APPROVED.
+                                          </p>
+                                          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
+                                            <Button onClick={handleCancel} style={{ borderRadius: '8px', padding: '20px 30px' }}>
+                                              Cancel
+                                            </Button>
+                                            <Button
+                                              type="primary"
+                                              onClick={() => handleCancelBooking(booking)}
+                                              danger
+                                              style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', borderRadius: '8px', padding: '20px 30px' }}
+                                            >
+                                              Delete
+                                            </Button>
+                                          </div>
+                                        </Modal>
+                                      </Col>
+                                    </>
                                   ) : (
-                                    <Tag
-                                      style={{ fontSize: '15px', marginLeft: '10px' }}
-                                      color={statusColorMap[booking.status.toUpperCase()]}>
-                                      {booking.status.toUpperCase()}
-                                    </Tag>
+                                    <>
+                                      {trackingDeliveryStatus(booking.processing) == process.length - 1 ? (
+                                        <>
+                                          <Col>
+                                            <Button
+                                              className='view-bk-detail-btn'
+                                              onClick={() => viewBookingDetails(booking)}
+                                            >
+                                              View Detail
+                                            </Button>
+                                          </Col>
+                                          <Col>
+                                            <Button
+                                              className='feedback-bk-btn'
+                                              onClick={() => setopenFeedback(true)}
+                                            >
+                                              Feedback
+                                            </Button>
+                                          </Col>
+                                          <Modal
+                                            open={openFeedback}
+                                            onOk={() => feedbackForm.submit()}
+                                            onCancel={handleCancel}
+                                            width={400}
+                                          >
+                                            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                                              <Typography.Title level={2} style={{ marginBottom: '5px' }}>Feedback</Typography.Title>
+                                              <Text type='secondary' style={{ fontSize: '15px', marginBottom: '5px' }}>Please rate your experience below</Text>
+                                            </div>
+                                            <Form
+                                              form={feedbackForm}
+                                              labelCol={{
+                                                span: 24,
+                                              }}
+                                              onFinish={handleFeedback}
+                                            >
+                                              <Form.Item name="rating">
+                                                <Rate style={{ display: 'flex', justifyContent: 'center' }} />
+                                              </Form.Item>
+                                              <Form.Item label="Additional feedback" name="comment">
+                                                <Input.TextArea placeholder='My Feedback!' />
+                                              </Form.Item>
+                                            </Form>
+                                          </Modal>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Col></Col>
+                                          <Col>
+                                            <Button
+                                              className='view-bk-detail-btn'
+                                              onClick={() => viewBookingDetails(booking)}
+                                            >
+                                              View Detail
+                                            </Button>
+                                          </Col>
+                                        </>
+                                      )}
+                                    </>
                                   )
                                 }
-                              </Typography.Title>
-                              <Text type="secondary" style={{ fontSize: '17px', fontWeight: '480', }}>{booking.location}</Text>
-                            </Col>
-                            <Col>
-                              {booking.availableDates.map((date, index) => (
-                                <div key={index} className="my-booking-status">
-                                  {date.isCheckin ? (
-                                    <div>
-                                      <FontAwesomeIcon icon={faCalendar} color='#52c41a' />
-                                      <Text className="my-booking-availibility-date">Checkin: {date.date}</Text>
-                                    </div>
-                                  ) : (
-                                    <div>
-                                      <FontAwesomeIcon icon={faCalendarCheck} color='#ff4d4f' />
-                                      <Text className="my-booking-availibility-date">Checkout: {date.date}</Text>
-                                    </div>
 
-                                  )}
-                                </div>
-                              ))}
-                            </Col>
-                            {
-                              (booking.status === "PROCESSING" || booking.status === "PENDING") ? (
-                                <>
-                                  <Col>
-                                    <Button
-                                      className='view-bk-detail-btn'
-                                      onClick={() => viewBookingDetails(booking)}
-                                    >
-                                      View Detail
-                                    </Button>
-                                  </Col>
-                                  <Col>
-                                    <Button
-                                      className="cancel-booking-btn"
-                                      onClick={(e) => {
-                                        showCancelModal();
-                                        e.stopPropagation();
-                                      }}
-                                    >
-                                      Cancel Booking
-                                    </Button>
-                                    <Modal
-                                      className='cancel-booking-confirm'
-                                      open={isModalOpen}
-                                      onCancel={() => setIsModalOpen(false)}
-                                      footer={null}
-                                    >
-                                      <Typography.Title
-                                        level={3}
-                                        style={{ textAlign: 'center', fontWeight: 'bold' }}
-                                      >
-                                        Are you sure?
-                                      </Typography.Title>
-                                      <p style={{ textAlign: 'center', fontSize: '15px' }}>
-                                        Are you sure to delete this booking? This action cannot be undone once the booking is APPROVED.
-                                      </p>
-                                      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
-                                        <Button onClick={handleCancel} style={{ borderRadius: '8px', padding: '20px 30px' }}>
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          type="primary"
-                                          onClick={() => handleCancelBooking(booking)}
-                                          danger
-                                          style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', borderRadius: '8px', padding: '20px 30px' }}
-                                        >
-                                          Delete
-                                        </Button>
-                                      </div>
-                                    </Modal>
-                                  </Col>
-                                </>
-                              ) : (
-                                <>
-                                  {trackingDeliveryStatus(booking.processing) == process.length - 1 ? (
-                                    <>
-                                      <Col>
-                                        <Button
-                                          className='view-bk-detail-btn'
-                                          onClick={() => viewBookingDetails(booking)}
-                                        >
-                                          View Detail
-                                        </Button>
-                                      </Col>
-                                      <Col>
-                                        <Button
-                                          className='feedback-bk-btn'
-                                          onClick={() => setopenFeedback(true)}
-                                        >
-                                          Feedback
-                                        </Button>
-                                      </Col>
-                                      <Modal
-                                        open={openFeedback}
-                                        onOk={() => feedbackForm.submit()}
-                                        onCancel={handleCancel}
-                                        width={400}
-                                      >
-                                        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                                          <Typography.Title level={2} style={{ marginBottom: '5px' }}>Feedback</Typography.Title>
-                                          <Text type='secondary' style={{ fontSize: '15px', marginBottom: '5px' }}>Please rate your experience below</Text>
-                                        </div>
-                                        <Form
-                                          form={feedbackForm}
-                                          labelCol={{
-                                            span: 24,
-                                          }}
-                                          onFinish={handleFeedback}
-                                        >
-                                          <Form.Item name="rating">
-                                            <Rate style={{ display: 'flex', justifyContent: 'center' }} />
-                                          </Form.Item>
-                                          <Form.Item label="Additional feedback" name="comment">
-                                            <Input.TextArea placeholder='My Feedback!' />
-                                          </Form.Item>
-                                        </Form>
-                                      </Modal>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Col></Col>
-                                      <Col>
-                                        <Button
-                                          className='view-bk-detail-btn'
-                                          onClick={() => viewBookingDetails(booking)}
-                                        >
-                                          View Detail
-                                        </Button>
-                                      </Col>
-                                    </>
-                                  )}
-                                </>
-                              )
-                            }
-
-                          </Row>
-                        </Card>
-                      )}
-                    />
+                              </Row>
+                            </Card>
+                          )}
+                        />
                       </TabPane>
                     </Tabs>
                   </div>
