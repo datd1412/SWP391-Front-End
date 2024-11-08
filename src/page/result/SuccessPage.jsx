@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 function SuccessPage() {
 
+    const selectedTab = '3';
     const navigate = useNavigate();
     const params = useGetParams();
     const orderID = params("orderID");
@@ -40,10 +41,10 @@ function SuccessPage() {
                 title="Successfully Purchased Cloud Server ECS!"
                 subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
                 extra={[
-                    <Button type="primary" key="console">
+                    <Button type="primary" key="console" onClick={() => navigate("/")}>
                         Go Home
                     </Button>,
-                    <Button key="buy" onClick={() => navigate("/profile")}>View my booking</Button>,
+                    <Button key="buy" onClick={() => navigate("/profile", { state: { selectedTab } })}>View my booking</Button>,
                 ]}
             />
         </div>

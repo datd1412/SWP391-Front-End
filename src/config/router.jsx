@@ -20,6 +20,7 @@ import TourDetailPage from "../page/tourdetail/TourDetailPage";
 import TourPage from "../page/tour/TourPage";
 import FaillPage from "../page/result/FaillPage";
 import PrivateRoute from "./routers/PrivateRoute";
+import ProtectedRoute from "./routers/ProtectedRoute";
 // import ManageTour from "../page/manager/manage-tour/managetour"
 // const ProtectedRouteAuth = ({ children }) => {
 //   const user = useSelector(selectUser);
@@ -69,11 +70,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <ProfilePage />,
+        element: (
+          <PrivateRoute>
+            <ProfilePage />
+          </PrivateRoute>
+        )
       },
       {
         path: "/bookingtour",
-        element: <BookingPage />,
+        element: (
+          <PrivateRoute>
+            <BookingPage />
+          </PrivateRoute>
+        )
       },
       {
         path: "/success",
@@ -116,9 +125,9 @@ export const router = createBrowserRouter([
   {
     path: "/manager",
     element: (
-      <PrivateRoute>
+      <ProtectedRoute>
         <ManagerPage />
-      </PrivateRoute>
+      </ProtectedRoute>
     ), // ManagerPage sẽ render các trang con
     children: [
       {

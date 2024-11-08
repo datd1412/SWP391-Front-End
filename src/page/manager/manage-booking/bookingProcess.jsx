@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from 'react'; 
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
-import { Table, Space, Typography, Modal, Button, Form, Input, Popconfirm, Upload } from 'antd';
+import { Table, Space, Typography, Modal, Button, Form, Input, Upload, Badge, Tabs, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import uploadFile from '../../../utils/file';
+import moment from 'moment'; // Importing moment for date formatting
+
+import { color } from 'framer-motion';
+
+const { TabPane } = Tabs;
 
 function BookingProcess() {
     const [bookingData, setBookingData] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showCustomerModal, setShowCustomerModal] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState({});
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [currentBookingId, setCurrentBookingId] = useState(null);
     const [fileList, setFileList] = useState([]);
+    const [filterStatus, setFilterStatus] = useState("PROCESSING");
+    const [selectedTour, setSelectedTour] = useState(""); // Bộ lọc tour
+    const [sortOrder, setSortOrder] = useState("closest"); // Sắp xếp ngày đặt
 
-    // Lấy dữ liệu booking
     const fetchBookingData = async () => {
         try {
             const response = await api.get("booking/all");
@@ -23,7 +32,25 @@ function BookingProcess() {
         }
     };
 
-    // Lấy dữ liệu đơn hàng
+    useEffect(() => {
+        fetchBookingData();
+    }, []);
+
+  // Bộ lọc và sắp xếp với tùy chọn "All"
+    const filteredData = bookingData
+    .filter((booking) => filterStatus === "ALL" || booking.status === filterStatus)
+    .filter((booking) => selectedTour === "ALL" || selectedTour === "" || booking.tourName === selectedTour) // Bộ lọc tour
+    .sort((a, b) => {
+        if (sortOrder === "closest") {
+            return new Date(a.bookingDate) - new Date(b.bookingDate);
+        } else if (sortOrder === "farthest") {
+            return new Date(b.bookingDate) - new Date(a.bookingDate);
+        } else {
+            return 0; // Không sắp xếp nếu chọn "All"
+        }
+    });
+
+
     const fetchOrderData = async (id) => {
         try {
             const response = await api.get(`order/${id}`);
@@ -33,11 +60,6 @@ function BookingProcess() {
         }
     };
 
-    useEffect(() => {
-        fetchBookingData();
-    }, []);
-
-    // Chỉnh sửa đơn hàng
     const handleEditOrder = async (booking) => {
         setCurrentBookingId(booking.id);
         const order = await fetchOrderData(booking.id);
@@ -50,36 +72,26 @@ function BookingProcess() {
                 pdfUrl: order.pdfUrl || '',
                 description: order.description || '',
                 estimateFee: booking.totalPrice,
-                total: order.total // Thêm trường total vào đây
+                total: order.total,
             });
 
-            // Nếu có file, cập nhật fileList
             if (order.pdfUrl) {
-                setFileList([{
-                    uid: '-1', // Dùng uid để tránh xung đột
-                    name: 'File uploaded', // Tên file
-                    status: 'done',
-                    url: order.pdfUrl, // URL của file
-                }]);
+                setFileList([{ uid: '-1', name: 'File uploaded', status: 'done', url: order.pdfUrl }]);
             } else {
-                setFileList([]); // Reset fileList nếu không có file
+                setFileList([]);
             }
         }
         setShowModal(true);
     };
 
-    // Cập nhật đơn hàng
     const handleUpdateOrder = async (values) => {
         try {
             setLoading(true);
-
-            // Nếu có file trong fileList, upload và lấy URL
             if (fileList.length > 0) {
-                const file = fileList[0]; // Lấy file đầu tiên trong danh sách
-                const url = await uploadFile(file.originFileObj); // Upload file để lấy URL
-                values.pdfUrl = url; // Gán URL vào pdfUrl
+                const file = fileList[0];
+                const url = await uploadFile(file.originFileObj);
+                values.pdfUrl = url;
             }
-
             await api.put(`order/${currentBookingId}`, {
                 foodFee: values.foodFee,
                 travelFee: values.travelFee,
@@ -87,14 +99,13 @@ function BookingProcess() {
                 pdfUrl: values.pdfUrl || '',
                 description: values.description || '',
             });
-
             await api.put(`booking/${currentBookingId}`, { status: "PENDING" });
 
             toast.success("Order updated and booking status changed to PENDING");
             fetchBookingData();
             setShowModal(false);
-            setFileList([]); // Reset fileList sau khi submit
-            form.resetFields(); // Reset các trường trong form
+            setFileList([]);
+            form.resetFields();
         } catch (err) {
             toast.error(err.response?.data || "Error updating order");
         } finally {
@@ -102,7 +113,6 @@ function BookingProcess() {
         }
     };
 
-    // Xử lý upload file
     const beforeUpload = (file) => {
         const isDocOrPdf = file.type === 'application/pdf' || 
                            file.type === 'application/msword' || 
@@ -114,10 +124,15 @@ function BookingProcess() {
         setFileList(newFileList.filter(file => {
             if (!beforeUpload(file)) {
                 toast.error('Invalid file format! File has been removed.');
-                return false; // Không thêm file không hợp lệ
+                return false; 
             }
-            return true; // Giữ lại file hợp lệ
+            return true; 
         }));
+    };
+
+    const handleShowCustomerInfo = (customer) => {
+        setSelectedCustomer(customer);
+        setShowCustomerModal(true);
     };
 
     const uploadButton = (
@@ -138,14 +153,35 @@ function BookingProcess() {
             key: 'tourName',
         },
         {
-            title: 'Number of Adults',
-            dataIndex: 'numberOfAdult',
-            key: 'numberOfAdult',
+            title: 'Customer Name',
+            key: 'customerName',
+            render: (_, record) => (
+                <span>
+                    {record.customerName}
+                    <Button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => handleShowCustomerInfo({ name: record.customerName, email: record.customerEmail, phoneNumber: record.phoneNumber })}
+                    >
+                        ...
+                    </Button>
+                </span>
+            ),
+        },
+    
+        {
+            title: 'Booking Date',
+            dataIndex: 'bookingDate',
+            key: 'bookingDate',
+            render: (date) => moment(date).format("YYYY-MM-DD") // Formatting date to exclude time
         },
         {
-            title: 'Number of Children',
-            dataIndex: 'numberOfChild',
-            key: 'numberOfChild',
+            title: 'Number of People',
+            key: 'numberOfPeople',
+            render: (_, record) => (
+                <span>
+                    {record.numberOfAdult + record.numberOfChild} (Adults: {record.numberOfAdult}, Children: {record.numberOfChild})
+                </span>
+            ),
         },
         {
             title: 'Total Price',
@@ -157,24 +193,23 @@ function BookingProcess() {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            render: (status) => (
+                <Badge status={status === "PROCESSING" ? "warning" : status === "PENDING" ? "success" : "error"} text={status} />
+            )
         },
         {
             title: 'Action',
             dataIndex: 'id',
             key: 'action',
-            render: (id, booking) => (
+            render: (_, booking) => (
                 <Space>
-                    <Button type="primary" onClick={() => handleEditOrder(booking)}>
+                    <Button 
+                        type="primary" 
+                        onClick={() => handleEditOrder(booking)} 
+                        disabled={filterStatus === "PENDING"}
+                    >
                         Edit Order
                     </Button>
-                    <Popconfirm
-                        title="Are you sure to delete this booking?"
-                        onConfirm={() => handleDelete(id)}
-                    >
-                        <Button type="primary" danger>
-                            Delete
-                        </Button>
-                    </Popconfirm>
                 </Space>
             ),
         },
@@ -183,20 +218,73 @@ function BookingProcess() {
     return (
         <div>
             <Typography.Title level={4}>Manage Bookings</Typography.Title>
-            <Table dataSource={bookingData} columns={columns} />
+            <Space style={{ marginBottom: 16 }}>
+                {["PROCESSING", "REJECTED", "PENDING"].map((status) => {
+                    const buttonStyles = {
+                        backgroundColor:
+                            status === "PROCESSING" ? "orange" :
+                            status === "REJECTED" ? "red" :
+                            "green",
+                        color: "#fff",
+                        borderColor: "transparent",
+                    };
 
-            <Modal
-                open={showModal}
-                onCancel={() => setShowModal(false)}
-                title="Edit Order"
-                onOk={() => form.submit()}
-                confirmLoading={loading}
-            >
-                <Form
-                    form={form}
-                    labelCol={{ span: 24 }}
-                    onFinish={handleUpdateOrder} 
-                >
+                    return (
+                        <Button
+                            key={status}
+                            type={filterStatus === status ? "primary" : "default"}
+                            style={filterStatus === status ? buttonStyles : {}}
+                            onClick={() => setFilterStatus(status)}
+                        >
+                            {status}
+                            <Badge
+                                count={bookingData.filter((b) => b.status === status).length}
+                                style={{
+                                    backgroundColor:
+                                        status === "PROCESSING"
+                                            ? "orange"
+                                            : status === "REJECTED"
+                                            ? "red"
+                                            : "green",
+                                }}
+                            />
+                        </Button>
+                    );
+                })}
+
+                <Select
+                        placeholder="Filter by Tour Name"
+                        onChange={(value) => setSelectedTour(value || "ALL")}
+                        allowClear
+                        style={{ width: 200 }}
+                    >
+                        <Option value="ALL">All</Option>
+                        {[...new Set(bookingData.map((b) => b.tourName))].map((tour) => (
+                            <Option key={tour} value={tour}>{tour}</Option>
+                        ))}
+                    </Select>
+
+                    {/* Dropdown để sắp xếp theo ngày */}
+                    <Select
+                        placeholder="Sort by Date"
+                        onChange={(value) => setSortOrder(value || "ALL")}
+                        allowClear
+                        style={{ width: 150 }}
+                    >
+                        <Option value="ALL">All</Option>
+                        <Option value="closest">Farthest</Option>
+                        <Option value="farthest">Closest</Option>
+                    </Select>
+            </Space>
+
+            <Tabs defaultActiveKey="1">
+                <TabPane tab={`Total Bookings: ${filteredData.length}`} key="1">
+                    <Table dataSource={filteredData} columns={columns} />
+                </TabPane>
+            </Tabs>
+
+            <Modal open={showModal} onCancel={() => setShowModal(false)} title="Edit Order" onOk={() => form.submit()} confirmLoading={loading}>
+                <Form form={form} labelCol={{ span: 24 }} onFinish={handleUpdateOrder}>
                     <Form.Item name="foodFee" label="Food Fee" rules={[{ required: true, message: 'Please input the food fee!' }]}>
                         <Input type="number" />
                     </Form.Item>
@@ -216,14 +304,14 @@ function BookingProcess() {
                             fileList={fileList}
                             customRequest={async ({ file, onSuccess, onError }) => {
                                 try {
-                                    const url = await uploadFile(file); // Gọi hàm uploadFile để lấy URL
-                                    onSuccess(url); // Thông báo thành công
+                                    const url = await uploadFile(file); 
+                                    onSuccess(url); 
                                 } catch (error) {
-                                    onError(error); // Thông báo lỗi
+                                    onError(error); 
                                 }
                             }}
                         >
-                            {fileList.length >= 1 ? null : uploadButton} {/* Hiển thị nút upload nếu không có file */}
+                            {fileList.length >= 1 ? null : uploadButton}
                         </Upload>
                         {fileList.length > 0 && fileList[0].url && (
                             <div style={{ marginTop: 10 }}>
@@ -233,13 +321,20 @@ function BookingProcess() {
                             </div>
                         )}
                     </Form.Item>
-                    <Form.Item name="description" label="Description" rules={[{ required: true, message: 'Please input the description!' }]}>
-                        <Input.TextArea />
-                    </Form.Item>
-                    <Form.Item name="estimateFee" label="Estimate Fee" rules={[{ required: true, message: 'Please input the estimate fee!' }]}>
-                        <Input type="number" readOnly />
+                    <Form.Item name="description" label="Description">
+                        <Input.TextArea rows={4} />
                     </Form.Item>
                 </Form>
+            </Modal>
+            <Modal
+                open={showCustomerModal}
+                onCancel={() => setShowCustomerModal(false)}
+                footer={null}
+                title="Customer Information"
+            >
+                <p>Name: {selectedCustomer.name}</p>
+                <p>Email: {selectedCustomer.email}</p>
+                <p>Phone number: {selectedCustomer.phoneNumber}</p>
             </Modal>
         </div>
     );

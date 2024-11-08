@@ -81,19 +81,6 @@ function Register() {
               ]}>
                 <Input placeholder=" " />
               </Form.Item>
-              {/* Phone number */}
-              <Form.Item label="Phone number" name="phone" rules={[
-                {
-                  required: "true",
-                  message: "Phone number cannot be blank",
-                },
-                {
-                  pattern: '(84|0[3|5|7|8|9])+([0-9]{8})\\b',
-                  message: "Illegal phone number",
-                }
-              ]}>
-                <Input placeholder=" " />
-              </Form.Item>
               {/* Address */}
               <Form.Item label="Address" name="address">
                 <Input placeholder=" " />
