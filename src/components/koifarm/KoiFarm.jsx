@@ -11,7 +11,7 @@ const KoiFarm = () => {
   const [selectedFarm, setSelectedFarm] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [koiDetails, setKoiDetails] = useState({});
-  const [tourImages, setTourImages] = useState({}); // New state to store tour images by ID
+  
 
   // Fetch farm list data from API when component mounts
   const fetchKoiFarm = async () => {
@@ -29,7 +29,7 @@ const KoiFarm = () => {
       const response = await api.get(`/farm/${farmId}`);
       setSelectedFarm(response.data); // Save selected farm data to state
       fetchAllKoiDetails(response.data.listFarmKoi); // Fetch koi details for each koi in the farm
-      fetchTourImages(response.data.listFarmTour); // Fetch tour images for each tour
+      
     } catch (error) {
       console.log(error.toString());
     }
@@ -72,7 +72,7 @@ const KoiFarm = () => {
     setIsModalVisible(false);
     setSelectedFarm(null); // Clear selected farm
     setKoiDetails({}); // Clear koi details
-    setTourImages({}); // Clear tour images
+  
   };
 
   return (

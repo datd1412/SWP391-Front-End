@@ -22,20 +22,19 @@ function TourPage() {
     try {
       const response = await api.get(`/tour/${id}`);
       setTour(response.data);
-
-      const farmIds = response.data.listFarmTour.map(
-        (farmTour) => farmTour.farmId
-      );
-      const farmDataPromises = farmIds.map((farmId) =>
-        api.get(`/farm/${farmId}`)
-      );
+  
+      // Lấy danh sách farmId từ tour
+      const farmIds = response.data.listFarmTour.map(farmTour => farmTour.farmId);
+      const farmDataPromises = farmIds.map(farmId => api.get(`/farm/${farmId}`));
       const farmsData = await Promise.all(farmDataPromises);
-
-      const farms = farmsData.map((farm) => ({
+  
+      const farms = farmsData.map(farm => ({
         name: farm.data.farmName,
         location: farm.data.location,
         image: farm.data.image,
+        koiTypes: farm.data.listFarmKoi.map(koi => koi.koiId), // Lưu danh sách các loại cá
       }));
+  
       setFarmImages(farms);
     } catch (error) {
       console.error(error.toString());
@@ -45,6 +44,7 @@ function TourPage() {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchTourDetail();
