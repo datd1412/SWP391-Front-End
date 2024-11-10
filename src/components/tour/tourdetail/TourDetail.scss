@@ -56,7 +56,7 @@
     }
 
     .tour-details {
-      flex: 1 1 35%;
+      flex: 1 1 45%;
       padding: 2rem;
       background: linear-gradient(135deg, #ffe5bf, #fff); 
       border: 2px solid #ff6f00; // Orange border
@@ -82,18 +82,42 @@
       .price {
         margin-top: 2rem;
         font-size: 1.5rem;
-        color: #ff6f00; // Orange for price
+        color: #ff6f00;
         font-weight: bold;
-
-        
-
-        .adult-price{
+      
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      
+        .price-label {
+          color: #ff6f00;
+          font-weight: 700;
+          font-size: 1.1rem;
+          margin-bottom: 0.5rem;
+        }
+      
+        .adult-price, .child-price {
+          font-size: 1.3rem;
+          margin: 0.25rem 0;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          transition: background-color 0.3s ease;
+          cursor: pointer;
+      
+          &:hover {
+            background-color: #ffe5bf;
+          }
+        }
+      
+        .adult-price {
           color: #fa920a;
         }
+      
         .child-price {
           color: #ffa135;
         }
       }
+      
 
       .btn-book {
         width: 100%;

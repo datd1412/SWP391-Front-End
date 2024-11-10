@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, Button, Typography, List, Spin, message } from "antd";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import api from "../../../config/axios";
 import "./TourDetail.scss";
 
@@ -11,7 +8,6 @@ const { Title, Paragraph } = Typography;
 
 function TourPage() {
   const { id } = useParams();
-  const mainSlider = useRef(null);
   const [tour, setTour] = useState(null);
   const [farmImages, setFarmImages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,36 +18,46 @@ function TourPage() {
     try {
       const response = await api.get(`/tour/${id}`);
       setTour(response.data);
-  
-      // Lấy danh sách farmId từ tour
-      const farmIds = response.data.listFarmTour.map(farmTour => farmTour.farmId);
-      const farmDataPromises = farmIds.map(farmId => api.get(`/farm/${farmId}`));
+
+      const farmIds = response.data.listFarmTour.map((farmTour) => farmTour.farmId);
+      const farmDataPromises = farmIds.map((farmId) => api.get(`/farm/${farmId}`));
       const farmsData = await Promise.all(farmDataPromises);
-  
-      const farms = farmsData.map(farm => ({
+
+      const farms = farmsData.map((farm) => ({
         name: farm.data.farmName,
         location: farm.data.location,
         image: farm.data.image,
-        koiTypes: farm.data.listFarmKoi.map(koi => koi.koiId), // Lưu danh sách các loại cá
+        koiTypes: farm.data.listFarmKoi.map((koi) => koi.koiId),
       }));
-  
+
       setFarmImages(farms);
     } catch (error) {
       console.error(error.toString());
-      setError("Không thể tải dữ liệu tour.");
-      message.error("Không thể tải dữ liệu tour.");
+      setError("Unable to load tour data.");
+      message.error("Unable to load tour data.");
     } finally {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchTourDetail();
   }, [id]);
 
+  const getNumberOfDays = () => {
+    if (tour?.tourStart && tour?.tourEnd) {
+      const startDate = new Date(tour.tourStart);
+      const endDate = new Date(tour.tourEnd);
+      const timeDiff = endDate - startDate;
+      return Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1; // Adding 1 to include start day
+    }
+    return 0;
+  };
+
+  const numberOfDays = getNumberOfDays();
+
   if (loading) {
-    return <Spin tip="Đang tải..." />;
+    return <Spin tip="Loading..." />;
   }
 
   if (error) {
@@ -59,7 +65,7 @@ function TourPage() {
   }
 
   if (!tour) {
-    return <div>Tour không tồn tại.</div>;
+    return <div>Tour not found.</div>;
   }
 
   return (
@@ -67,10 +73,8 @@ function TourPage() {
       <div className="container">
         <header className="tour-header">
           <Title>{tour.tourName}</Title>
-          <Paragraph className="tour-subtitle">{tour.decription}</Paragraph>
-          <Paragraph className="tour-description">
-            {tour.recipients} người tham gia
-          </Paragraph>
+          <Paragraph className="tour-subtitle">{tour.description}</Paragraph>
+          <Paragraph className="tour-description">{tour.recipients} participants</Paragraph>
         </header>
 
         <div className="tour-content">
@@ -81,46 +85,42 @@ function TourPage() {
           <Card className="tour-details">
             <List>
               <List.Item>
-                <strong>Thời gian:</strong> {tour.tourStart} - {tour.tourEnd}
+                <strong>Duration:</strong> {tour.tourStart} - {tour.tourEnd}
               </List.Item>
               <List.Item>
-                <strong>Địa điểm đến:</strong>
+                <strong>Destinations:</strong>
                 <ul>
                   {farmImages.map((farm, index) => (
-                    <li key={index}>
-                      {farm.name} - {farm.location}
-                    </li>
+                    <li key={index}>{farm.name} - {farm.location}</li>
                   ))}
                 </ul>
               </List.Item>
             </List>
             <div className="price">
-              <div className="price-label">Giá:</div>
+              <div className="price-label">Price:</div>
               <div className="adult-price">
-                <span>Người lớn:</span> {tour.priceAdult.toLocaleString()} đ
+                <span>Adult:</span> {tour.priceAdult.toLocaleString()} VND
               </div>
               <div className="child-price">
-                <span>Trẻ em:</span> {tour.priceChild.toLocaleString()} đ
+                <span>Child:</span> {tour.priceChild.toLocaleString()} VND
               </div>
             </div>
             <Button className="btn-book" type="primary" onClick={() => navigate("/bookingTour", { state: { tour } })}>
-              Đặt Tour
+              Book Tour
             </Button>
           </Card>
         </div>
 
         <section className="tour-schedule">
-          <Title level={2}>Chương trình tour chi tiết</Title>
-          {tour.listFarmTour.map((farmTour, index) => (
+          <Title level={2}>Detailed Tour Schedule</Title>
+          {[...Array(numberOfDays)].map((_, index) => (
             <div key={index} className="tour-day">
-              <Title level={3}>{farmTour.title}</Title>
-              <Paragraph>{farmTour.description}</Paragraph>
+              <Title level={3}>Day {index + 1}</Title>
+              <Paragraph>
+                {tour.listFarmTour[index]?.description || "Enter detailed description for this day..."}
+              </Paragraph>
               {farmImages[index] && (
-                <img
-                  src={farmImages[index].image}
-                  alt="Farm"
-                  className="farm-image"
-                />
+                <img src={farmImages[index].image} alt="Farm" className="farm-image" />
               )}
             </div>
           ))}

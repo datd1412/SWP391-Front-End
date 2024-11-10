@@ -141,7 +141,7 @@ const KoiFarm = () => {
                     }
                     alt={koiDetails[koi.koiId]?.koiName}
                     className="koi-thumbnail"
-                    style={{ maxWidth: 400, maxHeight: 400 }}
+                    style={{ maxWidth: 300, maxHeight: 300 }}
                   />
                   <p>
                     <span style={{ fontWeight: "bold" }}> Koi Name:</span>{" "}
