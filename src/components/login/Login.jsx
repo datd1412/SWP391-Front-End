@@ -20,7 +20,7 @@ function Login() {
     try {
       const response = await api.post("/login", values);
       /*       const { token } = response.data; */
-      localStorage.setItem("token",response.data.data.token);
+      localStorage.setItem("token", response.data.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));
       const user = {
         fullName: response.data.data.fullName,
@@ -33,7 +33,7 @@ function Login() {
       navigate("/");
       toast.success("Login Success", {
         position: "top-center",
-        icon: <FontAwesomeIcon icon={faThumbsUp} color="#CA803D"/>,
+        icon: <FontAwesomeIcon icon={faThumbsUp} color="#CA803D" />,
         autoClose: 3000,
         closeOnClick: true,
       });
@@ -41,7 +41,7 @@ function Login() {
       console.log(e);
       toast.error("Invalid username or password!", {
         position: "top-left",
-        icon: <FontAwesomeIcon icon={faHand} color="#ED766A"/>,
+        icon: <FontAwesomeIcon icon={faHand} color="#ED766A" />,
         autoClose: 3000,
         closeOnClick: true,
       });
@@ -49,7 +49,7 @@ function Login() {
     }
   };
 
-  function handleLoginGoogle() {
+  /* function handleLoginGoogle() {
     const auth = getAuth();
     signInWithPopup(auth, provider)
       .then((result) => {
@@ -72,6 +72,38 @@ function Login() {
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
+      });
+  } */
+
+  function handleLoginGoogle() {
+    const auth = getAuth();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // Thông tin người dùng nhận được sau khi đăng nhập thành công
+        const user = result.user;
+        console.log(user);
+
+        // Lưu thông tin người dùng vào localStorage
+        const userInfo = {
+          fullName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          uid: user.uid,
+          role: "USER", // Bạn có thể xác định quyền người dùng sau, mặc định có thể là USER
+        };
+
+        localStorage.setItem("user", JSON.stringify(userInfo));
+
+        // Cập nhật Redux store
+        dispatch(setUser(userInfo));
+
+        // Chuyển đến trang chủ
+        navigate("/");
+      })
+      .catch((error) => {
+        // Xử lý lỗi đăng nhập
+        console.error("Error during Google login", error);
+        alert(`Error: ${error.message}`);
       });
   }
 

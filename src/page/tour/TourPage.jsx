@@ -5,11 +5,11 @@ import { useLocation } from 'react-router-dom'
 function TourPage() {
   
   const location =  useLocation();
-  const searchFields = location.state?.searchFields;
+  const filter4 = location.state?.filter4;
 
 
   return (
-    <div><Tour searchFields={searchFields}/></div>
+    <div><Tour searchTours={filter4}/></div>
   )
 }
 
