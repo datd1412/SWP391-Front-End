@@ -8,14 +8,12 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import { Avatar, Button, Card, Col, Divider, Form, Input, Layout, List, Menu, Modal, Rate, Row, Space, Steps, Switch, Table, Tabs, Tag, theme, Typography } from 'antd';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../config/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCalendar, faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { setUser } from '../../redux/action/userAction';
-import { cancelBooking } from '../../redux/action/bookingActions';
-import { useForm } from 'antd/es/form/Form';
 import TabPane from 'antd/es/tabs/TabPane';
 import { toast } from 'react-toastify';
 
@@ -30,15 +28,13 @@ function ProfilePage() {
   const user = useSelector((state) => state.user);
   const [feedbackForm] = Form.useForm();
   const dispatch = useDispatch();
-  const bookingList = useSelector((state) => state.bookings.bookings);
   const [myBookings, setmyBookings] = useState([]);
   const [myOrder, setmyOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openFeedback, setopenFeedback] = useState(false);
   const [koiImages, setkoiImages] = useState([]);
   const [activeTab, setactiveTab] = useState('inProgress');
-
-  const navigate = useNavigate();
+  const [bookingIdToDelete, setBookingIdToDelete] = useState(-1);
 
   const [passwordForm] = Form.useForm();
   const [profileForm] = Form.useForm();
@@ -50,7 +46,7 @@ function ProfilePage() {
   };
 
   const filterBookings = (status) => {
-    console.log("Booking sau delete: ",myBookings);
+    console.log("Booking sau delete: ", myBookings);
     if (status === 'COMPLETED') {
       return myBookings.filter((booking) => booking.status === 'COMPLETE');
     } else {
@@ -90,12 +86,18 @@ function ProfilePage() {
     }
   };
 
-  const showCancelModal = () => {
+  const showCancelModal = (id) => {
     setIsModalOpen(true);
+    setBookingIdToDelete(id);
   };
 
-  const handleFeedback = (values) => {
-    console.log(values);
+  const handleFeedback = async (values) => {
+    try {
+      const response = await api.post(`/feedback/${values.id}`, values);
+      handleCancel();
+    } catch (error) {
+      console.log(error.toString);
+    }
   }
 
   const handleCancel = () => {
@@ -104,15 +106,12 @@ function ProfilePage() {
     setopenFeedback(false);
   };
 
-  const handleCancelBooking = async (booking) => {
+  const handleCancelBooking = async () => {
     try {
-      const response = await api.delete(`/booking/${booking.invoiceNo}`);
-      dispatch(cancelBooking(booking.invoiceNo));
-
-      setmyBookings((prevBookings) => 
-        prevBookings.filter((item) => item.invoiceNo !== booking.invoiceNo)
+      const response = await api.delete(`/booking/${bookingIdToDelete}`);
+      setmyBookings((prevBookings) =>
+        prevBookings.filter((item) => item.invoiceNo !== bookingIdToDelete)
       );
-
       setIsModalOpen(false);
       toast.success("Your booking has been deleted!", {
         position: "top-center",
@@ -123,6 +122,7 @@ function ProfilePage() {
       console.log(error.toString());
     }
   };
+  
 
 
   const columns = [
@@ -170,7 +170,8 @@ function ProfilePage() {
     }
   }
 
-  const fetchBookings = async (tourId, bookingId) => {
+
+  const fetchBookingsAgain = async (tourId, bookingId) => {
     const tourInfo = await api.get(`/tour/${tourId}`);
     const bookingInfo = await api.get(`/booking/${bookingId}`);
     const row = {
@@ -192,14 +193,22 @@ function ProfilePage() {
     setmyBookings((prevmyBookings) => [...prevmyBookings, row]);
   };
 
+  const fetchBookings = async () => {
+
+    const response = await api.get("/booking");
+    response.data.map((index) => (
+      fetchBookingsAgain(index.tourId, index.id)
+    ))
+
+    console.log("Mybooking: ", myBookings);
+  };
+
   useEffect(() => {
     if (location.state && location.state.selectedTab) {
       setSelectedKey(location.state.selectedTab);
     }
     console.log("select: ", selectedKey);
-    bookingList.map((index) => (
-      fetchBookings(index.tourId, index.bookingId)
-    ))
+    fetchBookings();
   }, []);
 
   const toggleEdit = () => {
@@ -453,7 +462,7 @@ function ProfilePage() {
                                         <Button
                                           className="cancel-booking-btn"
                                           onClick={(e) => {
-                                            showCancelModal();
+                                            showCancelModal(booking.invoiceNo);
                                             e.stopPropagation();
                                           }}
                                         >
@@ -480,7 +489,7 @@ function ProfilePage() {
                                             </Button>
                                             <Button
                                               type="primary"
-                                              onClick={() => handleCancelBooking(booking)}
+                                              onClick={() => handleCancelBooking(booking.invoiceNo)}
                                               danger
                                               style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', borderRadius: '8px', padding: '20px 30px' }}
                                             >
@@ -526,7 +535,11 @@ function ProfilePage() {
                                                 span: 24,
                                               }}
                                               onFinish={handleFeedback}
+                                              initialValues={{
+                                                id: booking.invoiceNo,
+                                              }}
                                             >
+                                              <Form.Item name="id"></Form.Item>
                                               <Form.Item name="rating">
                                                 <Rate style={{ display: 'flex', justifyContent: 'center' }} />
                                               </Form.Item>
@@ -652,7 +665,7 @@ function ProfilePage() {
                                             </Button>
                                             <Button
                                               type="primary"
-                                              onClick={() => handleCancelBooking(booking)}
+                                              onClick={() => handleCancelBooking(booking.invoiceNo)}
                                               danger
                                               style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', borderRadius: '8px', padding: '20px 30px' }}
                                             >
@@ -698,7 +711,11 @@ function ProfilePage() {
                                                 span: 24,
                                               }}
                                               onFinish={handleFeedback}
+                                              initialValues={{
+                                                id: booking.invoiceNo,
+                                              }}
                                             >
+                                              <Form.Item name="id"></Form.Item>
                                               <Form.Item name="rating">
                                                 <Rate style={{ display: 'flex', justifyContent: 'center' }} />
                                               </Form.Item>

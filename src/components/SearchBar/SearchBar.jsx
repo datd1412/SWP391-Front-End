@@ -44,22 +44,14 @@ const SearchBar = () => {
   const filteredKoiTypes = KOITYPES.filter((o) => !selectedKoiTypes.includes(o));
 
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     try {
-      const obj = {
-        nameFarm: "duyngu",
-        startTime: "2024-10-20",
-        price: 1000000,
-        koiType: "Kohaku",
-      }
 
       /* const response = await api.get("/tour");
       const res = response.data.filter((tour) => new Date(tour.tourStart) < new Date(searchFields.startTime));
       console.log(res); */
-      const response = await api.get("/tour/search", searchFields);
       handleToastingLoad();
-      /* navigate("/tour", { state: { response } }); */
-      console.log("Danh sach tour: ", response.data);
+      navigate("/tour", { state: { searchFields } });
       console.log(searchFields);
     } catch (error) {
       console.log(error.toString());

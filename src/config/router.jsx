@@ -21,6 +21,8 @@ import TourPage from "../page/tour/TourPage";
 import FaillPage from "../page/result/FaillPage";
 import PrivateRoute from "./routers/PrivateRoute";
 import ProtectedRoute from "./routers/ProtectedRoute";
+import BookingProcess from "../page/manager/manage-booking/bookingProcess";
+import Dashboard from "../page/manager/Dashboard/dashboard";
 // import ManageTour from "../page/manager/manage-tour/managetour"
 // const ProtectedRouteAuth = ({ children }) => {
 //   const user = useSelector(selectUser);
@@ -145,6 +147,14 @@ export const router = createBrowserRouter([
       {
         path: "ManageBooking",
         element: <BookingApproval />
+      },
+      {
+        path: "BookingProcess",
+        element: <BookingProcess />
+      },
+      {
+        path: "Dashboard",
+        element: <Dashboard />
       },
       {
         path: "", // Route con mặc định

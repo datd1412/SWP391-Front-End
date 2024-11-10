@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal } from "antd"; 
+import { Button, Modal } from "antd";
+import { useLocation } from "react-router-dom";
+import queryString from "query-string";
 import "./KoiFish.scss";
 import api from "../../config/axios";
 
@@ -7,8 +9,9 @@ const KoiFish = () => {
   const [koiFishs, setKoiFishs] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedFish, setSelectedFish] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // State cho thanh tìm kiếm
+  const [searchTerm, setSearchTerm] = useState("");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const location = useLocation();
 
   const fetchKoiFishs = async () => {
     try {
@@ -19,30 +22,39 @@ const KoiFish = () => {
     }
   };
 
-  useEffect(() => {
-    fetchKoiFishs();
-  }, []);
-
-  const showModal = (fish) => {
-    setSelectedFish(fish);
-    setIsModalVisible(true);
+  const fetchKoiDetails = async (koiId) => {
+    try {
+      const response = await api.get(`/koifish/${koiId}`);
+      setSelectedFish(response.data);
+      setIsModalVisible(true);
+    } catch (error) {
+      console.log(error.toString());
+    }
   };
+
+  useEffect(() => {
+    const { selectedKoiId } = queryString.parse(location.search);
+    if (selectedKoiId) {
+      fetchKoiDetails(selectedKoiId);
+    }
+    fetchKoiFishs();
+  }, [location.search]);
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setSelectedFish(null);
   };
 
-  // Hàm để xử lý thay đổi tìm kiếm
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Lọc danh sách cá theo tên
-  const filteredKoiFishs = koiFishs.filter(fish => 
+  const filteredKoiFishs = koiFishs.filter((fish) =>
     fish.koiName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   const toggleDescription = () => {
-    setIsDescriptionExpanded(!isDescriptionExpanded); // Đảo ngược trạng thái mô tả
+    setIsDescriptionExpanded(!isDescriptionExpanded);
   };
 
   return (
@@ -50,24 +62,20 @@ const KoiFish = () => {
       <div className="search-container">
         <input
           type="text"
-          placeholder="Tìm kiếm theo tên cá..."
+          placeholder="Search by koi name..."
           value={searchTerm}
           onChange={handleSearchChange}
           className="search-input"
         />
       </div>
 
-      <h2>Tổng hợp các loại cá koi</h2>
+      <h2>All Koi Fish</h2>
       <div className="koi-grid">
-        {filteredKoiFishs.map((fish, index) => (
-          <div className="koi-card" key={index} onClick={() => showModal(fish)}>
-            <img 
-              src={fish.image || "https://via.placeholder.com/150"} 
-              alt={fish.koiName} 
-              className="koi-image" 
-            />
+        {filteredKoiFishs.map((fish) => (
+          <div className="koi-card" key={fish.id} onClick={() => fetchKoiDetails(fish.id)}>
+            <img src={fish.image || "https://via.placeholder.com/150"} alt={fish.koiName} className="koi-image" />
             <h3>{fish.koiName}</h3>
-            <p>Giá: {fish.price.toLocaleString()} VND</p>
+            <p>Price: {fish.price.toLocaleString()} VND</p>
           </div>
         ))}
       </div>
@@ -84,16 +92,14 @@ const KoiFish = () => {
               src={selectedFish.image || "https://via.placeholder.com/500"}
               style={{ width: "100%", marginBottom: "40px" }}
             />
-            <p><strong>Loại cá:</strong> {selectedFish.koiType}</p>
-            <p><strong>Tên cá:</strong> {selectedFish.koiName}</p>
-            <p><strong>Trại:</strong> {selectedFish.farmKoiList[0]?.farmId}</p>
-            <p><strong>Số lượng:</strong> {selectedFish.farmKoiList[0]?.quantity}</p>
-            <p><strong>Giá:</strong> {selectedFish.price.toLocaleString()} VND</p>
-            <p>
-              <strong>Mô tả:</strong> {isDescriptionExpanded ? selectedFish.detail : `${selectedFish.detail.slice(0, 100)}...`}
-            </p>
+            <p><strong>Type:</strong> {selectedFish.koiType}</p>
+            <p><strong>Name:</strong> {selectedFish.koiName}</p>
+            <p><strong>Farm:</strong> {selectedFish.farmKoiList[0]?.farmId}</p>
+            <p><strong>Quantity:</strong> {selectedFish.farmKoiList[0]?.quantity}</p>
+            <p><strong>Price:</strong> {selectedFish.price.toLocaleString()} VND</p>
+            <p><strong>Description:</strong> {isDescriptionExpanded ? selectedFish.detail : `${selectedFish.detail.slice(0, 100)}...`}</p>
             <Button type="link" onClick={toggleDescription}>
-              {isDescriptionExpanded ? "Thu gọn" : "Xem thêm"}
+              {isDescriptionExpanded ? "Show Less" : "Read More"}
             </Button>
           </div>
         )}

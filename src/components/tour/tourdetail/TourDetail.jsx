@@ -13,7 +13,7 @@ function TourPage() {
   const { id } = useParams();
   const mainSlider = useRef(null);
   const [tour, setTour] = useState(null);
-  const [farmImages, setFarmImages] = useState([]); // State for multiple farm images and names
+  const [farmImages, setFarmImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -22,22 +22,19 @@ function TourPage() {
     try {
       const response = await api.get(`/tour/${id}`);
       setTour(response.data);
-
-      // Fetch details for each farm in the list
-      const farmIds = response.data.listFarmTour.map(
-        (farmTour) => farmTour.farmId
-      );
-      const farmDataPromises = farmIds.map((farmId) =>
-        api.get(`/farm/${farmId}`)
-      );
+  
+      // Lấy danh sách farmId từ tour
+      const farmIds = response.data.listFarmTour.map(farmTour => farmTour.farmId);
+      const farmDataPromises = farmIds.map(farmId => api.get(`/farm/${farmId}`));
       const farmsData = await Promise.all(farmDataPromises);
-
-      // Extract farm names and images
-      const farms = farmsData.map((farm) => ({
+  
+      const farms = farmsData.map(farm => ({
         name: farm.data.farmName,
         location: farm.data.location,
         image: farm.data.image,
+        koiTypes: farm.data.listFarmKoi.map(koi => koi.koiId), // Lưu danh sách các loại cá
       }));
+  
       setFarmImages(farms);
     } catch (error) {
       console.error(error.toString());
@@ -47,6 +44,7 @@ function TourPage() {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchTourDetail();
@@ -64,13 +62,6 @@ function TourPage() {
     return <div>Tour không tồn tại.</div>;
   }
 
-  const mainSettings = {
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true,
-    fade: true,
-  };
-
   return (
     <div className="tour-detail">
       <div className="container">
@@ -84,11 +75,7 @@ function TourPage() {
 
         <div className="tour-content">
           <div className="tour-image">
-            
-              <div>
-                <img src={tour.image} alt="Tour main" loading="lazy" />
-              </div>
-            
+            <img src={tour.image} alt="Tour main" loading="lazy" />
           </div>
 
           <Card className="tour-details">
@@ -107,15 +94,15 @@ function TourPage() {
                 </ul>
               </List.Item>
             </List>
-            <Paragraph className="price">
-              <span className="price-label">Giá:</span>
-              <span className="old-price">
-                {tour.priceAdult.toLocaleString()} đ
-              </span>
-              <span className="new-price">
-                {tour.priceChild.toLocaleString()} đ
-              </span>
-            </Paragraph>
+            <div className="price">
+              <div className="price-label">Giá:</div>
+              <div className="adult-price">
+                <span>Người lớn:</span> {tour.priceAdult.toLocaleString()} đ
+              </div>
+              <div className="child-price">
+                <span>Trẻ em:</span> {tour.priceChild.toLocaleString()} đ
+              </div>
+            </div>
             <Button className="btn-book" type="primary" onClick={() => navigate("/bookingTour", { state: { tour } })}>
               Đặt Tour
             </Button>
