@@ -262,25 +262,48 @@ function ManageFarm() {
                     </Form.Item>
 
                     <Form.Item label="Time">
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <Form.Item
-                                    name="startTime"
-                                    rules={[{ required: true, message: 'Please select the start time!' }]}
-                                >
-                                    <TimePicker format="HH:mm:ss" placeholder="Start Time" />
+    <Row gutter={16}>
+        <Col span={12}>
+            <Form.Item
+                name="startTime"
+                rules={[
+                    { required: true, message: 'Please select the start time!' },
+                    ({ getFieldValue }) => ({
+                        validator(_, value) {
+                            const endTime = getFieldValue('endTime');
+                            if (!value || !endTime || value.isBefore(endTime)) {
+                                return Promise.resolve();
+                            }
+                            return Promise.reject(new Error('Start time must be earlier than end time!'));
+                        },
+                    }),
+                ]}
+            >
+                <TimePicker format="HH:mm:ss" placeholder="Start Time" />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
                                 <Form.Item
                                     name="endTime"
-                                    rules={[{ required: true, message: 'Please select the end time!' }]}
+                                    rules={[
+                                        { required: true, message: 'Please select the end time!' },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                const startTime = getFieldValue('startTime');
+                                                if (!value || !startTime || value.isAfter(startTime)) {
+                                                    return Promise.resolve();
+                                                }
+                                                return Promise.reject(new Error('End time must be later than start time!'));
+                                            },
+                                        }),
+                                    ]}
                                 >
                                     <TimePicker format="HH:mm:ss" placeholder="End Time" />
                                 </Form.Item>
                             </Col>
                         </Row>
                     </Form.Item>
+
 
                     <Form.List name="listFarmTour">
                         {(fields, { add, remove }) => (

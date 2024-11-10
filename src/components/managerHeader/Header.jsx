@@ -1,17 +1,16 @@
-import { Flex, Typography } from 'antd'
-import React from 'react'
+import { Flex, Typography } from 'antd';
+import React from 'react';
 
-const CustomHeader = () => {
+const { Title } = Typography;
+
+const CustomHeader = ({ user }) => {
   return (
     <Flex>
-        <Typography.Title level={3} type="secondary">
-            Welcome back, Dat
-        </Typography.Title>
-        <Flex>
-            
-        </Flex>
+      <Title level={3} type="secondary">
+        Welcome back, {user?.data?.fullName || 'Guest'}
+      </Title>
     </Flex>
-  )
+  );
 }
 
-export default CustomHeader
+export default CustomHeader;

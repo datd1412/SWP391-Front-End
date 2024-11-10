@@ -195,21 +195,65 @@ function ManageTour() {
                 {/* Đặt tourStart và tourEnd trên cùng một hàng */}
                 <Row gutter={16}>
                     <Col span={12}>
-                        <Form.Item name="tourStart" label="Start Date" rules={[{ required: true, message: 'Please select the start date!' }]}>
+                        <Form.Item name="tourStart" label="Start Date" rules={[
+                            { required: true, message: "Please select the start date!" },
+                            ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!value || !getFieldValue("tourEnd") || value.isBefore(getFieldValue("tourEnd"))) {
+                                return Promise.resolve();
+                                }
+                                return Promise.reject(new Error("The start date must be before the end date"));
+                            },
+                            }),
+                        ]}>
                             <DatePicker format="YYYY-MM-DD" />
                         </Form.Item>
                     </Col>
                     <Col span={12}> 
-                        <Form.Item name="tourEnd" label="End Date" rules={[{ required: true, message: 'Please select the end date!' }]}>
+                        <Form.Item name="tourEnd" label="End Date" rules={[
+                            { required: true, message: "Please select the end date!" },
+                            ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!value || !getFieldValue("tourStart") || value.isAfter(getFieldValue("tourStart"))) {
+                                return Promise.resolve();
+                                }
+                                return Promise.reject(new Error("The end date must be after the start date"));
+                            },
+                            }),
+                        ]}>
                             <DatePicker format="YYYY-MM-DD" />
                         </Form.Item>
                     </Col>
                 </Row>
-                <Form.Item name="priceAdult" label="Price (Adult)" rules={[{ required: true, message: 'Please input the price for adults!' }]}>
+                <Form.Item name="priceAdult" label="Price (Adult)" rules={[{ required: true, message: 'Please input the price for adults!' },
+                                {
+                                validator(_, value) {
+                                    return new Promise((resolve, reject) => {
+                                    if (value > 0) {
+                                        resolve();
+                                    } else {
+                                        reject("The price must be greater than 0");
+                                    }
+                                    });
+                                },
+                                },
+                            ]}>
                     <Input type="number" />
                 </Form.Item>
 
-                <Form.Item name="priceChild" label="Price (Child)" rules={[{ required: true, message: 'Please input the price for children!' }]}>
+                <Form.Item name="priceChild" label="Price (Child)" rules={[{ required: true, message: 'Please input the price for children!' },
+                        {
+                        validator(_, value) {
+                            return new Promise((resolve, reject) => {
+                            if (value > 0) {
+                                resolve();
+                            } else {
+                                reject("The price must be greater than 0");
+                            }
+                            });
+                        },
+                        },
+                    ]}>
                     <Input type="number" />
                 </Form.Item>
 

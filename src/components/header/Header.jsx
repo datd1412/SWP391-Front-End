@@ -59,7 +59,7 @@ function Header({ user, setUser }) {
       </Menu>
 
       {
-        user?.data.role === "ADMIN" && (
+      (user?.data.role === "ADMIN" || user?.data.role === "STAFF" || user?.data.role === "CONSULTANT_STAFF") && (
           <Switch
             unCheckedChildren="Switch Staff"
             defaultChecked={false}

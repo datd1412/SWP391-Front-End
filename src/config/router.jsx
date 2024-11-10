@@ -20,6 +20,9 @@ import TourDetailPage from "../page/tourdetail/TourDetailPage";
 import TourPage from "../page/tour/TourPage";
 import FaillPage from "../page/result/FaillPage";
 import PrivateRoute from "./routers/PrivateRoute";
+import BookingProcess from "../page/manager/manage-booking/bookingProcess";
+import BookingManagement from "../page/manager/manage-booking/BookingManagement";
+import Dashboard from "../page/manager/Dashboard/dashboard";
 // import ManageTour from "../page/manager/manage-tour/managetour"
 // const ProtectedRouteAuth = ({ children }) => {
 //   const user = useSelector(selectUser);
@@ -116,32 +119,71 @@ export const router = createBrowserRouter([
   {
     path: "/manager",
     element: (
-      <PrivateRoute>
+      <PrivateRoute allowedRoles={['ADMIN', 'STAFF', 'CONSULTANT_STAFF']}>
         <ManagerPage />
       </PrivateRoute>
-    ), // ManagerPage sẽ render các trang con
+    ),
     children: [
       {
-        path: "ManageFarm", // URL /manager/page1
-        element: <ManageFarm />, // Trang Page1
+        path: "ManageFarm",
+        element: (
+          <PrivateRoute allowedRoles={['ADMIN']}>
+            <ManageFarm />
+          </PrivateRoute>
+        ),
       },
       {
         path: "ManageKoi",
-        element: <ManageKoi />
+        element: (
+          <PrivateRoute allowedRoles={['ADMIN']}>
+            <ManageKoi />
+          </PrivateRoute>
+        ),
       },
       {
         path: "ManageTour",
-        element: <ManageTour />
+        element: (
+          <PrivateRoute allowedRoles={['ADMIN']}>
+            <ManageTour />
+          </PrivateRoute>
+        ),
       },
       {
-        path: "ManageBooking",
-        element: <BookingApproval />
+        path: "BookingApproval",
+        element: (
+          <PrivateRoute allowedRoles={['ADMIN']}>
+            <BookingApproval />
+          </PrivateRoute>
+        ),
       },
       {
-        path: "", // Route con mặc định
-        element: <Navigate to="/manager/ManageFarm" replace />, // Chuyển hướng về ManageKoi
+        path: "BookingProcess",
+        element: (
+          <PrivateRoute allowedRoles={['STAFF']}>
+            <BookingProcess />
+          </PrivateRoute>
+        ),
       },
-    ]
-
-  }
-]); 
+      {
+        path: "BookingManagement",
+        element: (
+          <PrivateRoute allowedRoles={['CONSULTANT_STAFF']}>
+            <BookingManagement />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "Dashboard",
+        element: (
+          <PrivateRoute allowedRoles={['ADMIN', 'STAFF', 'CONSULTANT_STAFF']}>
+            <Dashboard />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "",
+        element: <Navigate to="/manager/Dashboard" replace />,
+      },
+    ],
+  },
+]);

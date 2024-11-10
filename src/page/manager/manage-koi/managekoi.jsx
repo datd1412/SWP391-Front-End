@@ -23,7 +23,7 @@ function ManageKoi() {
             const response = await api.get("farm");
             setFarmList(response.data);
         } catch (err) {
-            toast.error(err.response?.data || "L?i khi t?i danh sách trang tr?i");
+            toast.error(err.response?.data || "Lỗi khi tải danh sách trang trại");
         }
     };
 
@@ -47,13 +47,13 @@ function ManageKoi() {
 
     const handleSubmit = async (values) => {
         const farmKoiList = values.farmKoiList || [];
-    
+
         if (fileList.length > 0) {
             const file = fileList[0];
             const url = await uploadFile(file.originFileObj);
             values.image = url;
         }
-    
+
         const formattedValues = {
             ...values,
             farmKoiList: farmKoiList.map(farm => ({
@@ -61,7 +61,7 @@ function ManageKoi() {
                 quantity: farm.quantity,
             })),
         };
-    
+
         try {
             setLoading(true);
             if (formattedValues.id) {
@@ -123,23 +123,14 @@ function ManageKoi() {
             key: "id",
             render: (id, koi) => (
                 <Space>
-<<<<<<< HEAD
-                    <Button onClick={() => { 
-                        setShowModal(true); 
-                        form.setFieldsValue({ ...koi }); 
-                        setFileList([]); // Reset fileList when editing
-                    }}>Edit</Button>
-                    <Popconfirm title="Do you want to delete this fish?" onConfirm={() => handleDelete(id)}>
-                        <Button danger>Delete</Button>
-=======
-                    <Button type="primary"  style={{ marginLeft: 8 }}  onClick={() => {
+                    <Button type="primary" style={{ marginLeft: 8 }} onClick={() => {
                         setShowModal(true);
                         form.setFieldsValue({
                             ...koi,
-                            farmKoiList: koi.farmKoiList.map(farmKoi => ({
+                            farmKoiList: koi.farmKoiList?.map(farmKoi => ({ // Check for undefined
                                 farmId: farmKoi.farmId,
                                 quantity: farmKoi.quantity,
-                            })),
+                            })) || [], // Default to an empty array if undefined
                         });
                     }}>
                         Edit
@@ -150,10 +141,9 @@ function ManageKoi() {
                         description="Do you want to delete this koi fish?"
                         onConfirm={() => handleDelete(id)}
                     >
-                        <Button type="primary" danger  style={{ marginLeft: 8 }} >
+                        <Button type="primary" danger style={{ marginLeft: 8 }} >
                             Delete
                         </Button>
->>>>>>> af33c4a6778d3171f8be99e790f5c7c4ca430230
                     </Popconfirm>
                 </Space>
             ),
@@ -162,47 +152,90 @@ function ManageKoi() {
 
     return (
         <div>
-            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+            <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
                 <AutoComplete
                     style={{ width: 200 }}
                     placeholder="Filter by Koi Name"
-                    options={koiData.map(koi => ({ value: koi.koiName }))}
-                    onChange={(value) => handleFilterChange(value, 'koiName')}
+                    options={koiData.map((koi) => ({ value: koi.koiName }))}
+                    onChange={(value) => handleFilterChange(value, "koiName")}
                 />
                 <AutoComplete
                     style={{ width: 200 }}
                     placeholder="Filter by Koi Type"
-                    options={koiTypes.map(type => ({ value: type }))}
-                    onChange={(value) => handleFilterChange(value, 'koiType')}
+                    options={koiTypes.map((type) => ({ value: type }))}
+                    onChange={(value) => handleFilterChange(value, "koiType")}
                 />
             </div>
 
-            <Button onClick={() => { 
-                setShowModal(true); 
-                form.resetFields(); 
-                setFileList([]); // Reset file list when adding new Koi
-            }}>Add Koi</Button>
+            <Button
+                onClick={() => {
+                    setShowModal(true);
+                    form.resetFields();
+                    setFileList([]); // Reset file list when adding new Koi
+                }}
+            >
+                Add Koi
+            </Button>
             <Typography.Title level={4}>Manage Koi Fish</Typography.Title>
             <Table dataSource={filteredData} columns={columns} />
 
-            <Modal open={showModal} onCancel={() => setShowModal(false)} title="Koi Fish" onOk={() => form.submit()} confirmLoading={loading}>
+            <Modal
+                open={showModal}
+                onCancel={() => setShowModal(false)}
+                title="Koi Fish"
+                onOk={() => form.submit()}
+                confirmLoading={loading}
+            >
                 <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit}>
                     <Form.Item name="id" hidden>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="koiName" label="Koi Name" rules={[{ required: true, message: 'Please input the koi name!' }]}>
+                    <Form.Item
+                        name="koiName"
+                        label="Koi Name"
+                        rules={[
+                            { required: true, message: "Please input the koi name!" },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="koiType" label="Koi Type" rules={[{ required: true, message: 'Please input the koi type!' }]}>
+                    <Form.Item
+                        name="koiType"
+                        label="Koi Type"
+                        rules={[
+                            { required: true, message: "Please input the koi type!" },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="price" label="Price" rules={[{ required: true, message: 'Please input the price!' }]}>
+                    <Form.Item
+                        name="price"
+                        label="Price"
+                        rules={[
+                            { required: true, message: "Please input the price!" },
+                            {
+                                validator(rule, value) {
+                                    return new Promise((resolve, reject) => {
+                                        if (value >= 0) {
+                                            resolve();
+                                        } else {
+                                            reject("The price should be greater than or equal to 0");
+                                        }
+                                    });
+                                }
+                            }
+                        ]}
+                    >
                         <Input type="number" />
                     </Form.Item>
-                    <Form.Item name="detail" label="Detail" rules={[{ required: true, message: 'Please input the details!' }]}>
+                    <Form.Item
+                        name="detail"
+                        label="Detail"
+                        rules={[{ required: true, message: "Please input the details!" }]}
+                    >
                         <Input.TextArea />
                     </Form.Item>
-                    
+
                     <Form.List name="farmKoiList">
                         {(fields, { add, remove }) => (
                             <>
@@ -210,32 +243,49 @@ function ManageKoi() {
                                     <Space key={key} align="baseline">
                                         <Form.Item
                                             {...restField}
-                                            name={[name, 'farmId']}
+                                            name={[name, "farmId"]}
                                             label="Farm"
-                                            rules={[{ required: true, message: 'Select a farm' }]}
+                                            rules={[{ required: true, message: "Select a farm" }]}
                                         >
                                             <Select placeholder="Select farm">
-                                                {farmList.map(farm => (
+                                                {farmList.map((farm) => (
                                                     <Select.Option key={farm.id} value={farm.id}>
                                                         {farm.farmName}
                                                     </Select.Option>
                                                 ))}
                                             </Select>
                                         </Form.Item>
-                                        
+
                                         <Form.Item
                                             {...restField}
-                                            name={[name, 'quantity']}
+                                            name={[name, "quantity"]}
                                             label="Quantity"
-                                            rules={[{ required: true, message: 'Enter quantity' }]}
+                                            rules={[
+                                                { required: true, message: "Enter quantity" },
+                                                {
+                                                    validator(rule, value) {
+                                                        return new Promise((resolve, reject) => {
+                                                            if (value >= 0) {
+                                                                resolve();
+                                                            } else {
+                                                                reject("The quantity should be greater than or equal to 0");
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            ]}
                                         >
                                             <Input type="number" />
                                         </Form.Item>
 
-                                        <Button onClick={() => remove(name)} danger>Remove</Button>
+                                        <Button onClick={() => remove(name)} danger>
+                                            Remove
+                                        </Button>
                                     </Space>
                                 ))}
-                                <Button type="dashed" onClick={() => add()} block>Add Farm</Button>
+                                <Button type="dashed" onClick={() => add()} block>
+                                    Add Farm
+                                </Button>
                             </>
                         )}
                     </Form.List>
@@ -255,7 +305,12 @@ function ManageKoi() {
                                 }
                             }}
                         >
-                            {fileList.length >= 1 ? null : <div><PlusOutlined /><div>Upload</div></div>}
+                            {fileList.length >= 1 ? null : (
+                                <div>
+                                    <PlusOutlined />
+                                    <div>Upload</div>
+                                </div>
+                            )}
                         </Upload>
                     </Form.Item>
                 </Form>
@@ -263,9 +318,4 @@ function ManageKoi() {
         </div>
     );
 }
-
-<<<<<<< HEAD
 export default ManageKoi;
-=======
-export default ManageKoi; 
->>>>>>> af33c4a6778d3171f8be99e790f5c7c4ca430230

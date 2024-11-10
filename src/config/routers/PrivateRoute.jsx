@@ -1,17 +1,16 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 import ErrorPage from '../../page/error/ErrorPage';
-import { Outlet } from 'react-router-dom';
-import HomePage from '../../page/home/HomePage';
 
-function PrivateRoute({ children }) {
+const PrivateRoute = ({ children, allowedRoles }) => {
   const user = useSelector((state) => state.user);
 
-  if (user && user.role === "ADMIN") return children;
+  if (user && allowedRoles.includes(user.role)) {
+    return children;
+  }
 
-  return (
-    <ErrorPage/>
-  );
-}
+  return <Navigate to="/403" />;
+};
 
 export default PrivateRoute;
