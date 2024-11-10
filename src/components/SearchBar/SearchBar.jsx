@@ -52,6 +52,10 @@ const SearchBar = () => {
         price: 1000000,
         koiType: "Kohaku",
       }
+
+      /* const response = await api.get("/tour");
+      const res = response.data.filter((tour) => new Date(tour.tourStart) < new Date(searchFields.startTime));
+      console.log(res); */
       const response = await api.get("/tour/search", searchFields);
       handleToastingLoad();
       /* navigate("/tour", { state: { response } }); */
