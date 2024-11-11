@@ -1,32 +1,38 @@
 .tour-page {
   padding: 20px;
-  background-color: #fff5e6; // Màu nền nhẹ để làm nổi bật các thành phần khác
-  
+  background-color: #fffaf0; // Tông màu nền nhẹ để tạo sự hài hòa
+  min-height: 850px;
+
   // Banner
   .tour-banner {
-    background: url('https://tepbac.com/upload/news/ge_image/2023/03/ca-koi%20(3)_1678854037.jpg') no-repeat center center ;
+    background: url('https://tepbac.com/upload/news/ge_image/2023/03/ca-koi%20(3)_1678854037.jpg') no-repeat center center;
     background-size: cover;
-    padding: 80px 20px;
+    padding: 100px 20px;
     text-align: center;
-    color: #ff7f50; 
-    border-radius: 8px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 
     h1 {
-      font-size: 40px;
+      font-size: 42px;
       margin-bottom: 15px;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
     }
 
     p {
-      font-size: 20px;
-      margin-bottom: 20px;
+      font-size: 18px;
+      margin-bottom: 25px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
 
     .ant-btn-primary {
       background-color: #ff7f50;
       border-color: #ff7f50;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 10px 20px;
       transition: all 0.3s ease;
 
       &:hover {
@@ -37,7 +43,6 @@
 
       a {
         color: #fff;
-        font-weight: bold;
         text-decoration: none;
       }
     }
@@ -46,17 +51,17 @@
   // Danh sách các tour
   .tour-list {
     h2 {
-      font-size: 30px;
-      margin-bottom: 20px;
+      font-size: 28px;
+      font-weight: 600;
       text-align: center;
       color: #333;
-      
+      margin-bottom: 25px;
 
       &::after {
         content: "";
         display: block;
-        width: 60px;
-        height: 3px;
+        width: 80px;
+        height: 4px;
         background-color: #ff7f50;
         margin: 8px auto 0;
         border-radius: 2px;
@@ -66,65 +71,61 @@
     .ant-row {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     .ant-col {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     .ant-card {
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background-color: #f9f9f9;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      background-color: #fafafa;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
       &:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(-8px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       }
 
       .ant-card-cover img {
-        height: 200px;
+        height: 220px;
         object-fit: cover;
       }
 
       .ant-card-body {
-        padding: 16px;
+        padding: 20px;
         text-align: center;
 
         .ant-card-meta-title {
-          font-size: 22px;
+          font-size: 24px;
           font-weight: 700;
-          color: #ff7f50; // Tiêu đề của mỗi tour là màu cam
+          color: #ff7f50;
           text-shadow: 1px 1px 1px rgba(255, 127, 80, 0.3);
-        }
-
-        .ant-card-meta-description {
-          font-size: 16px;
-          color: #555;
-          margin-top: 5px;
-          line-height: 1.5;
         }
 
         p {
           font-size: 18px;
           color: #666;
           margin: 5px 0;
-        }
 
-        strong {
-          color: #333;
+          strong {
+            color: #333;
+          }
         }
       }
 
       .ant-card-actions {
         display: flex;
         justify-content: center;
+        padding: 10px 0;
 
         .ant-btn-primary {
           background-color: #ff7f50;
           border-color: #ff7f50;
+          font-weight: bold;
           transition: all 0.3s ease;
 
           &:hover {
@@ -138,6 +139,33 @@
             text-decoration: none;
           }
         }
+      }
+    }
+  }
+
+  // Bộ lọc tìm kiếm
+  .tour-filters {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 30px;
+
+    input,
+    .ant-picker,
+    .ant-select {
+      width: 200px;
+    }
+
+    .ant-btn-default {
+      background-color: #ff7f50;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #ff4500;
+        transform: scale(1.05);
       }
     }
   }

@@ -19,12 +19,16 @@
       font-weight: 700;
     }
 
-    .tour-subtitle,
+    
     .tour-description {
       font-size: 1.1rem;
       color: #555;
       margin-top: 0.5rem;
       line-height: 1.8;
+    }
+    .tour-subtitle{
+      font-size: 1.1rem;
+      padding-top: 10px;
     }
   }
 
@@ -52,7 +56,7 @@
     }
 
     .tour-details {
-      flex: 1 1 33%;
+      flex: 1 1 35%;
       padding: 2rem;
       background: linear-gradient(135deg, #ffe5bf, #fff); 
       border: 2px solid #ff6f00; // Orange border
@@ -81,19 +85,13 @@
         color: #ff6f00; // Orange for price
         font-weight: bold;
 
-        .old-price {
-          text-decoration: line-through;
-          margin-right: 0.75rem;
-          color: #999;
-        }
+        
 
-        .price-label {
-          margin-right: 0.5rem;
-          font-weight: 600;
+        .adult-price{
+          color: #fa920a;
         }
-
-        .new-price {
-          color: #ff6f00;
+        .child-price {
+          color: #ffa135;
         }
       }
 

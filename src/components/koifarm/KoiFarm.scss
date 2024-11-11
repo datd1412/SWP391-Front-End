@@ -12,11 +12,12 @@ $hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); // Enhanced hover shadow for cards
   font-family: 'Arial', sans-serif;
   background-color: $secondary-color;
   padding: 20px;
+  min-height: 850px;
 
   .header-banner {
     text-align: center;
     padding: 50px;
-    background-image: url(https://wallpaperaccess.com/full/147903.jpg) ;
+    background-image: url(https://wallpaperaccess.com/full/147903.jpg);
     background-size: cover;
     background-position: center;
     position: relative;
@@ -191,20 +192,10 @@ $hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); // Enhanced hover shadow for cards
         }
       }
     }
+    
 
-    .ant-modal-footer {
-      background-color: $secondary-color;
-      border-top: none;
-      text-align: right;
-
-      .ant-btn-primary {
-        background: linear-gradient(90deg, $primary-color, $highlight-color);
-        border: none;
-
-        &:hover {
-          background: linear-gradient(90deg, $highlight-color, $primary-color);
-        }
-      }
-    }
+    
   }
-}
+    }
+  
+
